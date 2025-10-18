@@ -271,4 +271,4 @@ CREATE TABLE review (
   account_id INTEGER NOT NULL REFERENCES account(account_id)
 );
 
-SELECT * FROM public."Review
+SELECT * FROM public."Review"
