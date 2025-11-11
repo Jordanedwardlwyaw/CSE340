@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Inventory - CSE Motors</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <header>
+    <h1>CSE Motors</h1>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/inventory">Inventory</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="inventory">
+    <h1>Our Inventory</h1>
+    <section class="vehicle-list">
+      <% vehicles.forEach(vehicle => { %>
+        <article class="vehicle">
+          <h2><%= vehicle.year %> <%= vehicle.make %> <%= vehicle.model %></h2>
+          <p>
+            <%= vehicle.type %>
+            <% if (vehicle.range) { %> | <%= vehicle.range %> <% } %>
+            <% if (vehicle.mpg) { %> | <%= vehicle.mpg %> <% } %>
+            <% if (vehicle.feature) { %> | <%= vehicle.feature %> <% } %>
+            | $<%= vehicle.price.toLocaleString() %>
+          </p>
+        </article>
+      <% }) %>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 CSE Motors</p>
+  </footer>
+</body>
+</html>
