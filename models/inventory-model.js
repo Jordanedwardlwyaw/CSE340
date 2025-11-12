@@ -10,4 +10,21 @@ async function getVehicleById(inv_id) {
   }
 }
 
-module.exports = { getVehicleById };
+async function getVehiclesByClassification(classificationId) {
+  try {
+    const sql = `
+      SELECT * FROM inventory
+      WHERE classification_id = $1
+      LIMIT 5
+    `;
+    const result = await pool.query(sql, [classificationId]);
+    return result.rows;
+  } catch (error) {
+    throw new Error("Error fetching classification data");
+  }
+}
+
+module.exports = {
+  getVehicleById,
+  getVehiclesByClassification
+};

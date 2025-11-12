@@ -21,4 +21,27 @@ async function buildVehicleDetail(req, res, next) {
   }
 }
 
-module.exports = { buildVehicleDetail };
+async function buildClassificationView(req, res, next) {
+  try {
+    const classificationId = req.params.classificationId;
+    const vehicles = await inventoryModel.getVehiclesByClassification(classificationId);
+
+    if (!vehicles || vehicles.length === 0) {
+      return res.status(404).render("errors/404", { title: "No Vehicles Found" });
+    }
+
+    const vehicleListHTML = utilities.buildClassificationHTML(vehicles);
+
+    res.render("inventory/classification", {
+      title: `${classificationId.charAt(0).toUpperCase() + classificationId.slice(1)} Vehicles`,
+      vehicleListHTML
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+module.exports = {
+  buildVehicleDetail,
+  buildClassificationView
+};

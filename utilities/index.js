@@ -13,4 +13,25 @@ function buildVehicleDetailHTML(vehicle) {
   `;
 }
 
-module.exports = { buildVehicleDetailHTML };
+function buildClassificationHTML(vehicleList) {
+  let html = "<div class='vehicle-grid'>";
+  vehicleList.forEach(vehicle => {
+    html += `
+      <div class="vehicle-card">
+        <img src="${vehicle.img_full}" alt="${vehicle.make} ${vehicle.model}" class="vehicle-img">
+        <h2>${vehicle.make} ${vehicle.model}</h2>
+        <p><strong>Year:</strong> ${vehicle.year}</p>
+        <p><strong>Price:</strong> $${Number(vehicle.price).toLocaleString()}</p>
+        <p><strong>Mileage:</strong> ${Number(vehicle.mileage).toLocaleString()} miles</p>
+        <a href="/inventory/detail/${vehicle.inv_id}">View Details</a>
+      </div>
+    `;
+  });
+  html += "</div>";
+  return html;
+}
+
+module.exports = {
+  buildVehicleDetailHTML,
+  buildClassificationHTML
+};
