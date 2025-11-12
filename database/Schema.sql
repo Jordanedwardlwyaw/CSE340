@@ -1,4 +1,6 @@
--- Create classification table
+ -- Create classification table
+ DROP TABLE IF EXISTS inventory;
+DROP TABLE IF EXISTS classification;
 CREATE TABLE classification (
   classification_id SERIAL PRIMARY KEY,
   classification_name VARCHAR(50) NOT NULL UNIQUE
@@ -13,6 +15,6 @@ CREATE TABLE inventory (
   price NUMERIC(10, 2) NOT NULL,
   mileage INT NOT NULL,
   description TEXT,
-  img_full VARCHAR(255),
+  img_full VARCHAR(255), -- Added image path column
   classification_id INT REFERENCES classification(classification_id)
 );

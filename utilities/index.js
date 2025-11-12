@@ -1,7 +1,7 @@
 function buildVehicleDetailHTML(vehicle) {
   return `
     <div class="vehicle-detail-container">
-      <img src="${vehicle.img_full}" alt="${vehicle.make} ${vehicle.model}" class="vehicle-img">
+      <img src="/images/${vehicle.img_full}" alt="${vehicle.make} ${vehicle.model}" class="vehicle-img">
       <div class="vehicle-info">
         <h1>${vehicle.make} ${vehicle.model}</h1>
         <p><strong>Year:</strong> ${vehicle.year}</p>
@@ -18,7 +18,7 @@ function buildClassificationHTML(vehicleList) {
   vehicleList.forEach(vehicle => {
     html += `
       <div class="vehicle-card">
-        <img src="${vehicle.img_full}" alt="${vehicle.make} ${vehicle.model}" class="vehicle-img">
+        <img src="/images/${vehicle.img_full}" alt="${vehicle.make} ${vehicle.model}" class="vehicle-img">
         <h2>${vehicle.make} ${vehicle.model}</h2>
         <p><strong>Year:</strong> ${vehicle.year}</p>
         <p><strong>Price:</strong> $${Number(vehicle.price).toLocaleString()}</p>

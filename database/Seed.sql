@@ -2,8 +2,6 @@
 INSERT INTO classification (classification_name) VALUES
 ('home'), ('custom'), ('sedan'), ('suv'), ('truck');
 
--- Insert vehicles for each classification
-
 -- Home
 INSERT INTO inventory (make, model, year, price, mileage, description, img_full, classification_id) VALUES
 ('Ford', 'Fusion', 2020, 22000, 30000, 'Comfortable and efficient.', '/images/fusion.jpg', 1),
