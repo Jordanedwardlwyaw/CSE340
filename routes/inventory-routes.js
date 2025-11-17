@@ -1,20 +1,8 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const inventoryController = require("../controllers/inventoryController");
+const controller = require('../controllers/inventory-controller');
 
-// Detail page for a vehicle
-router.get("/detail/:inv_id", inventoryController.buildVehicleDetail);
-
-// Classification page
-router.get("/type/:classificationId", inventoryController.buildClassificationView);
-
-// Intentional 500 error test
-router.get("/error-test", (req, res, next) => {
-  try {
-    throw new Error("Intentional server error for testing");
-  } catch (err) {
-    next(err);
-  }
-});
+router.get('/classification/:classification', controller.showClassification);
+router.get('/vehicle/:id', controller.showVehicle);
 
 module.exports = router;

@@ -1,0 +1,11 @@
+<h1><%= classification %></h1>
+<ul>
+  <% vehicles.forEach(vehicle => { %>
+    <li>
+      <a href="/inventory/vehicle/<%= vehicle.id %>">
+        <img src="<%= vehicle.thumbnail %>" alt="<%= vehicle.make %> <%= vehicle.model %>" />
+        <span><%= vehicle.make %> <%= vehicle.model %></span>
+      </a>
+    </li>
+  <% }) %>
+</ul>

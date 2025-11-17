@@ -1,47 +1,22 @@
-const inventoryModel = require("../models/inventory-model");
-const utilities = require("../utilities");
+const model = require('../models/inventory-model');
+const utilities = require('../utilities/index');
 
-async function buildVehicleDetail(req, res, next) {
-  try {
-    const inv_id = req.params.inv_id;
-    const vehicleData = await inventoryModel.getVehicleById(inv_id);
-
-    if (!vehicleData) {
-      return res.status(404).render("errors/404", { title: "Vehicle Not Found" });
-    }
-
-    const vehicleHTML = utilities.buildVehicleDetailHTML(vehicleData);
-
-    res.render("inventory/detail", {
-      title: `${vehicleData.make} ${vehicleData.model}`,
-      vehicleHTML,
-    });
-  } catch (error) {
-    next(error);
-  }
+function showClassification(req, res) {
+  const classification = req.params.classification;
+  const vehicles = model.getVehiclesByClassification(classification);
+  res.render('inventory/classification', { classification, vehicles });
 }
 
-async function buildClassificationView(req, res, next) {
-  try {
-    const classificationId = req.params.classificationId;
-    const vehicles = await inventoryModel.getVehiclesByClassification(classificationId);
+function showVehicle(req, res) {
+  const vehicleId = req.params.id;
+  const vehicle = model.getVehicleById(vehicleId);
 
-    if (!vehicles || vehicles.length === 0) {
-      return res.status(404).render("errors/404", { title: "No Vehicles Found" });
-    }
-
-    const vehicleListHTML = utilities.buildClassificationHTML(vehicles);
-
-    res.render("inventory/classification", {
-      title: `${classificationId.charAt(0).toUpperCase() + classificationId.slice(1)} Vehicles`,
-      vehicleListHTML
-    });
-  } catch (error) {
-    next(error);
+  if (!vehicle) {
+    return res.status(404).render('errors/404');
   }
+
+  const vehicleHTML = utilities.buildVehicleDetailHTML(vehicle);
+  res.render('inventory/detail', { vehicleHTML, vehicle });
 }
 
-module.exports = {
-  buildVehicleDetail,
-  buildClassificationView
-};
+module.exports = { showClassification, showVehicle };
