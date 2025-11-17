@@ -1,6 +1,8 @@
-<%- include('../layout.ejs') %>
+<%- include("partials/header") %>
 
 <main>
-  <h1>500 - Server Error</h1>
-  <p>Oops! Something went wrong on our end.</p>
+  <h2>500 - Internal Server Error</h2>
+  <p><%= message %></p>
 </main>
+
+<%- include("partials/footer") %>

@@ -2,16 +2,16 @@ const express = require("express");
 const router = express.Router();
 const inventoryController = require("../controllers/inventory-controller");
 
-// Home
+// Home page
 router.get("/", inventoryController.showHome);
 
-// Custom
+// Custom upgrades page
 router.get("/custom", inventoryController.showCustom);
 
-// Classification pages
+// Classification pages (Sedan, SUV, Truck)
 router.get("/classification/:type", inventoryController.showClassification);
 
-// Vehicle details
+// Vehicle detail pages
 router.get("/vehicle/:id", inventoryController.showDetails);
 
 module.exports = router;

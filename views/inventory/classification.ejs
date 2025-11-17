@@ -1,16 +1,16 @@
 <%- include("partials/header") %>
 
-<div class="container">
+<main>
   <h2><%= type %> Vehicles</h2>
 
   <% vehicles.forEach(v => { %>
     <div class="vehicle-card">
-      <img src="<%= v.image %>" alt="">
-      <h3><%= v.make + " " + v.model %></h3>
+      <img src="<%= v.image %>" alt="<%= v.make %> <%= v.model %>">
+      <h3><%= v.make %> <%= v.model %></h3>
       <p><%= v.description %></p>
       <a href="/vehicle/<%= v.id %>">View Details</a>
     </div>
   <% }) %>
-</div>
+</main>
 
 <%- include("partials/footer") %>

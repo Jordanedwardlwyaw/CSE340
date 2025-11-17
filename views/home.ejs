@@ -1,32 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>CSE Motors - Home</title>
-  <link rel="stylesheet" href="/css/styles.css">
-</head>
-<body>
+<%- include("partials/header") %>
 
-  <header>
-    <h1>Welcome to CSE Motors!</h1>
+<main class="home-container">
+  <!-- Banner Image -->
+  <div class="banner-wrapper">
+    <img src="<%= home.banner %>" alt="CSE Motors Banner" class="home-banner">
+  </div>
 
-    <nav>
-      <a href="/">Home</a>
-      <a href="/custom">Custom</a>
-      <a href="/classification/Sedan">Sedan</a>
-      <a href="/classification/SUV">SUV</a>
-      <a href="/classification/Truck">Truck</a>
-    </nav>
-  </header>
+  <!-- Welcome Message -->
+  <section class="welcome-message">
+    <h2><%= home.message %></h2>
+    <p>Explore our wide range of vehicles, including Sedans, SUVs, Trucks, and Custom builds. Click a category above to get started!</p>
+  </section>
 
-  <main>
-    <section>
-      <h2>Your trusted car supplier</h2>
-      <p>Choose a classification to explore our inventory.</p>
+  <!-- Quick Links / Categories -->
+  <section class="home-categories">
+    <h3>Browse By Classification</h3>
+    <div class="categories-grid">
+      <a href="/classification/Sedan" class="category-card">Sedan</a>
+      <a href="/classification/SUV" class="category-card">SUV</a>
+      <a href="/classification/Truck" class="category-card">Truck</a>
+      <a href="/custom" class="category-card">Custom</a>
+    </div>
+  </section>
+</main>
 
-      <img src="<%= home.banner %>" alt="CSE Motors Banner" style="max-width:100%">
-    </section>
-  </main>
-
-</body>
-</html>
+<%- include("partials/footer") %>
