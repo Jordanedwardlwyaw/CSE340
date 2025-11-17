@@ -75,8 +75,12 @@ const inventory = [
 ];
 
 module.exports = {
-  getVehiclesByType: (type) => inventory.filter(v => v.type.toLowerCase() === type.toLowerCase()),
-  getVehicleById: (id) => inventory.find(v => v.id == id),
+  getVehiclesByType: (type) =>
+    inventory.filter(v => v.type.toLowerCase() === type.toLowerCase()),
+
+  getVehicleById: (id) =>
+    inventory.find(v => v.id == id),
+
   getCustomUpgrades: () => [
     { name: "Flux Capacitor", image: "/images/flux-capacitor.jpg" },
     { name: "Flame Decals", image: "/images/flame-decals.jpg" },
