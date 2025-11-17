@@ -1,37 +1,33 @@
-// app.js
 const express = require("express");
 const path = require("path");
 
-// Routes
 const inventoryRoutes = require("./routes/inventoryRoutes");
 
 const app = express();
 let port = process.env.PORT || 3000;
 
-// Set EJS
+// EJS setup
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 // Static files
 app.use(express.static(path.join(__dirname, "public")));
 
-// Use inventory routes
+// Routes
 app.use("/", inventoryRoutes);
 
-// Start server with automatic free port search
-function startServer(port) {
-  const server = app.listen(port, () => {
-    console.log(`CSE Motors app running at http://localhost:${server.address().port}`);
-  });
+// 404 page
+app.use((req, res) => {
+  res.status(404).render("404", { message: "Page not found" });
+});
 
-  server.on("error", (err) => {
-    if (err.code === "EADDRINUSE") {
-      console.log(`Port ${port} in use, trying next port...`);
-      startServer(port + 1);
-    } else {
-      console.error(err);
-    }
-  });
-}
+// Error middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).render("500", { message: "Internal Server Error" });
+});
 
-startServer(port);
+// Start server
+app.listen(port, () => {
+  console.log(`CSE Motors running at http://localhost:${port}`);
+});
