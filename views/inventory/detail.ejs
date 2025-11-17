@@ -1,3 +1,23 @@
-<div>
-  <%- vehicleHTML %>
+<%- include("partials/header") %>
+
+<div class="container">
+  <% if (vehicle.baseCar) { %>
+    <h2>Custom Delorean</h2>
+    <img src="<%= vehicle.baseCar.image %>" style="width: 100%;">
+
+    <h3>Upgrades</h3>
+    <% vehicle.upgrades.forEach(u => { %>
+      <div class="vehicle-card">
+        <img src="<%= u.image %>" alt="">
+        <p><%= u.name %></p>
+      </div>
+    <% }) %>
+
+  <% } else { %>
+    <h2><%= vehicle.make + " " + vehicle.model %></h2>
+    <img src="<%= vehicle.image %>" alt="">
+    <p><%= vehicle.description %></p>
+  <% } %>
 </div>
+
+<%- include("partials/footer") %>

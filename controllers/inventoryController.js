@@ -1,22 +1,33 @@
-const model = require('../models/inventory-model');
-const utilities = require('../utilities/index');
+const { inventory } = require("../models/inventory-model");
 
-function showClassification(req, res) {
-  const classification = req.params.classification;
-  const vehicles = model.getVehiclesByClassification(classification);
-  res.render('inventory/classification', { classification, vehicles });
-}
+exports.showHome = (req, res) => {
+  res.render("home", { home: inventory.home });
+};
 
-function showVehicle(req, res) {
-  const vehicleId = req.params.id;
-  const vehicle = model.getVehicleById(vehicleId);
+exports.showClassification = (req, res) => {
+  const type = req.params.type;
+  const vehicles = inventory.classifications[type];
 
-  if (!vehicle) {
-    return res.status(404).render('errors/404');
+  if (!vehicles) return res.status(404).send("Classification not found");
+
+  res.render("classification", { type, vehicles });
+};
+
+exports.showDetails = (req, res) => {
+  const id = parseInt(req.params.id);
+
+  let vehicle = null;
+
+  for (let key in inventory.classifications) {
+    let found = inventory.classifications[key].find(v => v.id === id);
+    if (found) vehicle = found;
   }
 
-  const vehicleHTML = utilities.buildVehicleDetailHTML(vehicle);
-  res.render('inventory/detail', { vehicleHTML, vehicle });
-}
+  if (!vehicle) return res.status(404).send("Vehicle not found");
 
-module.exports = { showClassification, showVehicle };
+  res.render("details", { vehicle });
+};
+
+exports.showCustom = (req, res) => {
+  res.render("details", { vehicle: inventory.classifications.Custom });
+};

@@ -1,11 +1,16 @@
-<h1><%= classification %></h1>
-<ul>
-  <% vehicles.forEach(vehicle => { %>
-    <li>
-      <a href="/inventory/vehicle/<%= vehicle.id %>">
-        <img src="<%= vehicle.thumbnail %>" alt="<%= vehicle.make %> <%= vehicle.model %>" />
-        <span><%= vehicle.make %> <%= vehicle.model %></span>
-      </a>
-    </li>
+<%- include("partials/header") %>
+
+<div class="container">
+  <h2><%= type %> Vehicles</h2>
+
+  <% vehicles.forEach(v => { %>
+    <div class="vehicle-card">
+      <img src="<%= v.image %>" alt="">
+      <h3><%= v.make + " " + v.model %></h3>
+      <p><%= v.description %></p>
+      <a href="/vehicle/<%= v.id %>">View Details</a>
+    </div>
   <% }) %>
-</ul>
+</div>
+
+<%- include("partials/footer") %>

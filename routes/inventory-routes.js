@@ -1,8 +1,11 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const controller = require('../controllers/inventory-controller');
 
-router.get('/classification/:classification', controller.showClassification);
-router.get('/vehicle/:id', controller.showVehicle);
+const inventoryController = require("../controllers/inventory-controller");
+
+router.get("/", inventoryController.showHome);
+router.get("/custom", inventoryController.showCustom);
+router.get("/classification/:type", inventoryController.showClassification);
+router.get("/vehicle/:id", inventoryController.showDetails);
 
 module.exports = router;
