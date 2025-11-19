@@ -1,16 +1,25 @@
-<%- include("partials/header") %>
+<%- include('./partials/header') %>
 
-<main class="container">
-  <h2><%= type %> Vehicles</h2>
+<main class="classification-page">
+  <h1><%= type %> Vehicles</h1>
 
-  <% vehicles.forEach(v => { %>
-    <div class="vehicle-card">
-      <img src="<%= v.image %>" alt="<%= v.make %> <%= v.model %>">
-      <h3><%= v.make %> <%= v.model %></h3>
-      <p><%= v.description %></p>
-      <a href="/vehicle/<%= v.id %>">View Details</a>
-    </div>
-  <% }) %>
+  <% if (vehicles && vehicles.length > 0) { %>
+    <ul class="vehicle-grid">
+      <% vehicles.forEach(vehicle => { %>
+        <li class="vehicle-card">
+          <a href="/vehicle/<%= vehicle.id %>">
+            <img src="<%= vehicle.image %>" alt="<%= vehicle.make %> <%= vehicle.model %>">
+            <h2><%= vehicle.make %> <%= vehicle.model %></h2>
+          </a>
+          <p><strong>Price:</strong> $<%= vehicle.price.toLocaleString() %></p>
+          <p><strong>Mileage:</strong> <%= vehicle.mileage.toLocaleString() %> miles</p>
+          <p><%= vehicle.description %></p>
+        </li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    <p>No vehicles found in this classification.</p>
+  <% } %>
 </main>
 
-<%- include("partials/footer") %>
+<%- include('./partials/footer') %>

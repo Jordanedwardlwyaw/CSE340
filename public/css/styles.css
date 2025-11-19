@@ -192,4 +192,52 @@ nav a {
 .delorean-reviews blockquote {
   font-style: italic;
   margin-top: 1rem;
+}.error-page {
+  text-align: center;
+  padding: 2rem;
+}
+.error-page h1 {
+  font-size: 2rem;
+  color: #c00;
+}
+.error-page a {
+  color: #007bff;
+  text-decoration: underline;
+}.classification-page {
+  padding: 2rem;
+  text-align: center;
+}
+
+.vehicle-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 2rem;
+  padding: 0;
+  list-style: none;
+}
+
+.vehicle-card {
+  border: 1px solid #ccc;
+  padding: 1rem;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  transition: transform 0.2s ease;
+}
+
+.vehicle-card:hover {
+  transform: scale(1.02);
+}
+
+.vehicle-card img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.vehicle-card h2 {
+  margin: 0.5rem 0;
+}
+
+.vehicle-card p {
+  margin: 0.25rem 0;
 }
