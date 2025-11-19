@@ -69,7 +69,7 @@ const inventory = [
     make: "DMC",
     model: "Delorean",
     type: "Custom",
-    image: "/images/delorean.jpg",
+    image: "/images/Delorean.jpg",
     description: "Classic time-traveling car"
   }
 ];
