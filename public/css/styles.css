@@ -134,3 +134,62 @@ nav a {
   height: auto;
   border-radius: 6px;
 }
+.vehicle-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+  padding: 0;
+  list-style: none;
+}
+.vehicle-grid li {
+  border: 1px solid #ccc;
+  padding: 1rem;
+  text-align: center;
+}
+.vehicle-grid img {
+  max-width: 100%;
+  height: auto;
+}.home-page {
+  text-align: center;
+  padding: 2rem;
+}
+
+.delorean-promo {
+  border: 5px dashed #ccc;
+  padding: 1rem;
+  margin-bottom: 2rem;
+}
+
+.delorean-promo img {
+  max-width: 100%;
+  height: auto;
+  margin-top: 1rem;
+}
+
+.features {
+  list-style: none;
+  padding: 0;
+  font-size: 1.2rem;
+}
+
+.delorean-upgrades .upgrade-icons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.upgrade-icons li {
+  text-align: center;
+  width: 100px;
+}
+
+.upgrade-icons img {
+  width: 80px;
+  height: auto;
+}
+
+.delorean-reviews blockquote {
+  font-style: italic;
+  margin-top: 1rem;
+}
