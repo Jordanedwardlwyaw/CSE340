@@ -8,12 +8,10 @@ exports.showHome = (req, res) => {
   });
 };
 
-exports.showClassification = (req, res, next) => {
+exports.showClassification = (req, res) => {
   const type = req.params.type;
   const vehicles = inventoryModel.getVehiclesByType(type);
-  if (!vehicles || vehicles.length === 0) {
-    return next(new Error("No vehicles found"));
-  }
+
   res.render("classification", {
     type,
     vehicles
