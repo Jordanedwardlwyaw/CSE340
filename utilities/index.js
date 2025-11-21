@@ -1,14 +1,7 @@
-function buildVehicleDetailHTML(vehicle) {
-  return `
-    <div class="vehicle-detail">
-      <h1>${vehicle.make} ${vehicle.model}</h1>
-      <img src="${vehicle.image}" alt="${vehicle.make} ${vehicle.model}" />
-      <p>Year: ${vehicle.year}</p>
-      <p>Price: $${vehicle.price.toLocaleString()}</p>
-      <p>Mileage: ${vehicle.mileage.toLocaleString()} miles</p>
-      <p>${vehicle.description}</p>
-    </div>
-  `;
-}
+import utilities from "./utilities.js";
 
-module.exports = { buildVehicleDetailHTML };
+
+utilities.handleErrors = (fn) => (req, res, next) => fn(req, res, next).catch(next);
+
+
+export default utilities;

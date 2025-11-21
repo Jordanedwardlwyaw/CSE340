@@ -1,38 +1,43 @@
-const inventoryModel = require("../models/inventory-model");
+import invModel from "../models/inventory-model.js";
+import utilities from "../utilities/index.js";
 
-exports.showHome = (req, res) => {
-  res.render("home", {
-    custom: {
-      upgrades: inventoryModel.getCustomUpgrades()
-    }
-  });
+
+const invController = {};
+
+
+invController.buildManagement = async function (req, res) {
+const nav = await utilities.getNav();
+res.render("inventory/management", { title: "Inventory Management", nav });
 };
 
-exports.showClassification = (req, res) => {
-  const type = req.params.type;
-  const vehicles = inventoryModel.getVehiclesByType(type);
 
-  res.render("classification", {
-    type,
-    vehicles
-  });
+invController.buildByClassificationId = async function (req, res) {
+const classification_id = req.params.classification_id;
+const data = await invModel.getInventoryByClassification(classification_id);
+const nav = await utilities.getNav();
+const grid = await utilities.buildClassificationGrid(data);
+
+
+res.render("inventory/classification", {
+title: data[0]?.classification_name + " Vehicles" || "Vehicles",
+nav,
+grid,
+});
 };
 
-exports.showVehicleDetails = (req, res, next) => {
-  const vehicle = inventoryModel.getVehicleById(req.params.id);
-  if (!vehicle) {
-    return next(new Error("Vehicle not found"));
-  }
-  res.render("details", {
-    vehicle
-  });
+
+invController.buildDetailView = async function (req, res) {
+const inv_id = req.params.inv_id;
+const data = await invModel.getVehicleDetail(inv_id);
+const nav = await utilities.getNav();
+
+
+res.render("inventory/detail", {
+title: `${data.inv_make} ${data.inv_model}`,
+nav,
+vehicle: data,
+});
 };
 
-exports.showCustom = (req, res) => {
-  res.render("custom", {
-    custom: {
-      baseCar: inventoryModel.getVehicleById(7),
-      upgrades: inventoryModel.getCustomUpgrades()
-    }
-  });
-};
+
+export default invController;

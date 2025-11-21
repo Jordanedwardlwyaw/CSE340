@@ -1,9 +1,8 @@
-<%- include('./partials/header') %>
+<%- include("../partials/header") %>
 
-<main class="error-page">
+<main class="container">
   <h1>500 - Server Error</h1>
-  <p>Oops! Something went wrong on our end.</p>
-  <p>Please try again later or return to the <a href="/">home page</a>.</p>
+  <p><%= message %></p>
 </main>
 
-<%- include('./partials/footer') %>
+<%- include("../partials/footer") %>

@@ -1,0 +1,6 @@
+<%- include('../partials/header', { title }) %>
+<h1><%= vehicle.inv_make %> <%= vehicle.inv_model %></h1>
+<img src="<%= vehicle.inv_image %>" alt="Vehicle Image">
+<p>Price: $<%= vehicle.inv_price %></p>
+<p><%= vehicle.inv_description %></p>
+<%- include('../partials/footer') %>

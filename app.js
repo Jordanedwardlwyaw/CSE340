@@ -1,50 +1,38 @@
 const express = require("express");
-const path = require("path");
-const inventoryRoutes = require("./routes/inventoryRoutes");
-
 const app = express();
-let port = process.env.PORT || 3000;
+const path = require("path");
+const baseRoutes = require("./routes/index");
+const invRoutes = require("./routes/invRoutes");
+const accountRoutes = require("./routes/accountRoutes");
+const errorMiddleware = require("./utilities/errors");
 
-// View engine
+
+// View Engine
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-// Static files
+
+// Static Files
 app.use(express.static(path.join(__dirname, "public")));
 
+
+// Body Parser
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+
 // Routes
-app.use("/", inventoryRoutes);
+app.use("/", baseRoutes);
+app.use("/inv", invRoutes);
+app.use("/account", accountRoutes);
 
-// Trigger 500 error link
-app.get("/trigger-500", (req, res, next) => {
-  next(new Error("Intentional 500 error"));
-});
 
-// 404 handler
-app.use((req, res) => {
-  res.status(404).render("404", { message: "Page not found" });
-});
+// 404 Handler
+app.use(errorMiddleware.handle404);
 
-// Error handler
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).render("500");
-});
 
-// Start server
-function startServer(port) {
-  const server = app.listen(port, () => {
-    console.log(`CSE Motors app running at http://localhost:${server.address().port}`);
-  });
+// Error Handler
+app.use(errorMiddleware.handleErrors);
 
-  server.on("error", err => {
-    if (err.code === "EADDRINUSE") {
-      console.log(`Port ${port} in use, trying next port...`);
-      startServer(port + 1);
-    } else {
-      console.error(err);
-    }
-  });
-}
 
-startServer(port);
+module.exports = app;
