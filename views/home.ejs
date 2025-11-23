@@ -1,0 +1,38 @@
+<%- include('./partials/header') %>
+
+<main class="home-page">
+  <h1>Welcome to CSE Motors!</h1>
+
+  <!-- Delorean Promo Section -->
+  <section class="delorean-promo">
+    <h2>DMC Delorean</h2>
+    <ul class="features">
+      <li>Cup holders</li>
+      <li>Superman doors</li>
+      <li>Flux capacitor</li>
+      <li><strong>Own Today</strong></li>
+    </ul>
+    <img src="/images/Delorean.jpg" alt="DMC Delorean">
+  </section>
+
+  <!-- Upgrades Section -->
+  <section class="delorean-upgrades">
+    <h3>Delorean Upgrades</h3>
+    <ul class="upgrade-icons">
+      <% custom.upgrades.forEach(upgrade => { %>
+        <li>
+          <img src="<%= upgrade.image %>" alt="<%= upgrade.name %>">
+          <p><%= upgrade.name %></p>
+        </li>
+      <% }) %>
+    </ul>
+  </section>
+
+  <!-- Reviews Section -->
+  <section class="delorean-reviews">
+    <h3>DMC Delorean Reviews</h3>
+    <blockquote>“So fast it’s almost like traveling in time!”</blockquote>
+  </section>
+</main>
+
+<%- include('./partials/footer') %>

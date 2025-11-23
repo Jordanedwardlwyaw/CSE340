@@ -1,0 +1,23 @@
+<%- include("partials/header") %>
+
+<main class="container">
+  <h2>Custom Vehicle Upgrades</h2>
+
+  <div class="vehicle-card">
+    <img src="<%= custom.baseCar.image %>" alt="<%= custom.baseCar.make %> <%= custom.baseCar.model %>">
+    <h3><%= custom.baseCar.make %> <%= custom.baseCar.model %></h3>
+    <p><%= custom.baseCar.description %></p>
+  </div>
+
+  <h3>Available Upgrades:</h3>
+  <div class="upgrades">
+    <% custom.upgrades.forEach(upg => { %>
+      <div class="vehicle-card">
+        <img src="<%= upg.image %>" alt="<%= upg.name %>">
+        <p><%= upg.name %></p>
+      </div>
+    <% }) %>
+  </div>
+</main>
+
+<%- include("partials/footer") %>

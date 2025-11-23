@@ -1,0 +1,25 @@
+<%- include('./partials/header') %>
+
+<main class="classification-page">
+  <h1><%= type %> Vehicles</h1>
+
+  <% if (vehicles && vehicles.length > 0) { %>
+    <ul class="vehicle-grid">
+      <% vehicles.forEach(vehicle => { %>
+        <li class="vehicle-card">
+          <a href="/vehicle/<%= vehicle.id %>">
+            <img src="<%= vehicle.image %>" alt="<%= vehicle.make %> <%= vehicle.model %>">
+            <h2><%= vehicle.make %> <%= vehicle.model %></h2>
+          </a>
+          <p><strong>Price:</strong> $<%= vehicle.price.toLocaleString() %></p>
+          <p><strong>Mileage:</strong> <%= vehicle.mileage.toLocaleString() %> miles</p>
+          <p><%= vehicle.description %></p>
+        </li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    <p>No vehicles found in this classification.</p>
+  <% } %>
+</main>
+
+<%- include('./partials/footer') %>
