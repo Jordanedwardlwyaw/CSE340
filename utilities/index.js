@@ -2,6 +2,13 @@ const invModel = require("../models/inventory-model")
 
 const utilities = {}
 
+/* ****************************************
+*  Async error handler
+* *************************************** */
+utilities.handleErrors = fn => (req, res, next) => {
+  Promise.resolve(fn(req, res, next)).catch(next);
+};
+
 /* ***************************
  *  Build the navigation list
  * ************************** */
@@ -118,4 +125,12 @@ utilities.buildVehiclePage = async function(data) {
   }
 }
 
-module.exports = utilities
+/* ****************************************
+*  Check JWT Token
+* *************************************** */
+utilities.checkJWTToken = (req, res, next) => {
+  // Add your JWT token checking logic here if needed
+  next();
+};
+
+module.exports = utilities;
