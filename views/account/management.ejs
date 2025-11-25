@@ -1,15 +1,23 @@
-<section class="frame">
-    <h1>Account Management</h1>
-
-    <%- messages() %> <!-- Display flash messages -->
-
-    <% if (errors) { %>
-        <ul class="notice">
-            <% errors.forEach(error => { %>
-                <li><%= error.msg %></li>
-            <% }) %>
-        </ul>
-    <% } %>
-
-    <p>You're logged in.</p>
-</section>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> - CSE 340</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <header>
+        <%- include('../partials/header') %>
+    </header>
+    <main>
+        <h1><%= title %></h1>
+        <%- messages() %>
+        <p>Account management functionality coming soon...</p>
+        <a href="/" class="btn">Return to Home</a>
+    </main>
+    <footer>
+        <%- include('../partials/footer') %>
+    </footer>
+</body>
+</html>

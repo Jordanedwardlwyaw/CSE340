@@ -1,31 +1,23 @@
-<section class="frame">
-
-    <h1><%= title %></h1>
-
-    <%- messages() %>
-
-    <% if (errors) { %>
-        <ul class="notice">
-        <% errors.array().forEach(error => { %>
-            <li><%= error.msg %></li>
-        <%  }) %>
-        </ul>
-        <% } %>
-
-    <form action="/account/login" method="post" class="form-container" id="loginForm">
-
-        <label for="account_email">Email</label><br>
-        <input type="email" id="account_email" name="account_email" required value="<%= locals.account_email %>"><br>
-
-        <label for="account_password">Password</label><br>
-        <input type="password" id="account_password" name="account_password" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$" required><br>
-
-        <input type="submit" value="login">
-
-        <p id="registration">
-            No account? <a href="/account/register">Sign-up</a>
-        </p>
-
-    </form>
-
-</section>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> - CSE 340</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <header>
+        <%- include('../partials/header') %>
+    </header>
+    <main>
+        <h1><%= title %></h1>
+        <%- messages() %>
+        <p>Login functionality coming soon...</p>
+        <a href="/" class="btn">Return to Home</a>
+    </main>
+    <footer>
+        <%- include('../partials/footer') %>
+    </footer>
+</body>
+</html>
