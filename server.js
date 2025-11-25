@@ -1,7 +1,3 @@
-/* ******************************************
- * server.js - Primary application file
- *******************************************/
-
 require("dotenv").config();
 const express = require("express");
 const expressLayouts = require("express-ejs-layouts");
@@ -27,16 +23,16 @@ const utilities = require("./utilities/");
  * Middleware
  *************************/
 
-// Session Middleware
+// Session Middleware with Render.com PostgreSQL
 app.use(
   session({
     store: new pgSession({
       pool: pool,
-      createTableIfMissing: true,
+      createTableIfMissing: true, // automatically create session table
     }),
     secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     cookie: { maxAge: 1000 * 60 * 60 }, // 1 hour
   })
 );
@@ -106,27 +102,8 @@ app.use((err, req, res, next) => {
 /* ***********************
  * Start Server
  *************************/
-const DEFAULT_PORT = process.env.PORT || 3000;
+const port = process.env.PORT || 5500;
 
-// Ensure database is ready before starting server
-async function startServer() {
-  try {
-    await pool.query("SELECT 1"); // test DB connection
-    const server = app.listen(DEFAULT_PORT, "0.0.0.0", () => {
-      console.log(`Server is running at http://localhost:${server.address().port}`);
-    });
-    server.on("error", (err) => {
-      if (err.code === "EADDRINUSE") {
-        console.warn(`Port ${DEFAULT_PORT} in use, trying next port...`);
-        startServer(DEFAULT_PORT + 1);
-      } else {
-        console.error(err);
-      }
-    });
-  } catch (err) {
-    console.error("Cannot connect to database:", err.message);
-    process.exit(1);
-  }
-}
-
-startServer();
+app.listen(port, () => {
+  console.log(`Server is running at http://localhost:${port}`);
+});
