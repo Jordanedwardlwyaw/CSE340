@@ -9,7 +9,7 @@ const pool = new Pool({
   port: Number(process.env.PG_PORT),
 });
 
-// Optional: test connection
+// Test the connection
 pool.connect((err, client, release) => {
   if (err) {
     console.error("PostgreSQL connection failed:", err.message);

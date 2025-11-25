@@ -23,12 +23,12 @@ const utilities = require("./utilities/");
  * Middleware
  *************************/
 
-// Session Middleware with Render.com PostgreSQL
+// Session Middleware with PostgreSQL
 app.use(
   session({
     store: new pgSession({
       pool: pool,
-      createTableIfMissing: true, // automatically create session table
+      createTableIfMissing: true,
     }),
     secret: process.env.SESSION_SECRET,
     resave: false,
@@ -37,24 +37,24 @@ app.use(
   })
 );
 
-// Flash Middleware
+// Flash messages
 app.use(flash());
 app.use((req, res, next) => {
   res.locals.messages = messages(req, res);
   next();
 });
 
-// Cookie Parser
+// Cookie parser
 app.use(cookieParser());
 
-// Body Parser Middleware
+// Body parser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// JWT Token Validation
+// JWT token validation
 app.use(utilities.checkJWTToken);
 
-// Populate Navigation for All Responses
+// Populate navigation for all responses
 app.use(async (req, res, next) => {
   try {
     res.locals.nav = await utilities.getNav();
@@ -64,11 +64,11 @@ app.use(async (req, res, next) => {
   }
 });
 
-// Serve Static Files
+// Serve static files
 app.use(express.static("public"));
 
 /* ***********************
- * View Engine and Templates
+ * View Engine
  *************************/
 app.set("view engine", "ejs");
 app.use(expressLayouts);
@@ -82,7 +82,7 @@ app.use("/account", accountRoute);
 app.use("/inv", inventoryRoute);
 app.use("/error", errorRoute);
 
-// 404 Not Found Route - Must Be Last
+// 404 Not Found - must be last
 app.use((req, res, next) => {
   next({ status: 404, message: "Sorry, we appear to have lost that page." });
 });
