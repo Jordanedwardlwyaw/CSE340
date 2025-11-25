@@ -2,12 +2,9 @@
  * server.js - Primary application file
  *******************************************/
 
-/* ***********************
- * Require Statements
- *************************/
+require("dotenv").config();
 const express = require("express");
 const expressLayouts = require("express-ejs-layouts");
-const dotenv = require("dotenv").config();
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
@@ -16,7 +13,7 @@ const pgSession = require("connect-pg-simple")(session);
 const messages = require("express-messages");
 
 const app = express();
-const pool = require("./database/");
+const pool = require("./database");
 
 // Routes & Utilities
 const staticRoutes = require("./routes/static");
@@ -34,10 +31,10 @@ const utilities = require("./utilities/");
 app.use(
   session({
     store: new pgSession({
-      createTableIfMissing: true,
       pool: pool,
+      createTableIfMissing: true,
     }),
-    secret: process.env.SESSION_SECRET || "default_secret",
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: { maxAge: 1000 * 60 * 60 }, // 1 hour
@@ -84,26 +81,10 @@ app.set("layout", "./layouts/layout");
 /* ***********************
  * Routes
  *************************/
-// Public Routes
 app.get("/", utilities.handleErrors(baseController.buildHome));
 app.use("/account", accountRoute);
-
-// Restricted Routes
 app.use("/inv", inventoryRoute);
-
-// Test Route
-app.get("/account/test", (req, res) => {
-  res.send("Account test route is working");
-});
-
-// Intentional Error Route
 app.use("/error", errorRoute);
-
-// Flash Test Route
-app.get("/test-flash", (req, res) => {
-  req.flash("success", "Flash message is working!");
-  res.redirect("/account/login");
-});
 
 // 404 Not Found Route - Must Be Last
 app.use((req, res, next) => {
@@ -123,24 +104,29 @@ app.use((err, req, res, next) => {
 });
 
 /* ***********************
- * Server Configuration with Automatic Port Handling
+ * Start Server
  *************************/
 const DEFAULT_PORT = process.env.PORT || 3000;
 
-// Start the server, try next port if in use
-function startServer(port) {
-  const server = app.listen(port, "0.0.0.0", () => {
-    console.log(`Server is running at http://localhost:${server.address().port}`);
-  });
-
-  server.on("error", (err) => {
-    if (err.code === "EADDRINUSE") {
-      console.warn(`Port ${port} is in use, trying port ${port + 1}...`);
-      startServer(port + 1);
-    } else {
-      console.error(err);
-    }
-  });
+// Ensure database is ready before starting server
+async function startServer() {
+  try {
+    await pool.query("SELECT 1"); // test DB connection
+    const server = app.listen(DEFAULT_PORT, "0.0.0.0", () => {
+      console.log(`Server is running at http://localhost:${server.address().port}`);
+    });
+    server.on("error", (err) => {
+      if (err.code === "EADDRINUSE") {
+        console.warn(`Port ${DEFAULT_PORT} in use, trying next port...`);
+        startServer(DEFAULT_PORT + 1);
+      } else {
+        console.error(err);
+      }
+    });
+  } catch (err) {
+    console.error("Cannot connect to database:", err.message);
+    process.exit(1);
+  }
 }
 
-startServer(DEFAULT_PORT);
+startServer();

@@ -1,37 +1,23 @@
-const { Pool } = require("pg")
-require("dotenv").config()
-/* ***************
- * Connection Pool
- * SSL Object needed for local testing of app
- * But will cause problems in production environment
- * If - else will make determination which to use
- * *************** */
-let pool
-if (process.env.NODE_ENV == "development") {
-  pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: {
-      rejectUnauthorized: false,
-    },
-})
+const { Pool } = require("pg");
+require("dotenv").config();
 
-// Added for troubleshooting queries
-// during development
-module.exports = {
-  async query(text, params) {
-    try {
-      const res = await pool.query(text, params)
-      console.log("executed query", { text })
-      return res
-    } catch (error) {
-      console.error("error in query", { text })
-      throw error
-    }
-  },
-}
-} else {
-  pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-  })
-  module.exports = pool
-}
+const pool = new Pool({
+  user: process.env.PG_USER,
+  host: process.env.PG_HOST,
+  database: process.env.PG_DATABASE,
+  password: String(process.env.PG_PASSWORD), // ensure password is string
+  port: Number(process.env.PG_PORT),
+});
+
+// Optional: test the connection immediately
+pool.connect((err, client, release) => {
+  if (err) {
+    console.error("PostgreSQL connection failed:", err.message);
+    process.exit(1);
+  } else {
+    console.log("PostgreSQL connected successfully.");
+    release();
+  }
+});
+
+module.exports = pool;
