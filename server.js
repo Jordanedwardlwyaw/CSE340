@@ -1,6 +1,5 @@
 /* ******************************************
- * This server.js file is the primary file of the
- * application. It is used to control the project.
+ * server.js - Primary application file
  *******************************************/
 
 /* ***********************
@@ -9,20 +8,23 @@
 const express = require("express");
 const expressLayouts = require("express-ejs-layouts");
 const dotenv = require("dotenv").config();
-const app = express();
-const staticRoutes = require("./routes/static");
-const baseController = require("./controllers/baseController");
-const inventoryRoute = require("./routes/inventoryRoute");
-const accountRoute = require("./routes/accountRoute");
-const errorRoute = require("./routes/errorRoute");
-const utilities = require("./utilities/");
-const pool = require("./database/");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const flash = require("connect-flash");
 const pgSession = require("connect-pg-simple")(session);
 const messages = require("express-messages");
+
+const app = express();
+const pool = require("./database/");
+
+// Routes & Utilities
+const staticRoutes = require("./routes/static");
+const baseController = require("./controllers/baseController");
+const inventoryRoute = require("./routes/inventoryRoute");
+const accountRoute = require("./routes/accountRoute");
+const errorRoute = require("./routes/errorRoute");
+const utilities = require("./utilities/");
 
 /* ***********************
  * Middleware
@@ -38,7 +40,7 @@ app.use(
     secret: process.env.SESSION_SECRET || "default_secret",
     resave: false,
     saveUninitialized: true,
-    cookie: { maxAge: 60000 },
+    cookie: { maxAge: 1000 * 60 * 60 }, // 1 hour
   })
 );
 
@@ -121,11 +123,24 @@ app.use((err, req, res, next) => {
 });
 
 /* ***********************
- * Server Configuration
+ * Server Configuration with Automatic Port Handling
  *************************/
-const port = process.env.PORT || 5432; // Default port is 5432
-const host = process.env.HOST || "localhost";
+const DEFAULT_PORT = process.env.PORT || 3000;
 
-app.listen(port, () => {
-  console.log(`Server is running at http://${host}:${port}`);
-});
+// Start the server, try next port if in use
+function startServer(port) {
+  const server = app.listen(port, "0.0.0.0", () => {
+    console.log(`Server is running at http://localhost:${server.address().port}`);
+  });
+
+  server.on("error", (err) => {
+    if (err.code === "EADDRINUSE") {
+      console.warn(`Port ${port} is in use, trying port ${port + 1}...`);
+      startServer(port + 1);
+    } else {
+      console.error(err);
+    }
+  });
+}
+
+startServer(DEFAULT_PORT);
