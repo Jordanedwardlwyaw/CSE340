@@ -7,6 +7,9 @@ const pool = new Pool({
   database: process.env.PG_DATABASE,
   password: String(process.env.PG_PASSWORD),
   port: Number(process.env.PG_PORT),
+  ssl: {
+    rejectUnauthorized: false, // required for Render.com
+  },
 });
 
 // Test the connection
