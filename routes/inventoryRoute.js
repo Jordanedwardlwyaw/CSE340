@@ -22,11 +22,39 @@ router.get("/getInventory/:classification_id", utilities.handleErrors(invControl
 router.get("/detail/:invId", utilities.handleErrors(invController.buildByInvId));
 
 // ==========================
-// Restricted Routes - employee/admin
+// Assignment 4 Routes - Management (No authentication for now)
 // ==========================
 
-// Route for inventory management page
-router.get("/", restrictToRoles(["Employee", "Admin"]), utilities.handleErrors(invManagementController.buildInvManagement));
+// Route for inventory management page (Assignment 4)
+router.get("/", utilities.handleErrors(invController.buildManagement));
+
+// Route for adding classification (Assignment 4)
+router.get("/add-classification", utilities.handleErrors(invController.buildAddClassification));
+router.post("/add-classification", utilities.handleErrors(invController.addClassification));
+
+// Route for adding inventory (Assignment 4)
+router.get("/add-inventory", utilities.handleErrors(invController.buildAddInventory));
+router.post(
+  "/add-inventory",
+  [
+    body("classification_id").notEmpty().withMessage("Classification is required."),
+    body("inv_make").notEmpty().withMessage("Make is required."),
+    body("inv_model").notEmpty().withMessage("Model is required."),
+    body("inv_year").isInt({ min: 1900, max: 2030 }).withMessage("Year must be between 1900 and 2030."),
+    body("inv_description").notEmpty().withMessage("Description is required."),
+    body("inv_price").isFloat({ gt: 0 }).withMessage("Price must be a positive number."),
+    body("inv_miles").isInt({ min: 0 }).withMessage("Mileage must be a valid number."),
+    body("inv_color").notEmpty().withMessage("Color is required."),
+  ],
+  utilities.handleErrors(invController.addInventory)
+);
+
+// ==========================
+// Restricted Routes - employee/admin (Keep your existing ones)
+// ==========================
+
+// Route for inventory management page (Existing - keep for backward compatibility)
+router.get("/manage", restrictToRoles(["Employee", "Admin"]), utilities.handleErrors(invManagementController.buildInvManagement));
 
 // Routes for deleting inventory items
 router.get("/delete/:inv_id", restrictToRoles(["Employee", "Admin"]), utilities.handleErrors(invManagementController.buildDeleteView));
@@ -44,22 +72,22 @@ router.post(
   utilities.handleErrors(invManagementController.updateInventoryResult)
 );
 
-// Route for adding classification
+// Routes for adding classification (Existing - keep for backward compatibility)
 router.get(
-  "/add-classification",
+  "/manage/add-classification",
   restrictToRoles(["Employee", "Admin"]),
   utilities.handleErrors(invManagementController.buildAddClassification)
 );
 router.post(
-  "/add-classification",
+  "/manage/add-classification",
   restrictToRoles(["Employee", "Admin"]),
   utilities.handleErrors(invManagementController.addClassResult)
 );
 
-// Routes for adding inventory
-router.get("/add-inventory", restrictToRoles(["Employee", "Admin"]), utilities.handleErrors(invManagementController.buildAddInventory));
+// Routes for adding inventory (Existing - keep for backward compatibility)
+router.get("/manage/add-inventory", restrictToRoles(["Employee", "Admin"]), utilities.handleErrors(invManagementController.buildAddInventory));
 router.post(
-  "/add-inventory",
+  "/manage/add-inventory",
   restrictToRoles(["Employee", "Admin"]),
   [
     body("classification_id").notEmpty().withMessage("Classification is required."),
@@ -69,10 +97,17 @@ router.post(
     body("inv_price").isFloat({ gt: 0 }).withMessage("Price must be a positive number."),
     body("inv_miles").isInt({ min: 0 }).withMessage("Mileage must be a valid number."),
     body("inv_color").notEmpty().withMessage("Color is required."),
-    body("inv_thumbnail").isURL().withMessage("Thumbnail must be a valid URL."),
-    body("inv_image").isURL().withMessage("Image must be a valid URL."),
+    body("inv_thumbnail").notEmpty().withMessage("Thumbnail is required."),
+    body("inv_image").notEmpty().withMessage("Image is required."),
   ],
   utilities.handleErrors(invManagementController.addInventoryResult)
 );
+
+// Error handling middleware
+router.use((error, req, res, next) => {
+    console.error("Inventory Route Error:", error);
+    req.flash("error", "An error occurred processing your request");
+    res.redirect("/inv/");
+});
 
 module.exports = router;

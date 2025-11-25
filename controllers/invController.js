@@ -4,21 +4,54 @@ const utilities = require("../utilities/")
 const invCont = {}
 
 /* ***************************
+ *  Build management view
+ * ************************** */
+invCont.buildManagement = async (req, res, next) => {
+    try {
+        const nav = await utilities.getNav();
+        res.render("inventory/management", {
+            title: "Inventory Management",
+            nav,
+            message: req.flash() || null
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+/* ***************************
  *  Build inventory by classification view
  * ************************** */
 invCont.buildByClassificationId = async function (req, res, next) {
   try {
     const classification_id = req.params.classificationId;
     const data = await invModel.getInventoryByClassificationId(classification_id);
+    const nav = await utilities.getNav();
 
+    // Check if we have any vehicles for this classification
     if (!data || data.length === 0) {
-      const error = new Error("Vehicle classification not found");
-      error.status = 404;
-      throw error;
+      let className = "Unknown";
+      
+      // Try to get the classification name
+      try {
+        const classifications = await invModel.getClassifications();
+        const classification = classifications.rows.find(c => c.classification_id == classification_id);
+        if (classification) {
+          className = classification.classification_name;
+        }
+      } catch (error) {
+        console.error("Error getting classification name:", error);
+      }
+
+      return res.render("./inventory/classification", {
+        title: `${className} Vehicles`,
+        nav,
+        grid: '<p class="no-vehicles">No vehicles found in this classification.</p>',
+        errors: null,
+      });
     }
 
     const grid = await utilities.buildClassificationGrid(data);
-    const nav = await utilities.getNav();
     const className = data[0].classification_name;
     res.render("./inventory/classification", {
       title: `${className} Vehicles`,
@@ -30,7 +63,6 @@ invCont.buildByClassificationId = async function (req, res, next) {
     next(error);
   }
 };
-
 
 /* ***************************
  *  Build vehicle page by inventory id
@@ -61,17 +93,153 @@ invCont.buildByInvId = async function (req, res, next) {
 };
 
 /* ***************************
+ *  Build add classification view
+ * ************************** */
+invCont.buildAddClassification = async (req, res, next) => {
+    try {
+        const nav = await utilities.getNav();
+        res.render("inventory/add-classification", {
+            title: "Add Classification",
+            nav,
+            message: req.flash() || null,
+            errors: null
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+/* ***************************
+ *  Process add classification
+ * ************************** */
+invCont.addClassification = async (req, res, next) => {
+    try {
+        const { classification_name } = req.body;
+        const nav = await utilities.getNav();
+        
+        // Server-side validation
+        const errors = [];
+        if (!classification_name || classification_name.trim() === '') {
+            errors.push("Classification name is required");
+        } else if (!/^[a-zA-Z0-9]+$/.test(classification_name)) {
+            errors.push("Classification name cannot contain spaces or special characters");
+        }
+        
+        if (errors.length > 0) {
+            return res.render("inventory/add-classification", {
+                title: "Add Classification",
+                nav,
+                message: null,
+                errors
+            });
+        }
+        
+        // Add to database
+        const result = await invModel.addClass(classification_name);
+        
+        if (result.success) {
+            req.flash("success", "Classification added successfully!");
+            res.redirect("/inv/");
+        } else {
+            res.render("inventory/add-classification", {
+                title: "Add Classification",
+                nav,
+                message: { type: 'error', content: result.message || "Failed to add classification" },
+                errors: [result.message || "Failed to add classification"]
+            });
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
+/* ***************************
+ *  Build add inventory view
+ * ************************** */
+invCont.buildAddInventory = async (req, res, next) => {
+    try {
+        const nav = await utilities.getNav();
+        const classificationList = await utilities.buildClassificationList();
+        res.render("inventory/add-inventory", {
+            title: "Add Inventory",
+            nav,
+            classificationList,
+            message: req.flash() || null,
+            errors: null,
+            formData: null
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+/* ***************************
+ *  Process add inventory
+ * ************************** */
+invCont.addInventory = async (req, res, next) => {
+    try {
+        const formData = req.body;
+        const nav = await utilities.getNav();
+        const classificationList = await utilities.buildClassificationList(formData.classification_id);
+        
+        // Server-side validation
+        const errors = [];
+        if (!formData.classification_id) errors.push("Classification is required");
+        if (!formData.inv_make || formData.inv_make.trim() === '') errors.push("Make is required");
+        if (!formData.inv_model || formData.inv_model.trim() === '') errors.push("Model is required");
+        if (!formData.inv_year || formData.inv_year < 1900 || formData.inv_year > 2030) errors.push("Valid year is required (1900-2030)");
+        if (!formData.inv_description || formData.inv_description.trim() === '') errors.push("Description is required");
+        if (!formData.inv_price || formData.inv_price <= 0) errors.push("Valid price is required");
+        if (!formData.inv_miles || formData.inv_miles < 0) errors.push("Valid miles is required");
+        if (!formData.inv_color || formData.inv_color.trim() === '') errors.push("Color is required");
+        
+        if (errors.length > 0) {
+            return res.render("inventory/add-inventory", {
+                title: "Add Inventory",
+                nav,
+                classificationList,
+                message: null,
+                errors,
+                formData
+            });
+        }
+        
+        // Add to database
+        const result = await invModel.addInventory(formData);
+        
+        if (result.success) {
+            req.flash("success", "Inventory item added successfully!");
+            res.redirect("/inv/");
+        } else {
+            res.render("inventory/add-inventory", {
+                title: "Add Inventory",
+                nav,
+                classificationList,
+                message: { type: 'error', content: 'Failed to add inventory item' },
+                errors: ["Failed to add inventory item"],
+                formData
+            });
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
+/* ***************************
  *  Return Inventory by Classification As JSON
  * ************************** */
 invCont.getInventoryJSON = async (req, res, next) => {
-  const classification_id = parseInt(req.params.classification_id)
-  const invData = await invModel.getInventoryByClassificationId(classification_id)
-  if (invData[0].inv_id) {
-    return res.json(invData)
-  } else {
-    next(new Error("No data returned"))
+  try {
+    const classification_id = parseInt(req.params.classification_id)
+    const invData = await invModel.getInventoryByClassificationId(classification_id)
+    if (invData && invData.length > 0 && invData[0].inv_id) {
+      return res.json(invData)
+    } else {
+      res.status(404).json({ error: "No data returned" })
+    }
+  } catch (error) {
+    next(error)
   }
 }
-
 
 module.exports = invCont
