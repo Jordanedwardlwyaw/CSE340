@@ -7,25 +7,28 @@
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <header>
-        <%- include('../partials/header') %>
-    </header>
+    <%- include('../partials/header') %>
     
-    <main>
+    <main class="main-content">
         <h1><%= title %></h1>
         
-        <div class="account-management">
-            <h2>Account Management Options</h2>
-            <div class="management-links">
-                <a href="/account/login" class="btn">Login</a>
-                <a href="/account/register" class="btn">Register</a>
-                <a href="/account/update" class="btn">Update Account</a>
+        <div class="management-grid">
+            <!-- Add Classification Card -->
+            <div class="management-card">
+                <h2>Add Classification</h2>
+                <p>Create a new vehicle classification</p>
+                <a href="/inv/add-classification" class="btn btn-primary">Add Classification</a>
+            </div>
+            
+            <!-- Add Vehicle Card -->
+            <div class="management-card">
+                <h2>Add Vehicle</h2>
+                <p>Add a new vehicle to inventory</p>
+                <a href="/inv/add-inventory" class="btn btn-primary">Add Vehicle</a>
             </div>
         </div>
     </main>
     
-    <footer>
-        <%- include('../partials/footer') %>
-    </footer>
+    <%- include('../partials/footer') %>
 </body>
 </html>
