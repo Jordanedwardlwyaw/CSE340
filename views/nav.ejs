@@ -1,8 +1,16 @@
-<nav class="site-nav">
-  <ul>
-    <li><a href="/" class="active">Home</a></li>
-    <li><a href="#">Inventory</a></li>
-    <li><a href="#">Financing</a></li>
-    <li><a href="#">Contact</a></li>
-  </ul>
+<nav class="nav">
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/inv">Inventory Management</a></li>
+        <%
+        // This assumes you have a navList variable passed from the controller
+        if (typeof navList !== 'undefined' && navList) { 
+            navList.forEach(item => { 
+        %>
+            <li><a href="/inv/type/<%= item.classification_id %>"><%= item.classification_name %></a></li>
+        <% 
+            });
+        } 
+        %>
+    </ul>
 </nav>

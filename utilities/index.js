@@ -1,24 +1,19 @@
-const invModel = require("../models/inventory-model")
+const invModel = require("../models/inventory-model");
 
-const utilities = {}
+const Util = {};
 
-/* ****************************************
-*  Async error handler
-* *************************************** */
-utilities.handleErrors = fn => (req, res, next) => {
-  Promise.resolve(fn(req, res, next)).catch(next);
-};
-
-/* ***************************
- *  Build the navigation list
- * ************************** */
-utilities.getNav = async function () {
+/* ************************
+ * Constructs the nav HTML unordered list
+ ************************** */
+Util.getNav = async function () {
   try {
-    const data = await invModel.getClassifications()
-    let list = "<ul>"
-    list += '<li><a href="/" title="Home page">Home</a></li>'
+    let data = await invModel.getClassifications();
+    console.log(`🔄 Building nav with ${data.rows.length} classifications`);
+    
+    let list = "<ul>";
+    list += '<li><a href="/" title="Home page">Home</a></li>';
     data.rows.forEach((row) => {
-      list += "<li>"
+      list += "<li>";
       list +=
         '<a href="/inv/type/' +
         row.classification_id +
@@ -26,111 +21,52 @@ utilities.getNav = async function () {
         row.classification_name +
         ' vehicles">' +
         row.classification_name +
-        "</a>"
-      list += "</li>"
-    })
-    list += "</ul>"
-    return list
+        "</a>";
+      list += "</li>";
+    });
+    list += "</ul>";
+    return list;
   } catch (error) {
-    console.error("Error building navigation:", error)
-    return '<ul><li><a href="/" title="Home page">Home</a></li></ul>'
+    console.error("❌ Error building navigation:", error);
+    // Return fallback navigation
+    return `<ul>
+      <li><a href="/">Home</a></li>
+      <li><a href="/inv/add-classification">Add Classification</a></li>
+      <li><a href="#">SUV</a></li>
+      <li><a href="#">Sedan</a></li>
+      <li><a href="#">Truck</a></li>
+      <li><a href="#">Custom</a></li>
+    </ul>`;
   }
-}
-
-/* ***************************
- *  Build the classification view grid
- * ************************** */
-utilities.buildClassificationGrid = async function(data){
-  try {
-    let grid = ''
-    if(data.length > 0){
-      grid = '<ul id="inv-display">'
-      data.forEach(vehicle => { 
-        grid += '<li>'
-        grid +=  '<a href="../../inv/detail/' + vehicle.inv_id 
-        + '" title="View ' + vehicle.inv_make + ' ' + vehicle.inv_model 
-        + ' details"><img src="' + vehicle.inv_thumbnail
-        + '" alt="Image of ' + vehicle.inv_make + ' ' + vehicle.inv_model
-        + ' on CSE Motors" /></a>'
-        grid += '<div class="namePrice">'
-        grid += '<hr />'
-        grid += '<h2>'
-        grid += '<a href="../../inv/detail/' + vehicle.inv_id + '" title="View ' 
-        + vehicle.inv_make + ' ' + vehicle.inv_model + ' details">' 
-        + vehicle.inv_make + ' ' + vehicle.inv_model + '</a>'
-        grid += '</h2>'
-        grid += '<span>$' 
-        + new Intl.NumberFormat('en-US').format(vehicle.inv_price) + '</span>'
-        grid += '</div>'
-        grid += '</li>'
-      })
-      grid += '</ul>'
-    } else {
-      grid = '<p class="notice">Sorry, no matching vehicles could be found.</p>'
-    }
-    return grid
-  } catch (error) {
-    console.error("Error building classification grid:", error)
-    return '<p class="notice">Sorry, no matching vehicles could be found.</p>'
-  }
-}
-
-/* ***************************
- *  Build classification list for select dropdown
- * ************************** */
-utilities.buildClassificationList = async function (classification_id = null) {
-  try {
-    let data = await invModel.getClassifications()
-    let classificationList = '<select name="classification_id" id="classificationList" required>'
-    classificationList += "<option value=''>Choose a Classification</option>"
-    data.rows.forEach((row) => {
-      classificationList += '<option value="' + row.classification_id + '"'
-      if (classification_id != null && row.classification_id == classification_id) {
-        classificationList += " selected "
-      }
-      classificationList += ">" + row.classification_name + "</option>"
-    })
-    classificationList += "</select>"
-    return classificationList
-  } catch (error) {
-    console.error("Error building classification list:", error)
-    return '<select name="classification_id" id="classificationList" required><option value="">Error loading classifications</option></select>'
-  }
-}
-
-/* ***************************
- *  Build vehicle detail page
- * ************************** */
-utilities.buildVehiclePage = async function(data) {
-  try {
-    if (!data) return '<p>Vehicle details not available.</p>'
-    
-    let vehiclePage = '<section class="vehicle-details">'
-    vehiclePage += '<div class="vehicle-image">'
-    vehiclePage += '<img src="' + data.inv_image + '" alt="' + data.inv_make + ' ' + data.inv_model + '">'
-    vehiclePage += '</div>'
-    vehiclePage += '<div class="vehicle-info">'
-    vehiclePage += '<h2>' + data.inv_year + ' ' + data.inv_make + ' ' + data.inv_model + '</h2>'
-    vehiclePage += '<p class="price">$' + new Intl.NumberFormat('en-US').format(data.inv_price) + '</p>'
-    vehiclePage += '<p><strong>Description:</strong> ' + data.inv_description + '</p>'
-    vehiclePage += '<p><strong>Color:</strong> ' + data.inv_color + '</p>'
-    vehiclePage += '<p><strong>Miles:</strong> ' + new Intl.NumberFormat('en-US').format(data.inv_miles) + '</p>'
-    vehiclePage += '</div>'
-    vehiclePage += '</section>'
-    
-    return vehiclePage
-  } catch (error) {
-    console.error("Error building vehicle page:", error)
-    return '<p>Error loading vehicle details.</p>'
-  }
-}
-
-/* ****************************************
-*  Check JWT Token
-* *************************************** */
-utilities.checkJWTToken = (req, res, next) => {
-  // Add your JWT token checking logic here if needed
-  next();
 };
 
-module.exports = utilities;
+/* ************************
+ * Build classification list for select input
+ ************************** */
+Util.buildClassificationList = async function (classification_id = null) {
+  try {
+    let data = await invModel.getClassifications();
+    let classificationList = '<select name="classification_id" id="classificationList" required>';
+    classificationList += "<option value=''>Choose a Classification</option>";
+    data.rows.forEach((row) => {
+      classificationList += '<option value="' + row.classification_id + '"';
+      if (classification_id != null && row.classification_id == classification_id) {
+        classificationList += " selected ";
+      }
+      classificationList += ">" + row.classification_name + "</option>";
+    });
+    classificationList += "</select>";
+    return classificationList;
+  } catch (error) {
+    console.error("Error building classification list:", error);
+    return `<select name="classification_id" required>
+      <option value="">Choose a Classification</option>
+      <option value="1">SUV</option>
+      <option value="2">Sedan</option>
+      <option value="3">Truck</option>
+      <option value="4">Custom</option>
+    </select>`;
+  }
+};
+
+module.exports = Util;

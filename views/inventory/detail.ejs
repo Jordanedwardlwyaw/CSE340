@@ -1,3 +1,48 @@
-<div id="vehicle-detail">
-    <%- vehicleHTML %> 
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head', {title}) %>
+</head>
+<body>
+    <header>
+        <%- include('../partials/header', {nav}) %>
+    </header>
+    
+    <main>
+        <div class="main-content">
+            <h1>Vehicle Details</h1>
+            
+            <div class="vehicle-detail-container">
+                <div class="vehicle-image-section">
+                    <img src="/images/vehicles/sample.jpg" alt="<%= vehicle.name %>" class="car-image">
+                </div>
+                
+                <div class="vehicle-info-section">
+                    <h2><%= vehicle.name %></h2>
+                    <div class="vehicle-specs">
+                        <p><strong>Price:</strong> <%= vehicle.price %></p>
+                        <p><strong>Year:</strong> <%= vehicle.year %></p>
+                        <p><strong>Color:</strong> <%= vehicle.color %></p>
+                        <p><strong>Mileage:</strong> <%= vehicle.mileage %></p>
+                        <p><strong>Description:</strong> <%= vehicle.description %></p>
+                        <% if (vehicle.features && vehicle.features.length > 0) { %>
+                            <p><strong>Features:</strong> <%= vehicle.features.join(', ') %></p>
+                        <% } %>
+                    </div>
+                    
+                    <button class="own-button" style="margin-top: 20px;">Contact Us About This Vehicle</button>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="javascript:history.back()" class="own-button">Back to Inventory</a>
+                <a href="/inv" style="margin-left: 10px;" class="own-button">Management</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <%- include('../partials/footer') %>
+    </footer>
+</body>
+</html>

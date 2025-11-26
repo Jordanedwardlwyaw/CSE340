@@ -3,19 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %> - CSE 340</title>
+    <title><%= title %> - CSE Motors</title>
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
     <header>
         <%- include('../partials/header') %>
     </header>
+    
     <main>
         <h1><%= title %></h1>
-        <%- messages() %>
-        <p>Account management functionality coming soon...</p>
-        <a href="/" class="btn">Return to Home</a>
+        
+        <div class="account-management">
+            <h2>Account Management Options</h2>
+            <div class="management-links">
+                <a href="/account/login" class="btn">Login</a>
+                <a href="/account/register" class="btn">Register</a>
+                <a href="/account/update" class="btn">Update Account</a>
+            </div>
+        </div>
     </main>
+    
     <footer>
         <%- include('../partials/footer') %>
     </footer>

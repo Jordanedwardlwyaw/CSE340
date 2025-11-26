@@ -1,6 +1,30 @@
-<h1><%= title %></h1>
-  <p><%- message %></p>
-  <div class="fun-message">
-    <p>Oops, something went wrong! But hey, every error is an opportunity to learn... or laugh! 😄</p>
-    
-  </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head', {title}) %>
+    <link rel="stylesheet" href="/public/css/styles.css">
+</head>
+<body>
+    <header>
+        <%- include('../partials/header') %>
+    </header>
+    <main>
+        <div class="container">
+            <section class="error-section">
+                <h1><%= title %></h1>
+                <p class="error-message"><%= message %></p>
+                
+                <div class="quote">
+                    Oops, something went wrong! But hey, every error is an opportunity to learn... or laugh!
+                </div>
+                
+                <a href="/" class="button">Return to Homepage</a>
+                <a href="javascript:history.back()" class="button secondary">Go Back</a>
+            </section>
+        </div>
+    </main>
+    <footer>
+        <%- include('../partials/footer') %>
+    </footer>
+</body>
+</html>

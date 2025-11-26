@@ -1,8 +1,10 @@
-    <% const d = new Date()
-    let year = d.getFullYear() %>
-    <footer>
-        <p><a href="/account/tickets">Create Ticket</a></p>
-        <p><a href="/">Go back to safety!</a></p>
-        <p class="copyright">&copy; <%= year %>, CSE 340 App</p>
-    </footer>
-</div>
+<footer class="footer">
+    <p>&copy; 2025 CSE Motors</p>
+    <div class="datetime">
+        <script>
+            // Simple client-side date/time display
+            const now = new Date();
+            document.write(now.toLocaleString());
+        </script>
+    </div>
+</footer>

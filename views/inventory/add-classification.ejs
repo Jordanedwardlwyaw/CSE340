@@ -1,19 +1,62 @@
-<!-- Content Heading -->
-<% if (title) { %>
-    <h1><%= title %></h1>
-    <% } else {
-      res.redirect('/')
-    } %>
-  
-  <!-- Message Block -->
-  <%- messages() %>
-  
-  <form id="add-class-form" action="/inv/add-classification" method="post" class="form-container">
-    <h2>Add Classification</h2>
-  
-    <label for="classification">Classification Name</label>
-    <div>(Must be only alphabetic characters and 3 or more characters)</div>
-    <input type="text" id="add-class" name="classification_name" placeholder="Enter classification name" pattern="[A-Za-z]+" required>
-    
-    <button type="submit">Add Classification</button>
-  </form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Classification - CSE Motors</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Welcome to CSE Motors!</h1>
+            <a href="/account">My Account</a>
+        </header>
+        
+        <%- include('../partials/navigation') %>
+        
+        <main class="main-content">
+            <h1>Add New Classification</h1>
+            
+            <div class="flash-messages">
+                <% if (message) { %>
+                    <div class="flash-message <%= message.type %>">
+                        <%= message.message %>
+                    </div>
+                <% } %>
+            </div>
+            
+            <% if (errors && errors.length > 0) { %>
+                <div class="errors">
+                    <ul>
+                        <% errors.forEach(error => { %>
+                            <li><%= error %></li>
+                        <% }) %>
+                    </ul>
+                </div>
+            <% } %>
+            
+            <div class="form-container">
+                <form action="/inv/add-classification" method="post">
+                    <label for="classification_name">Classification Name:</label>
+                    <input 
+                        type="text" 
+                        id="classification_name" 
+                        name="classification_name" 
+                        required 
+                        pattern="^[a-zA-Z0-9]+$"
+                        title="Classification name cannot contain spaces or special characters"
+                    >
+                    <p class="form-note">Note: Classification name cannot contain spaces or special characters</p>
+                    
+                    <button type="submit">Add Classification</button>
+                </form>
+                
+                <a href="/inv/">Back to Management</a>
+            </div>
+        </main>
+        
+        <%- include('../partials/footer') %>
+    </div>
+</body>
+</html>

@@ -1,443 +1,692 @@
-/* ===== RESET & BASE STYLES ===== */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+/******* Change Box Model ***************/
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
 }
 
 body {
-    font-family: 'Arial', sans-serif;
-    line-height: 1.6;
-    color: #333;
-    background-color: #f8f9fa;
-}
-
-#wrapper {
+    font-family: Arial, sans-serif;
+    background: url('/images/site/small_check.jpg') repeat;
+    margin: 0;
+    padding: 20px;
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
 }
 
-/* ===== HEADER STYLES ===== */
-header {
-    background: linear-gradient(135deg, #2c3e50, #34495e);
-    color: white;
-    padding: 1rem 0;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
-.header {
+.container {
+    background-color: white;
+    border: 4px solid #00a9e0;
+    border-radius: 10px;
+    width: 95%;
     max-width: 1200px;
+    padding: 25px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
     margin: 0 auto;
-    padding: 0 2rem;
+}
+
+/********** Header **********/
+.header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    padding: 15px 0;
+    border-bottom: 2px solid #00a9e0;
+    margin-bottom: 25px;
 }
 
 .header h1 {
-    font-size: 2.5rem;
+    font-size: 2rem;
+    color: #333;
+    margin: 0;
     font-weight: bold;
-    color: #ecf0f1;
 }
 
 .header a {
-    color: #ecf0f1;
+    color: #00a9e0;
+    font-size: 1rem;
     text-decoration: none;
-    padding: 0.5rem 1rem;
-    border: 2px solid #ecf0f1;
+    font-weight: bold;
+    padding: 8px 16px;
+    border: 2px solid #00a9e0;
     border-radius: 5px;
     transition: all 0.3s ease;
 }
 
 .header a:hover {
-    background-color: #ecf0f1;
-    color: #2c3e50;
+    background-color: #00a9e0;
+    color: white;
 }
 
-/* ===== NAVIGATION STYLES ===== */
-nav {
-    background-color: #34495e;
-    border-bottom: 3px solid #2980b9;
-}
-
-nav ul {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 2rem;
-    list-style: none;
+/********* Navigation **********/
+.nav ul {
+    background: linear-gradient(135deg, #333 0%, #555 100%);
+    color: white;
     display: flex;
-    gap: 2rem;
+    justify-content: space-around;
+    padding: 15px;
+    flex-wrap: wrap;
+    list-style-type: none;
+    margin: 0 0 30px 0;
+    border-radius: 8px;
 }
 
-nav ul li a {
-    color: #ecf0f1;
+.nav a {
+    color: white;
     text-decoration: none;
-    padding: 1rem 0;
-    display: block;
-    font-weight: 500;
-    transition: color 0.3s ease;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.nav a:hover {
+    background-color: #00a9e0;
+    color: white;
+    transform: translateY(-2px);
+}
+
+/********** Main content **********/
+.main-content {
+    padding: 20px;
+}
+
+.main-content h1 {
+    font-size: 2.5rem;
+    color: #333;
+    text-align: center;
+    margin-bottom: 30px;
+    border-bottom: 3px solid #00a9e0;
+    padding-bottom: 15px;
+}
+
+.main-content h2 {
+    font-size: 2rem;
+    color: #007bbd;
+    margin: 25px 0 15px 0;
+}
+
+/********** Hero Section **********/
+.car-info {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    margin: 40px 0;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 30px;
+    border-radius: 10px;
+    border: 2px solid #00a9e0;
     position: relative;
 }
 
-nav ul li a:hover {
-    color: #3498db;
+.car-image {
+    width: 55%;
+    border-radius: 10px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
-nav ul li a::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0;
-    height: 3px;
-    background-color: #3498db;
-    transition: width 0.3s ease;
-}
-
-nav ul li a:hover::after {
-    width: 100%;
-}
-
-/* ===== MAIN CONTENT STYLES ===== */
-main {
+.car-info-overlay {
     flex: 1;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
-    width: 100%;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 25px;
+    border-radius: 8px;
+    border-left: 4px solid #00a9e0;
 }
 
-h1 {
-    color: #2c3e50;
-    margin-bottom: 1.5rem;
-    font-size: 2.5rem;
-    border-bottom: 3px solid #3498db;
-    padding-bottom: 0.5rem;
+.car-info-overlay h3 {
+    color: #007bbd;
+    font-size: 1.8rem;
+    margin-bottom: 20px;
 }
 
-h2 {
-    color: #34495e;
-    margin: 1.5rem 0 1rem 0;
+.car-info-overlay p {
+    color: #555;
+    font-size: 1.1rem;
+    margin: 12px 0;
+    padding-left: 20px;
+    position: relative;
+}
+
+.car-info-overlay p:before {
+    content: "✓";
+    color: #00a9e0;
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+}
+
+/********** Content Sections **********/
+.content-sections {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin: 40px 0;
+}
+
+/********** Upgrades Section **********/
+.upgrades {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    border: 2px solid #00a9e0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.upgrades h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 25px;
     font-size: 1.8rem;
 }
 
-/* ===== MANAGEMENT STYLES ===== */
-.management-links {
+.upgrade-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    margin: 2rem 0;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
 }
 
-.management-links .btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-    background: linear-gradient(135deg, #3498db, #2980b9);
-    color: white;
-    text-decoration: none;
-    border-radius: 10px;
-    font-size: 1.3rem;
-    font-weight: bold;
+.upgrade-item {
     text-align: center;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
-    border: none;
-    cursor: pointer;
+    border: 1px solid #e9ecef;
 }
 
-.management-links .btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
-    background: linear-gradient(135deg, #2980b9, #21618c);
+.upgrade-item:hover {
+    transform: translateY(-5px);
+    background: white;
+    box-shadow: 0 4px 8px rgba(0, 169, 224, 0.2);
 }
 
-/* ===== FORM STYLES ===== */
-.form-group {
-    margin-bottom: 1.5rem;
+.upgrade-item img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid #00a9e0;
+    padding: 5px;
+    background: white;
+    margin-bottom: 10px;
 }
 
-.form-group label {
+.upgrade-item a {
     display: block;
-    margin-bottom: 0.5rem;
+    color: #007bbd;
+    text-decoration: none;
     font-weight: bold;
-    color: #2c3e50;
-    font-size: 1.1rem;
+    margin-top: 10px;
+    transition: color 0.3s ease;
 }
 
-.form-group input,
-.form-group select,
-.form-group textarea {
+.upgrade-item a:hover {
+    color: #00a9e0;
+    text-decoration: underline;
+}
+
+/********** Reviews Section **********/
+.reviews {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    border: 2px solid #00a9e0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.reviews h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 25px;
+    font-size: 1.8rem;
+}
+
+.reviews-list p {
+    background: #f8f9fa;
+    padding: 15px;
+    margin: 12px 0;
+    border-radius: 8px;
+    border-left: 4px solid #00a9e0;
+    font-style: italic;
+    line-height: 1.5;
+}
+
+.rating {
+    color: #ffc107;
+    font-weight: bold;
+}
+
+/********** Button Styling **********/
+.own-button {
+    display: inline-block;
+    background: linear-gradient(135deg, #00a9e0 0%, #007bbd 100%);
+    color: white;
+    padding: 12px 25px;
+    text-decoration: none;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    margin-top: 15px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.own-button:hover {
+    background: linear-gradient(135deg, #007bbd 0%, #005a87 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    color: white;
+}
+
+/********** Form Styles **********/
+.form-container {
+    background: white;
+    border: 2px solid #00a9e0;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+    max-width: 600px;
+}
+
+.form-container h1 {
+    margin-bottom: 25px;
+    color: #333;
+    text-align: center;
+}
+
+.form-container label {
+    display: block;
+    text-align: left;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+.form-container input,
+.form-container select,
+.form-container textarea {
     width: 100%;
-    max-width: 500px;
-    padding: 0.75rem;
-    border: 2px solid #bdc3c7;
-    border-radius: 5px;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
     font-size: 1rem;
     transition: border-color 0.3s ease;
 }
 
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
+.form-container input:focus,
+.form-container select:focus,
+.form-container textarea:focus {
+    border-color: #00a9e0;
     outline: none;
-    border-color: #3498db;
-    box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
 }
 
-.form-group textarea {
-    min-height: 120px;
-    resize: vertical;
-}
-
-.form-group small {
-    color: #7f8c8d;
-    font-style: italic;
-    display: block;
-    margin-top: 0.25rem;
-}
-
-/* ===== BUTTON STYLES ===== */
-button[type="submit"],
-.btn-primary {
-    background: linear-gradient(135deg, #27ae60, #229954);
+.form-container button {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, #00a9e0 0%, #007bbd 100%);
     color: white;
-    padding: 0.75rem 2rem;
     border: none;
-    border-radius: 5px;
-    font-size: 1.1rem;
-    font-weight: bold;
+    border-radius: 6px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
-}
-
-button[type="submit"]:hover,
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
-    background: linear-gradient(135deg, #229954, #1e8449);
-}
-
-/* ===== FLASH MESSAGE STYLES ===== */
-.flash-message {
-    padding: 1rem 1.5rem;
-    margin: 1.5rem 0;
-    border-radius: 5px;
     font-weight: bold;
-    border-left: 5px solid;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+}
+
+.form-container button:hover {
+    background: linear-gradient(135deg, #007bbd 0%, #005a87 100%);
+    transform: translateY(-2px);
+}
+
+.form-container a {
+    color: #00a9e0;
+    text-decoration: none;
+    font-size: 14px;
+    display: block;
+    text-align: center;
+    margin-top: 15px;
+}
+
+.form-container a:hover {
+    text-decoration: underline;
+}
+
+/********** Flash Messages **********/
+.flash-messages {
+    margin: 1rem 0;
+}
+
+.flash-message {
+    padding: 1rem;
+    margin: 0.5rem 0;
+    border-radius: 6px;
+    border: 1px solid;
+    font-weight: bold;
 }
 
 .flash-message.success {
     background-color: #d4edda;
-    border-color: #28a745;
+    border-color: #c3e6cb;
     color: #155724;
 }
 
 .flash-message.error {
     background-color: #f8d7da;
-    border-color: #dc3545;
+    border-color: #f5c6cb;
     color: #721c24;
 }
 
-/* ===== ERROR MESSAGE STYLES ===== */
-.error-messages {
+.flash-message.info {
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+    color: #0c5460;
+}
+
+/********** Errors **********/
+.errors {
     background-color: #f8d7da;
     border: 1px solid #f5c6cb;
     color: #721c24;
-    padding: 1rem 1.5rem;
-    border-radius: 5px;
-    margin: 1.5rem 0;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 6px;
 }
 
-.error-messages ul {
+.errors ul {
     margin: 0;
     padding-left: 1.5rem;
 }
 
-.error-messages li {
-    margin-bottom: 0.5rem;
+/********** Management Styles **********/
+.management-links {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    margin: 40px 0;
 }
 
-/* ===== INVENTORY GRID STYLES ===== */
-#inv-display {
+.management-option {
+    background: white;
+    border: 2px solid #00a9e0;
+    border-radius: 10px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.management-option:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.management-option h2 {
+    color: #333;
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+}
+
+.management-option p {
+    color: #666;
+    margin-bottom: 25px;
+    font-size: 1.1rem;
+    line-height: 1.5;
+}
+
+.form-note {
+    font-size: 0.9rem;
+    color: #7f8c8d;
+    font-style: italic;
+    margin: 5px 0 15px 0;
+}
+
+/********** Inventory Grid **********/
+.inventory-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 2rem;
-    list-style: none;
-    padding: 0;
+    gap: 25px;
+    margin: 30px 0;
 }
 
-#inv-display li {
+.inventory-item {
     background: white;
+    border: 2px solid #00a9e0;
     border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
 }
 
-#inv-display li:hover {
+.inventory-item:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
-#inv-display img {
+.inventory-item img {
     width: 100%;
-    height: 200px;
+    height: 180px;
     object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 15px;
 }
 
-.namePrice {
-    padding: 1rem;
-}
-
-.namePrice h2 {
-    margin: 0 0 0.5rem 0;
+.inventory-item h3 {
+    color: #333;
+    margin: 10px 0;
     font-size: 1.3rem;
 }
 
-.namePrice h2 a {
-    color: #2c3e50;
-    text-decoration: none;
+.inventory-item p {
+    color: #666;
+    margin: 8px 0;
+    font-size: 1rem;
 }
 
-.namePrice h2 a:hover {
-    color: #3498db;
+/********** Vehicle Detail **********/
+.vehicle-detail-container {
+    display: flex;
+    gap: 40px;
+    margin: 30px 0;
+    align-items: flex-start;
 }
 
-.namePrice span {
-    font-size: 1.4rem;
-    font-weight: bold;
-    color: #27ae60;
+.vehicle-image-section {
+    flex: 1;
 }
 
-.namePrice hr {
-    border: none;
-    border-top: 2px solid #ecf0f1;
-    margin: 0.5rem 0;
-}
-
-/* ===== VEHICLE DETAIL STYLES ===== */
-.vehicle-details {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 3rem;
-    background: white;
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-}
-
-.vehicle-image img {
+.vehicle-image-section img {
     width: 100%;
-    height: 400px;
-    object-fit: cover;
     border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.vehicle-info h2 {
-    color: #2c3e50;
+.vehicle-info-section {
+    flex: 1;
+}
+
+.vehicle-info-section h2 {
+    color: #007bbd;
+    margin-bottom: 20px;
     font-size: 2rem;
-    margin-bottom: 1rem;
 }
 
-.price {
-    font-size: 2rem;
-    color: #27ae60;
-    font-weight: bold;
-    margin-bottom: 1rem;
+.vehicle-specs {
+    background: #f8f9fa;
+    padding: 25px;
+    border-radius: 8px;
+    border-left: 4px solid #00a9e0;
 }
 
-.vehicle-info p {
-    margin-bottom: 1rem;
+.vehicle-specs p {
+    margin: 12px 0;
     font-size: 1.1rem;
+    line-height: 1.6;
 }
 
-.vehicle-info strong {
-    color: #2c3e50;
+.vehicle-specs strong {
+    color: #333;
+    min-width: 100px;
+    display: inline-block;
 }
 
-/* ===== FOOTER STYLES ===== */
-footer {
-    background-color: #2c3e50;
-    color: #ecf0f1;
+/********** Footer **********/
+.footer {
     text-align: center;
-    padding: 2rem;
-    margin-top: auto;
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 2px solid #00a9e0;
 }
 
-footer p {
-    margin: 0.5rem 0;
+.datetime {
+    margin-top: 10px;
+    color: #888;
 }
 
-/* ===== UTILITY CLASSES ===== */
-.no-vehicles {
-    text-align: center;
-    padding: 3rem;
-    background: white;
-    border-radius: 10px;
-    font-size: 1.2rem;
-    color: #7f8c8d;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+/********** Table Styles **********/
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    margin: 20px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.notice {
-    text-align: center;
-    padding: 2rem;
-    background: #fff3cd;
-    border: 1px solid #ffeaa7;
-    border-radius: 5px;
-    color: #856404;
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 12px;
 }
 
-/* ===== RESPONSIVE DESIGN ===== */
-@media (max-width: 768px) {
-    .header {
-        flex-direction: column;
-        gap: 1rem;
-        text-align: center;
+th {
+    background-color: #00a9e0;
+    color: white;
+    font-weight: bold;
+}
+
+/********** Responsive Design **********/
+@media screen and (max-width: 768px) {
+    body {
+        padding: 10px;
     }
     
-    nav ul {
+    .container {
+        width: 98%;
+        padding: 15px;
+    }
+    
+    .header {
         flex-direction: column;
-        gap: 0;
+        text-align: center;
+        gap: 15px;
+    }
+    
+    .nav ul {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .car-info {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+    }
+    
+    .car-image {
+        width: 100%;
+    }
+    
+    .content-sections {
+        grid-template-columns: 1fr;
+    }
+    
+    .upgrade-grid {
+        grid-template-columns: 1fr;
     }
     
     .management-links {
         grid-template-columns: 1fr;
     }
     
-    .vehicle-details {
+    .inventory-grid {
         grid-template-columns: 1fr;
-        gap: 2rem;
     }
     
-    main {
-        padding: 1rem;
+    .vehicle-detail-container {
+        flex-direction: column;
     }
     
-    .header h1 {
-        font-size: 2rem;
-    }
-    
-    h1 {
-        font-size: 2rem;
+    .vehicle-image-section,
+    .vehicle-info-section {
+        flex: none;
+        width: 100%;
     }
 }
 
-@media (max-width: 480px) {
-    .header h1 {
-        font-size: 1.5rem;
+/* Media Queries for larger screens */
+@media screen and (min-width: 769px) {
+    .container {
+        width: 95%;
+        max-width: 1200px;
+    }
+
+    .header {
+        flex-direction: row;
+    }
+
+    .car-image {
+        margin-left: 0;
+    }
+
+    .car-info-overlay {
+        margin-left: 0;
+    }
+
+    .content-sections {
+        flex-direction: row;
+        width: 100%;
+    }
+
+    .upgrades {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .reviews {
+        width: 45%;
+    }
+
+    .upgrade-item img {
+        padding-inline-start: 0;
+        padding-inline-end: 0;
+    }
+
+    .upgrades h1 {
+        font-size: 1.8rem;
+        margin-bottom: 25px;
+    }
+
+    .upgrades .upgrade-item a {
+        font-size: 1rem;
+    }
+
+    #inv-display{
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        list-style-type: none;
     }
     
-    h1 {
-        font-size: 1.5rem;
+    .vehicle-info {
+        display: flex;
+        align-items: center;
     }
     
-    .management-links .btn {
-        padding: 1.5rem;
-        font-size: 1.1rem;
+    .vehicle-details {
+        margin-left: 10px;
     }
 }

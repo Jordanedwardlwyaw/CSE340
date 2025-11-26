@@ -1,16 +1,16 @@
-<header>
-    <div class="header">
-      <h1>CSE Motors</h1>
-      
-      <!-- Provide default values if variables are undefined -->
-      <% if (typeof loggedIn !== 'undefined' && loggedIn) { %>
-        <a href="/account/account">Manage Account</a>
-        <% if (typeof accountType !== 'undefined' && (accountType === 'Employee' || accountType === 'Admin')) { %>
-          <a href="/inv">Inventory Management</a>
+<div class="header">
+    <h1>Welcome to CSE Motors!</h1>
+    <a href="/account/login">My Account</a>
+</div>
+
+<nav class="nav">
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/inv">Inventory Management</a></li>
+        <% if (typeof nav !== 'undefined') { %>
+            <% nav.forEach(item => { %>
+                <li><a href="/inv/type/<%= item.classification_id %>"><%= item.classification_name %></a></li>
+            <% }); %>
         <% } %>
-        <a href="/account/logout">Logout</a>
-      <% } else { %>
-        <a href="/account/login">My Account</a>
-      <% } %>
-    </div>
-</header>
+    </ul>
+</nav>

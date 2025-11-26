@@ -1,28 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %> - CSE 340</title>
-    <link rel="stylesheet" href="/css/styles.css">
-</head>
-<body>
-    <header>
-        <%- include('../partials/header') %>
-    </header>
-    <main>
-        <h1><%= title %></h1>
-        
-        <!-- Flash Message Display -->
-        <%- messages() %>
-
-        <div class="management-links">
-            <a href="/inv/add-classification" class="btn">Add New Classification</a>
-            <a href="/inv/add-inventory" class="btn">Add New Inventory Item</a>
-        </div>
-    </main>
-    <footer>
-        <%- include('../partials/footer') %>
-    </footer>
-</body>
-</html>
+<!-- This should be in your management.ejs -->
+<div class="management-options">
+    <div class="option-card">
+        <h3>Add Classification</h3>
+        <p>Create a new vehicle classification</p>
+        <!-- Make sure this link is correct -->
+        <a href="/inv/add-classification" class="btn">Add Classification</a>
+    </div>
+    
+    <div class="option-card">
+        <h3>Add Vehicle</h3>
+        <p>Add a new vehicle to inventory</p>
+        <a href="/inv/add-inventory" class="btn">Add Vehicle</a>
+    </div>
+</div>

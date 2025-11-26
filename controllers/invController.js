@@ -8,11 +8,8 @@ const invCont = {}
  * ************************** */
 invCont.buildManagement = async (req, res, next) => {
     try {
-        const nav = await utilities.getNav();
         res.render("inventory/management", {
-            title: "Inventory Management",
-            nav,
-            message: req.flash() || null
+            title: "Vehicle Management"
         });
     } catch (error) {
         next(error);
@@ -26,13 +23,9 @@ invCont.buildByClassificationId = async function (req, res, next) {
   try {
     const classification_id = req.params.classificationId;
     const data = await invModel.getInventoryByClassificationId(classification_id);
-    const nav = await utilities.getNav();
 
-    // Check if we have any vehicles for this classification
     if (!data || data.length === 0) {
       let className = "Unknown";
-      
-      // Try to get the classification name
       try {
         const classifications = await invModel.getClassifications();
         const classification = classifications.rows.find(c => c.classification_id == classification_id);
@@ -45,9 +38,7 @@ invCont.buildByClassificationId = async function (req, res, next) {
 
       return res.render("./inventory/classification", {
         title: `${className} Vehicles`,
-        nav,
-        grid: '<p class="no-vehicles">No vehicles found in this classification.</p>',
-        errors: null,
+        grid: '<p class="notice">Sorry, no matching vehicles could be found.</p>',
       });
     }
 
@@ -55,9 +46,7 @@ invCont.buildByClassificationId = async function (req, res, next) {
     const className = data[0].classification_name;
     res.render("./inventory/classification", {
       title: `${className} Vehicles`,
-      nav,
       grid,
-      errors: null,
     });
   } catch (error) {
     next(error);
@@ -79,13 +68,10 @@ invCont.buildByInvId = async function (req, res, next) {
     }
 
     const vehicleTemplate = await utilities.buildVehiclePage(data);
-    const nav = await utilities.getNav();
     const vehicleName = `${data.inv_year} ${data.inv_make} ${data.inv_model}`;
     res.render("./inventory/vehicle", {
       title: vehicleName,
-      nav,
       vehicleTemplate,
-      errors: null,
     });
   } catch (error) {
     next(error);
@@ -97,11 +83,8 @@ invCont.buildByInvId = async function (req, res, next) {
  * ************************** */
 invCont.buildAddClassification = async (req, res, next) => {
     try {
-        const nav = await utilities.getNav();
         res.render("inventory/add-classification", {
             title: "Add Classification",
-            nav,
-            message: req.flash() || null,
             errors: null
         });
     } catch (error) {
@@ -115,7 +98,6 @@ invCont.buildAddClassification = async (req, res, next) => {
 invCont.addClassification = async (req, res, next) => {
     try {
         const { classification_name } = req.body;
-        const nav = await utilities.getNav();
         
         // Server-side validation
         const errors = [];
@@ -128,8 +110,6 @@ invCont.addClassification = async (req, res, next) => {
         if (errors.length > 0) {
             return res.render("inventory/add-classification", {
                 title: "Add Classification",
-                nav,
-                message: null,
                 errors
             });
         }
@@ -138,13 +118,12 @@ invCont.addClassification = async (req, res, next) => {
         const result = await invModel.addClass(classification_name);
         
         if (result.success) {
-            req.flash("success", "Classification added successfully!");
+            // Set success message
+            req.session.messages = [{ type: 'success', content: "Classification added successfully!" }];
             res.redirect("/inv/");
         } else {
             res.render("inventory/add-classification", {
                 title: "Add Classification",
-                nav,
-                message: { type: 'error', content: result.message || "Failed to add classification" },
                 errors: [result.message || "Failed to add classification"]
             });
         }
@@ -158,13 +137,10 @@ invCont.addClassification = async (req, res, next) => {
  * ************************** */
 invCont.buildAddInventory = async (req, res, next) => {
     try {
-        const nav = await utilities.getNav();
         const classificationList = await utilities.buildClassificationList();
         res.render("inventory/add-inventory", {
             title: "Add Inventory",
-            nav,
             classificationList,
-            message: req.flash() || null,
             errors: null,
             formData: null
         });
@@ -179,7 +155,6 @@ invCont.buildAddInventory = async (req, res, next) => {
 invCont.addInventory = async (req, res, next) => {
     try {
         const formData = req.body;
-        const nav = await utilities.getNav();
         const classificationList = await utilities.buildClassificationList(formData.classification_id);
         
         // Server-side validation
@@ -196,9 +171,7 @@ invCont.addInventory = async (req, res, next) => {
         if (errors.length > 0) {
             return res.render("inventory/add-inventory", {
                 title: "Add Inventory",
-                nav,
                 classificationList,
-                message: null,
                 errors,
                 formData
             });
@@ -208,15 +181,14 @@ invCont.addInventory = async (req, res, next) => {
         const result = await invModel.addInventory(formData);
         
         if (result.success) {
-            req.flash("success", "Inventory item added successfully!");
+            // Set success message
+            req.session.messages = [{ type: 'success', content: "Vehicle added successfully!" }];
             res.redirect("/inv/");
         } else {
             res.render("inventory/add-inventory", {
                 title: "Add Inventory",
-                nav,
                 classificationList,
-                message: { type: 'error', content: 'Failed to add inventory item' },
-                errors: ["Failed to add inventory item"],
+                errors: ["Failed to add vehicle"],
                 formData
             });
         }

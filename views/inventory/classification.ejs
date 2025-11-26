@@ -1,9 +1,50 @@
-<% if (title) { %>
-    <h1><%= title %></h1>
-    <% } else {
-    res.redirect('/')
-} %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head', {title}) %>
+</head>
+<body>
+    <header>
+        <%- include('../partials/header', {nav}) %>
+    </header>
+    
+    <main>
+        <div class="main-content">
+            <h1><%= classificationName %> Vehicles</h1>
+            
+            <!-- Flash Messages -->
+            <% if (messages && messages.success) { %>
+                <div class="flash-message success">
+                    <%= messages.success %>
+                </div>
+            <% } %>
+            <% if (messages && messages.error) { %>
+                <div class="flash-message error">
+                    <%= messages.error %>
+                </div>
+            <% } %>
 
-<%# messages() %>
+            <div class="inventory-grid">
+                <% vehicles.forEach(function(vehicle, index) { %>
+                    <div class="inventory-item">
+                        <img src="<%= vehicle.image %>" alt="<%= vehicle.name %>" class="car-image" onerror="this.src='/images/vehicles/no-image.png'">
+                        <h3><%= vehicle.name %></h3>
+                        <p><strong>Year:</strong> <%= vehicle.year %></p>
+                        <p><strong>Price:</strong> <%= vehicle.price %></p>
+                        <p><strong>Color:</strong> <%= vehicle.color %></p>
+                        <a href="/inv/detail/<%= vehicle.id %>" class="own-button">View Details</a>
+                    </div>
+                <% }); %>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="/inv" class="own-button">Back to Management</a>
+            </div>
+        </div>
+    </main>
 
-<%- grid %>
+    <footer>
+        <%- include('../partials/footer') %>
+    </footer>
+</body>
+</html>
