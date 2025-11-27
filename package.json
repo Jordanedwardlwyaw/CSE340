@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "build": "npm install"
   },
   "engines": {
     "node": ">=18.0.0",
@@ -24,5 +25,5 @@
   "devDependencies": {
     "nodemon": "3.0.1"
   },
-  "packageManager": "npm@8.19.2"
+  "packageManager": "npm@9.8.1"
 }
