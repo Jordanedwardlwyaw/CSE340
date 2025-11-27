@@ -7,6 +7,10 @@
     "start": "node server.js",
     "dev": "nodemon server.js"
   },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
   "dependencies": {
     "body-parser": "1.20.2",
     "connect-flash": "0.1.1",
