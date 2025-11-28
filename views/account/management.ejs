@@ -12,21 +12,43 @@
     <main class="main-content">
         <h1><%= title %></h1>
         
-        <div class="management-grid">
-            <!-- Add Classification Card -->
-            <div class="management-card">
-                <h2>Add Classification</h2>
-                <p>Create a new vehicle classification</p>
-                <a href="/inv/add-classification" class="btn btn-primary">Add Classification</a>
+        <!-- Flash Messages -->
+        <% if (messages && messages.success) { %>
+            <div class="flash-message success">
+                <%= messages.success %>
             </div>
-            
-            <!-- Add Vehicle Card -->
-            <div class="management-card">
-                <h2>Add Vehicle</h2>
-                <p>Add a new vehicle to inventory</p>
-                <a href="/inv/add-inventory" class="btn btn-primary">Add Vehicle</a>
+        <% } %>
+        <% if (messages && messages.error) { %>
+            <div class="flash-message error">
+                <%= messages.error %>
             </div>
-        </div>
+        <% } %>
+
+        <!-- Check if user is authorized (Employee or Admin) -->
+        <% if (res.locals.loggedin && (res.locals.accountData.account_type === 'Employee' || res.locals.accountData.account_type === 'Admin')) { %>
+            <div class="management-grid">
+                <!-- Add Classification Card -->
+                <div class="management-card">
+                    <h2>Add Classification</h2>
+                    <p>Create a new vehicle classification</p>
+                    <a href="/inv/add-classification" class="btn btn-primary">Add Classification</a>
+                </div>
+                
+                <!-- Add Vehicle Card -->
+                <div class="management-card">
+                    <h2>Add Vehicle</h2>
+                    <p>Add a new vehicle to inventory</p>
+                    <a href="/inv/add-inventory" class="btn btn-primary">Add Vehicle</a>
+                </div>
+            </div>
+        <% } else { %>
+            <!-- Show unauthorized message -->
+            <div class="unauthorized-message">
+                <h2>Access Denied</h2>
+                <p>You must be an Employee or Administrator to access inventory management features.</p>
+                <p>Please <a href="/account/login">log in</a> with an authorized account.</p>
+            </div>
+        <% } %>
     </main>
     
     <%- include('../partials/footer') %>

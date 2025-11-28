@@ -884,4 +884,69 @@ th {
 
 .btn-primary:hover {
     background-color: #0056b3;
+}/* Add to your styles.css */
+.unauthorized-message {
+    text-align: center;
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+    padding: 30px;
+    border-radius: 8px;
+    margin: 40px 0;
+}
+
+.unauthorized-message h2 {
+    color: #721c24;
+    margin-bottom: 15px;
+}
+
+.unauthorized-message a {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+.management-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin: 40px 0;
+}
+
+.management-card {
+    background: white;
+    border: 2px solid #00a9e0;
+    border-radius: 10px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.management-card:hover {
+    transform: translateY(-5px);
+}
+
+.management-card h2 {
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.management-card p {
+    color: #666;
+    margin-bottom: 25px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 12px 25px;
+    background: #00a9e0;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background 0.3s ease;
+}
+
+.btn:hover {
+    background: #007bbd;
 }

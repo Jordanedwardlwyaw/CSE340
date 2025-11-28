@@ -1,19 +1,17 @@
 const express = require("express");
-const router = express.Router();
+const router = new express.Router();
 const invController = require("../controllers/invController");
+const { requireAuth } = require("../middleware/auth");
 
-// Management view
-router.get("/", invController.buildManagement);
+// Apply auth middleware to ALL inventory management routes
+router.get("/", requireAuth, invController.buildManagement);
+router.get("/add-classification", requireAuth, invController.buildAddClassification);
+router.get("/add-inventory", requireAuth, invController.buildAddInventory);
+router.post("/add-classification", requireAuth, invController.addClassification);
+router.post("/add-inventory", requireAuth, invController.addInventory);
 
-// ADD THESE ROUTES - THEY ARE MISSING!
-router.get("/add-classification", invController.buildAddClassification);
-router.post("/add-classification", invController.addClassification);
-
-router.get("/add-inventory", invController.buildAddInventory);
-router.post("/add-inventory", invController.addInventory);
-
-// Your existing routes...
+// Public routes (no auth required) - these should remain accessible to all visitors
 router.get("/type/:classificationId", invController.buildByClassificationId);
-router.get("/detail/:invId", invController.buildByInvId);
+router.get("/detail/:inventoryId", invController.buildByInventoryId);
 
 module.exports = router;
