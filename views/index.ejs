@@ -1,90 +1,534 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <%- include('partials/head', {title}) %>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title || 'Home - CSE Motors' %></title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #fff;
+        }
+        
+        /* Header */
+        .site-header {
+            background: #2c3e50;
+            color: white;
+            padding: 15px 20px;
+            border-bottom: 3px solid #e74c3c;
+        }
+        
+        .site-title {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin: 0;
+        }
+        
+        /* Navigation */
+        .main-nav {
+            background: #34495e;
+            padding: 0;
+        }
+        
+        .nav-list {
+            display: flex;
+            list-style: none;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .nav-item {
+            flex: 1;
+            text-align: center;
+            border-right: 1px solid #2c3e50;
+        }
+        
+        .nav-item:last-child {
+            border-right: none;
+        }
+        
+        .nav-btn {
+            display: block;
+            padding: 12px 5px;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.3s;
+            border: none;
+            background: none;
+            width: 100%;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .nav-btn:hover,
+        .nav-btn.active {
+            background-color: #e74c3c;
+        }
+        
+        /* Main Content */
+        main {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        /* Welcome Section */
+        .welcome-section {
+            text-align: center;
+            padding: 20px 0;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+        
+        .welcome-title {
+            font-size: 24px;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .welcome-subtitle {
+            font-size: 16px;
+            color: #7f8c8d;
+        }
+        
+        /* Delorean Section */
+        .delorean-section {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 2px solid #e74c3c;
+            text-align: center;
+        }
+        
+        .delorean-image {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto 20px;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .delorean-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .delorean-section h2 {
+            color: #2c3e50;
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .vehicle-features {
+            margin: 15px 0;
+            text-align: left;
+            display: inline-block;
+        }
+        
+        .vehicle-features p {
+            padding: 8px 0;
+            font-size: 16px;
+            position: relative;
+            padding-left: 25px;
+        }
+        
+        .vehicle-features p:before {
+            content: "✓";
+            color: #27ae60;
+            position: absolute;
+            left: 0;
+            font-size: 18px;
+        }
+        
+        .own-btn {
+            display: block;
+            width: 100%;
+            max-width: 200px;
+            background-color: #e74c3c;
+            color: white;
+            padding: 12px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 16px;
+            margin: 20px auto 0;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .own-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        /* Reviews Section */
+        .reviews-section {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 2px solid #3498db;
+        }
+        
+        .reviews-section h2 {
+            color: #2c3e50;
+            font-size: 20px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .review-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .review {
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .review p {
+            font-style: italic;
+            color: #2c3e50;
+            font-size: 14px;
+        }
+        
+        /* Upgrades Section */
+        .upgrades-section {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 2px solid #2ecc71;
+        }
+        
+        .upgrades-section h2 {
+            color: #2c3e50;
+            font-size: 20px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .upgrade-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .upgrade-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        
+        .upgrade-image {
+            height: 80px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .upgrade-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
+        .upgrade-item h3 {
+            color: #2c3e50;
+            font-size: 16px;
+            margin: 0;
+        }
+        
+        /* Footer */
+        .site-footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-top: 30px;
+            border-top: 3px solid #e74c3c;
+        }
+        
+        .footer-text {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-list {
+                flex-direction: column;
+            }
+            
+            .nav-item {
+                border-right: none;
+                border-bottom: 1px solid #2c3e50;
+            }
+            
+            .nav-item:last-child {
+                border-bottom: none;
+            }
+            
+            .nav-btn {
+                padding: 15px;
+            }
+            
+            .upgrade-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (min-width: 769px) {
+            main {
+                padding: 30px;
+            }
+            
+            .delorean-section,
+            .reviews-section,
+            .upgrades-section {
+                padding: 30px;
+            }
+            
+            .upgrade-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .delorean-section {
+                display: flex;
+                align-items: center;
+                gap: 30px;
+                text-align: left;
+            }
+            
+            .delorean-image {
+                flex: 1;
+                margin: 0;
+            }
+            
+            .delorean-content {
+                flex: 1;
+            }
+            
+            .own-btn {
+                margin: 20px 0 0;
+            }
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <%- include('partials/header') %>
+    <!-- Header -->
+    <header class="site-header">
+        <h1 class="site-title">CSE Motors</h1>
     </header>
-    
-    <main>
-        <div class="main-content">
-            <h1>Welcome to CSE Motors!</h1>
-            
-            <!-- Flash Messages -->
-            <% if (messages && messages.success) { %>
-                <div class="flash-message success">
-                    <%= messages.success %>
-                </div>
-            <% } %>
-            <% if (messages && messages.error) { %>
-                <div class="flash-message error">
-                    <% if (Array.isArray(messages.error)) { %>
-                        <ul>
-                            <% messages.error.forEach(function(message) { %>
-                                <li><%= message %></li>
-                            <% }); %>
-                        </ul>
-                    <% } else { %>
-                        <%= messages.error %>
-                    <% } %>
-                </div>
-            <% } %>
 
-            <div class="car-info">
-                <div class="car-info-overlay">
-                    <h3>DMC Delorean</h3>
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/" class="nav-btn active">Home</a></li>
+            <li class="nav-item"><a href="/inv/type/1" class="nav-btn">Custom</a></li>
+            <li class="nav-item"><a href="/inv/type/4" class="nav-btn">Sedan</a></li>
+            <li class="nav-item"><a href="/inv/type/2" class="nav-btn">SUV</a></li>
+            <li class="nav-item"><a href="/inv/type/3" class="nav-btn">Truck</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Welcome Section -->
+        <section class="welcome-section">
+            <h2 class="welcome-title">Welcome to CSE Motors!</h2>
+            <p class="welcome-subtitle">Your premier destination for quality vehicles</p>
+        </section>
+
+        <!-- Delorean Section -->
+        <section class="delorean-section">
+            <div class="delorean-image">
+                <!-- Use your actual Delorean image file -->
+                <img src="/images/vehicles/delorean.jpg" 
+                     alt="DMC Delorean"
+                     onerror="this.onerror=null; this.src='https://via.placeholder.com/400x250/2c3e50/ffffff?text=DMC+Delorean'; this.alt='Delorean Placeholder';">
+            </div>
+            <div class="delorean-content">
+                <h2>DMC Delorean</h2>
+                <div class="vehicle-features">
                     <p>3 Cup holders</p>
                     <p>Superman doors</p>
                     <p>Fuzzy dice!</p>
-                    <button class="own-button">Own Today</button>
                 </div>
-                <img src="/images/vehicles/delorean.jpg" alt="DMC Delorean" class="car-image">
+                <a href="/inv/detail/1" class="own-btn">Own Today</a>
             </div>
-        </div>
+        </section>
 
-        <!-- Delorean Upgrades and Reviews -->
-        <div class="content-sections">
-            <!-- Delorean Upgrades -->    
-            <div class="upgrades">
-                <h2>Delorean Upgrades</h2>
-                <div class="upgrade-grid">
-                    <div class="upgrade-item">
-                        <img src="/images/upgrades/flux-cap.png" alt="Flux Capacitor">
-                        <a href="#">Flux Capacitor</a>
-                    </div>
-                    <div class="upgrade-item">
-                        <img src="/images/upgrades/flame.jpg" alt="Flame Decals">
-                        <a href="#">Flame Decals</a>
-                    </div>
-                    <div class="upgrade-item">
-                        <img src="/images/upgrades/bumper_sticker.jpg" alt="Bumper Stickers">
-                        <a href="#">Bumper Stickers</a>
-                    </div>
-                    <div class="upgrade-item">
-                        <img src="/images/upgrades/hub-cap.jpg" alt="Hub Caps">
-                        <a href="#">Hub Caps</a>
-                    </div>
+        <!-- Reviews Section -->
+        <section class="reviews-section">
+            <h2>DMC Delorean Reviews</h2>
+            <div class="review-list">
+                <div class="review">
+                    <p>"So fast it's almost like traveling in time." (4/5)</p>
+                </div>
+                <div class="review">
+                    <p>"Coolest ride on the road." (4/5)</p>
+                </div>
+                <div class="review">
+                    <p>"I'm feeling McFly!" (5/5)</p>
+                </div>
+                <div class="review">
+                    <p>"The most futuristic ride of our day." (4.5/5)</p>
+                </div>
+                <div class="review">
+                    <p>"80's livin and I love it!" (5/5)</p>
                 </div>
             </div>
+        </section>
 
-            <!-- DMC Delorean Reviews -->      
-            <div class="reviews">
-                <h2>DMC Delorean Reviews</h2>
-                <div class="reviews-list">
-                    <p>"So fast it's almost like traveling in time." <span class="rating">(4/5)</span></p>
-                    <p>"Coolest ride on the road." <span class="rating">(4/5)</span></p>
-                    <p>"I'm feeling McFly!" <span class="rating">(5/5)</span></p>
-                    <p>"The most futuristic ride of our day." <span class="rating">(4.5/5)</span></p>
-                    <p>"80's livin and I love it!" <span class="rating">(5/5)</span></p>
+        <!-- Upgrades Section -->
+        <section class="upgrades-section">
+            <h2>Delorean Upgrades</h2>
+            <div class="upgrade-grid">
+                <div class="upgrade-item">
+                    <div class="upgrade-image">
+                        <!-- Use your actual Flux Capacitor image -->
+                        <img src="/images/vehicles/upgrades/flux-cap.png" 
+                             alt="Flux Capacitor"
+                             onerror="this.onerror=null; this.src='https://via.placeholder.com/150x100/3498db/ffffff?text=Flux+Capacitor'; this.alt='Flux Capacitor Placeholder';">
+                    </div>
+                    <h3>Flux Capacitor</h3>
+                </div>
+                <div class="upgrade-item">
+                    <div class="upgrade-image">
+                        <!-- Use your actual Flame Decals image -->
+                        <img src="/images/vehicles/upgrades/flame.jpg" 
+                             alt="Flame Decals"
+                             onerror="this.onerror=null; this.src='https://via.placeholder.com/150x100/e74c3c/ffffff?text=Flame+Decals'; this.alt='Flame Decals Placeholder';">
+                    </div>
+                    <h3>Flame Decals</h3>
+                </div>
+                <div class="upgrade-item">
+                    <div class="upgrade-image">
+                        <!-- Use your actual Bumper Stickers image -->
+                        <img src="/images/vehicles/upgrades/bumper_sticker.jpg" 
+                             alt="Bumper Stickers"
+                             onerror="this.onerror=null; this.src='https://via.placeholder.com/150x100/2ecc71/ffffff?text=Bumper+Stickers'; this.alt='Bumper Stickers Placeholder';">
+                    </div>
+                    <h3>Bumper Stickers</h3>
+                </div>
+                <div class="upgrade-item">
+                    <div class="upgrade-image">
+                        <!-- Use your actual Hub Caps image -->
+                        <img src="/images/vehicles/upgrades/hub-cap.jpg" 
+                             alt="Hub Caps"
+                             onerror="this.onerror=null; this.src='https://via.placeholder.com/150x100/9b59b6/ffffff?text=Hub+Caps'; this.alt='Hub Caps Placeholder';">
+                    </div>
+                    <h3>Hub Caps</h3>
                 </div>
             </div>
-        </div>
+        </section>
     </main>
 
-    <footer>
-        <%- include('partials/footer') %>
+    <!-- Footer -->
+    <footer class="site-footer">
+        <p class="footer-text">© 2023, CSE 340 App</p>
     </footer>
+
+    <script>
+        // Navigation active state
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPath = window.location.pathname;
+            const navButtons = document.querySelectorAll('.nav-btn');
+            
+            // Remove active class from all buttons
+            navButtons.forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Add active class based on current URL
+            navButtons.forEach(btn => {
+                const btnHref = btn.getAttribute('href');
+                
+                // Exact match for home
+                if (btnHref === '/' && currentPath === '/') {
+                    btn.classList.add('active');
+                }
+                
+                // Match for classification pages
+                if (currentPath.startsWith('/inv/type/')) {
+                    const currentId = currentPath.split('/').pop();
+                    const btnId = btnHref.split('/').pop();
+                    if (currentId === btnId) {
+                        btn.classList.add('active');
+                    }
+                }
+            });
+            
+            // Handle image loading errors - Try multiple paths
+            const images = document.querySelectorAll('img');
+            images.forEach(img => {
+                img.onerror = function() {
+                    console.log(`Image failed to load: ${this.src}`);
+                    
+                    // Try alternative paths based on the original src
+                    const originalSrc = this.getAttribute('src');
+                    const altText = this.getAttribute('alt') || 'Image';
+                    
+                    // Try different path variations
+                    const pathVariations = [
+                        originalSrc, // Original
+                        originalSrc.replace('/images/', '/public/images/'), // With public
+                        originalSrc.replace('vehicles/upgrades/', 'upgrades/'), // Different folder
+                        originalSrc.replace('vehicles/', ''), // Root images folder
+                        `https://via.placeholder.com/400x250/2c3e50/ffffff?text=${encodeURIComponent(altText)}`
+                    ];
+                    
+                    let currentIndex = 0;
+                    const tryNextPath = () => {
+                        if (currentIndex < pathVariations.length) {
+                            this.src = pathVariations[currentIndex];
+                            currentIndex++;
+                        }
+                    };
+                    
+                    // Remove the current error handler and set new one
+                    this.onerror = tryNextPath;
+                    tryNextPath();
+                };
+            });
+            
+            // Debug info
+            console.log('=== CSE Motors Homepage ===');
+            console.log('Using LOCAL image files from your project folder');
+            console.log('Image paths being tried:');
+            console.log('1. /images/vehicles/delorean.jpg');
+            console.log('2. /images/vehicles/upgrades/flux-cap.png');
+            console.log('3. /images/vehicles/upgrades/flame.jpg');
+            console.log('4. /images/vehicles/upgrades/bumper_sticker.jpg');
+            console.log('5. /images/vehicles/upgrades/hub-cap.jpg');
+            console.log('Current path:', currentPath);
+        });
+    </script>
 </body>
 </html>

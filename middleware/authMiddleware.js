@@ -1,26 +1,22 @@
-const jwt = require('jsonwebtoken');
+// Static files
+app.use(express.static(path.join(__dirname, "public")));
 
-function checkAdminOrEmployee(req, res, next) {
-    const token = req.headers['authorization']?.split(' ')[1]; // Extract token from headers
+// ADD THIS MIDDLEWARE - Make nav available to all views
+app.use((req, res, next) => {
+  res.locals.nav = [
+    { classification_name: "Classic", classification_id: 1 },
+    { classification_name: "Sports", classification_id: 2 },
+    { classification_name: "SUV", classification_id: 3 },
+    { classification_name: "Truck", classification_id: 4 },
+    { classification_name: "Used", classification_id: 5 }
+  ];
+  next();
+});
 
-    if (!token) {
-        return res.redirect('/account/login?message=Access denied. Please log in.'); // Redirect if no token
-    }
-
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
-        if (err) {
-            return res.redirect('/account/login?message=Invalid token. Please log in.'); // Redirect on token error
-        }
-
-        const accountType = decoded.account_type; // Assuming account_type is in the token payload
-
-        if (accountType === 'Employee' || accountType === 'Admin') {
-            next(); // Allow access to the route
-        } else {
-            return res.redirect('/account/login?message=Access denied. Insufficient permissions.'); // Redirect on permission failure
-        }
-    });
-}
-
-// Export the middleware
-module.exports = checkAdminOrEmployee;
+// Routes
+app.get("/", (req, res) => {
+  res.render("index", {
+    title: "CSE Motors - Home"
+    // Remove nav from here since it's now in res.locals
+  });
+});

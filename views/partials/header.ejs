@@ -1,23 +1,18 @@
-<div class="header">
-    <h1>Welcome to CSE Motors!</h1>
-    <div class="account-links">
-        <% if (res.locals.loggedin) { %>
-            <a href="/account" class="welcome-link">Welcome <%= res.locals.accountData.account_firstname %></a>
-            <a href="/logout">Logout</a>
-        <% } else { %>
-            <a href="/account/login">My Account</a>
-        <% } %>
-    </div>
-</div>
 
-<nav class="nav">
-    <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/inv">Inventory Management</a></li>
-        <% if (typeof nav !== 'undefined') { %>
-            <% nav.forEach(item => { %>
-                <li><a href="/inv/type/<%= item.classification_id %>"><%= item.classification_name %></a></li>
-            <% }); %>
-        <% } %>
-    </ul>
-</nav>
+<header>
+    <div class="container">
+        <div class="logo">
+            <h1>CSE Motors</h1>
+            <p>CSE340 Assignment 3</p>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/inv/type/1">Sports Cars</a></li>
+                <li><a href="/inv/type/2">SUVs</a></li>
+                <li><a href="/inv/type/3">Trucks</a></li>
+                <li><a href="/inv/detail/1">Delorean Details</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>

@@ -1,8 +1,16 @@
 const express = require("express");
 const router = express.Router();
-const staticController = require("../controllers/staticController");
+const utilities = require("../utilities/");
 
-// Home page route
-router.get("/", staticController.buildHome);
+// Home route
+router.get("/", utilities.handleErrors(async (req, res, next) => {
+  const nav = await utilities.getNav();
+  res.render("index", {
+    title: "CSE Motors",
+    nav,
+    message: null,
+    errors: null
+  });
+}));
 
 module.exports = router;

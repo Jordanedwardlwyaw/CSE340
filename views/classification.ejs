@@ -1,67 +1,260 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <%- include('../partials/head', {title}) %>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .page-title {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #3498db;
+        }
+        .classification-description {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 18px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .vehicles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        .vehicle-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .vehicle-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        .vehicle-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 3px solid #3498db;
+        }
+        .vehicle-info {
+            padding: 20px;
+        }
+        .vehicle-name {
+            font-size: 20px;
+            color: #2c3e50;
+            margin: 0 0 10px 0;
+        }
+        .vehicle-year {
+            color: #7f8c8d;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        .vehicle-price {
+            color: #e74c3c;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .vehicle-description {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        .vehicle-specs {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #555;
+        }
+        .view-details {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: background 0.3s;
+            width: 100%;
+            text-align: center;
+        }
+        .view-details:hover {
+            background: #2980b9;
+        }
+        .back-link {
+            text-align: center;
+            margin-top: 40px;
+        }
+        .navigation {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        .nav-btn {
+            padding: 10px 20px;
+            background: #2c3e50;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .nav-btn:hover {
+            background: #3498db;
+        }
+        .active-classification {
+            background: #3498db;
+        }
+        .no-vehicles {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        .no-vehicles h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <%- include('../partials/header', {nav}) %>
-    </header>
-    
-    <main>
-        <div class="main-content">
-            <h1><%= classificationName %> Vehicles</h1>
+    <div class="container">
+        <!-- Navigation -->
+        <div class="navigation">
+            <a href="/" class="nav-btn">🏠 Home</a>
             
-            <!-- Flash Messages -->
-            <% if (messages && messages.success) { %>
-                <div class="flash-message success">
-                    <%= messages.success %>
-                </div>
-            <% } %>
-            <% if (messages && messages.error) { %>
-                <div class="flash-message error">
-                    <%= messages.error %>
-                </div>
-            <% } %>
-
-            <div class="inventory-grid">
-                <!-- Sample vehicles -->
-                <div class="inventory-item">
-                    <img src="/images/vehicles/escalade-tn.jpg" alt="Vehicle Image" class="car-image">
-                    <h3>Sample <%= classificationName %> Car 1</h3>
-                    <p><strong>Year:</strong> 2023</p>
-                    <p><strong>Price:</strong> $25,999</p>
-                    <p><strong>Color:</strong> Red</p>
-                    <a href="/inv/detail/1" class="own-button">View Details</a>
-                </div>
+            <!-- MANUAL ACTIVE CLASS CHECKING -->
+            <%
+                let class1 = '';
+                let class4 = '';
+                let class2 = '';
+                let class3 = '';
                 
-                <div class="inventory-item">
-                    <img src="/images/vehicles/adventador.jpg" alt="Vehicle Image" class="car-image">
-                    <h3>Sample <%= classificationName %> Car 2</h3>
-                    <p><strong>Year:</strong> 2024</p>
-                    <p><strong>Price:</strong> $32,500</p>
-                    <p><strong>Color:</strong> Blue</p>
-                    <a href="/inv/detail/2" class="own-button">View Details</a>
-                </div>
-                
-                <div class="inventory-item">
-                    <img src="/images/vehicles/aerocar.jpg" alt="Vehicle Image" class="car-image">
-                    <h3>Sample <%= classificationName %> Car 3</h3>
-                    <p><strong>Year:</strong> 2022</p>
-                    <p><strong>Price:</strong> $28,750</p>
-                    <p><strong>Color:</strong> Black</p>
-                    <a href="/inv/detail/3" class="own-button">View Details</a>
-                </div>
-            </div>
+                if (currentClassificationId === 1) {
+                    class1 = 'active-classification';
+                }
+                if (currentClassificationId === 4) {
+                    class4 = 'active-classification';
+                }
+                if (currentClassificationId === 2) {
+                    class2 = 'active-classification';
+                }
+                if (currentClassificationId === 3) {
+                    class3 = 'active-classification';
+                }
+            %>
             
-            <div style="text-align: center; margin-top: 30px;">
-                <a href="/inv" class="own-button">Back to Management</a>
-            </div>
+            <a href="/inv/type/1" class="nav-btn <%= class1 %>">🚗 Classic Cars</a>
+            <a href="/inv/type/4" class="nav-btn <%= class4 %>">🚙 Sedans</a>
+            <a href="/inv/type/2" class="nav-btn <%= class2 %>">🚙 SUVs</a>
+            <a href="/inv/type/3" class="nav-btn <%= class3 %>">🚚 Trucks</a>
         </div>
-    </main>
-
-    <footer>
-        <%- include('../partials/footer') %>
-    </footer>
+        
+        <h1 class="page-title"><%= classificationName %></h1>
+        
+        <%
+            let descriptionText = 'Browse our selection of quality vehicles';
+            if (classificationDescription) {
+                descriptionText = classificationDescription;
+            } else if (classifications && currentClassificationId) {
+                for (let i = 0; i < classifications.length; i++) {
+                    if (classifications[i].id === currentClassificationId) {
+                        descriptionText = classifications[i].description;
+                        break;
+                    }
+                }
+            }
+        %>
+        
+        <p class="classification-description">
+            <%= descriptionText %>
+        </p>
+        
+        <% if (vehicles && vehicles.length > 0) { %>
+            <div class="vehicles-grid">
+                <% for (let i = 0; i < vehicles.length; i++) { 
+                    const vehicle = vehicles[i];
+                    // Create placeholder text safely
+                    const vehicleText = vehicle.make + ' ' + vehicle.model;
+                    const safeText = encodeURIComponent(vehicleText);
+                %>
+                    <div class="vehicle-card">
+                        <img src="<%= vehicle.image %>" 
+                             alt="<%= vehicle.year %> <%= vehicle.make %> <%= vehicle.model %>" 
+                             class="vehicle-image"
+                             onerror="this.onerror=null; this.src='https://via.placeholder.com/400x300?text=<%= safeText %>'">
+                        <div class="vehicle-info">
+                            <h3 class="vehicle-name"><%= vehicle.make %> <%= vehicle.model %></h3>
+                            <div class="vehicle-year">Year: <%= vehicle.year %></div>
+                            <div class="vehicle-price">$<%= vehicle.price.toLocaleString() %></div>
+                            
+                            <div class="vehicle-specs">
+                                <span>Mileage: <%= vehicle.miles.toLocaleString() %> mi</span>
+                                <span>Color: <%= vehicle.color %></span>
+                            </div>
+                            
+                            <p class="vehicle-description"><%= vehicle.description %></p>
+                            <a href="/inv/detail/<%= vehicle.id %>" class="view-details">View Details & Pricing</a>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+        <% } else { %>
+            <div class="no-vehicles">
+                <h3>No vehicles found in this classification</h3>
+                <p>Please check back later or browse our other categories.</p>
+                <a href="/" class="view-details" style="max-width: 200px; margin: 20px auto;">Return to Home</a>
+            </div>
+        <% } %>
+        
+        <div class="back-link">
+            <a href="/" class="nav-btn">← Back to Home</a>
+        </div>
+    </div>
+    
+    <script>
+        // Image fallback handler
+        function handleImageError(img) {
+            img.onerror = null;
+            const altText = img.alt || 'Vehicle Image';
+            const shortText = altText.substring(0, 30);
+            img.src = 'https://via.placeholder.com/400x300?text=' + encodeURIComponent(shortText);
+        }
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Page loaded:', '<%= classificationName %>');
+            
+            // Set up image error handlers
+            const images = document.querySelectorAll('img');
+            images.forEach(img => {
+                img.addEventListener('error', function() {
+                    handleImageError(this);
+                });
+            });
+        });
+    </script>
 </body>
 </html>
