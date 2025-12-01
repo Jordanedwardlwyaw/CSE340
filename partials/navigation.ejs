@@ -1,3 +1,9 @@
-<nav class="nav">
-  <%- nav %>
+<nav class="main-nav">
+    <ul class="nav-list">
+        <li class="nav-item"><a href="/" class="nav-btn <%= currentPath === '/' ? 'active' : '' %>">Home</a></li>
+        <li class="nav-item"><a href="/inv/type/1" class="nav-btn <%= currentClassificationId === 1 ? 'active' : '' %>">Custom</a></li>
+        <li class="nav-item"><a href="/inv/type/4" class="nav-btn <%= currentClassificationId === 4 ? 'active' : '' %>">Sedan</a></li>
+        <li class="nav-item"><a href="/inv/type/2" class="nav-btn <%= currentClassificationId === 2 ? 'active' : '' %>">SUV</a></li>
+        <li class="nav-item"><a href="/inv/type/3" class="nav-btn <%= currentClassificationId === 3 ? 'active' : '' %>">Truck</a></li>
+    </ul>
 </nav>

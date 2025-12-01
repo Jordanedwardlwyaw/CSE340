@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div id="logo">
+                <img src="/images/site/logo.jpg" alt="CSE Motors Logo">
+            </div>
+            <div class="header-links">
+                <a href="/account/login">My Account</a>
+            </div>
+        </div>
+
+        <nav class="nav">
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/inv">Inventory Management</a></li>
+                <li><a href="/inv/type/1">Classic</a></li>
+                <li><a href="/inv/type/2">Sports</a></li>
+                <li><a href="/inv/type/3">SUV</a></li>
+                <li><a href="/inv/type/4">Truck</a></li>
+                <li><a href="/inv/type/5">Used</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <div class="main-content">
+                <h1>Vehicle Management - CSE Motors</h1>
+                
+                <div class="alert alert-warning">
+                    <h2>Access Denied</h2>
+                    <p><%= message %></p>
+                </div>
+                
+                <div class="action-buttons" style="text-align: center; margin-top: 30px;">
+                    <a href="/account/login" class="btn btn-primary">Login</a>
+                    <a href="/" class="btn btn-secondary">Return Home</a>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2025 CSE Motors</p>
+            <p class="datetime"><%= new Date().toLocaleString() %></p>
+        </footer>
+    </div>
+</body>
+</html>

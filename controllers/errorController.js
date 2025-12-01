@@ -1,14 +1,7 @@
 const errorController = {};
 
-/* ***************************
- *  Create 500 Error
- * ************************** */
 errorController.triggerError = async function (req, res, next) {
-  try {
-    throw new Error("This is an intentional 500 error.");
-  } catch (error) {
-    next(error);
-  }
+  throw new Error("Intentional 500 Error - Testing error handling middleware for Assignment 3");
 };
 
 module.exports = errorController;

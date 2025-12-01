@@ -6,7 +6,7 @@ const requireAuth = (req, res, next) => {
   if (!process.env.ACCESS_TOKEN_SECRET) {
     console.error('❌ ACCESS_TOKEN_SECRET environment variable is missing');
     return res.status(500).render("errors/error", {
-      title: "Server Error - CSE Motors",
+      title: "Server Configuration Error - CSE Motors",
       message: "Server configuration error. Please try again later."
     });
   }
@@ -39,6 +39,12 @@ const requireAuth = (req, res, next) => {
 
 // Optional: Add a less restrictive auth for general users
 const requireAnyAuth = (req, res, next) => {
+  // Check if ACCESS_TOKEN_SECRET is set
+  if (!process.env.ACCESS_TOKEN_SECRET) {
+    res.locals.loggedin = 0;
+    return next();
+  }
+
   const token = req.cookies.jwt;
   
   if (token) {

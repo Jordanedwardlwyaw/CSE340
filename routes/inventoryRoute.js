@@ -1,17 +1,19 @@
 const express = require("express");
-const router = new express.Router();
-const invController = require("../controllers/invController");
-const { requireAuth } = require("../middleware/auth");
+const router = express.Router();
+const inventoryController = require("../controllers/inventoryController");
+const utilities = require("../utilities/");
 
-// Apply auth middleware to ALL inventory management routes
-router.get("/", requireAuth, invController.buildManagement);
-router.get("/add-classification", requireAuth, invController.buildAddClassification);
-router.get("/add-inventory", requireAuth, invController.buildAddInventory);
-router.post("/add-classification", requireAuth, invController.addClassification);
-router.post("/add-inventory", requireAuth, invController.addInventory);
+// Route to build inventory by classification view - accepts both ID and name
+router.get("/type/:classification", utilities.handleErrors(inventoryController.buildByClassification));
 
-// Public routes (no auth required) - these should remain accessible to all visitors
-router.get("/type/:classificationId", invController.buildByClassificationId);
-router.get("/detail/:inventoryId", invController.buildByInventoryId);
+// Route to build vehicle detail view
+router.get("/detail/:invId", utilities.handleErrors(inventoryController.buildByInventoryId));
+
+// Route to trigger 500 error for assignment
+router.get("/trigger-error", (req, res, next) => {
+  const error = new Error("Intentional 500 Error - Testing Error Handling");
+  error.status = 500;
+  next(error);
+});
 
 module.exports = router;

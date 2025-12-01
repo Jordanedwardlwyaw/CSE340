@@ -1,381 +1,354 @@
 const express = require("express");
-const app = express();
 const path = require("path");
-const session = require("express-session");
-const flash = require("connect-flash");
 
-// Basic middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+const app = express();
+const port = process.env.PORT || 5500;
 
-// Session middleware
-app.use(session({
-  secret: process.env.SESSION_SECRET || "cse340-secret-key",
-  resave: false,
-  saveUninitialized: true,
-  name: 'sessionId'
-}));
-
-// Flash messages
-app.use(flash());
-app.use((req, res, next) => {
-  res.locals.messages = req.flash();
-  next();
-});
-
-// View engine setup
+// Set view engine
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 // Static files
 app.use(express.static(path.join(__dirname, "public")));
 
-// Mock data for navigation
-const mockNavData = [
-  { classification_name: "Classic", classification_id: 1 },
-  { classification_name: "Sports", classification_id: 2 },
-  { classification_name: "SUV", classification_id: 3 },
-  { classification_name: "Truck", classification_id: 4 },
-  { classification_name: "Used", classification_id: 5 }
+// ========== ALL VEHICLE DATA WITH PROPER CLASSIFICATION IMAGES ==========
+const vehicles = [
+  // ===== CLASSIC CARS (ID 1) - ONLY CLASSIC CAR IMAGES =====
+  { 
+    id: 1, 
+    make: "DMC", 
+    model: "Delorean", 
+    year: 1982, 
+    price: 85000, 
+    miles: 12500, 
+    color: "Stainless Steel", 
+    description: "The iconic time-traveling sports car with gull-wing doors. Made famous by Back to the Future movies.", 
+    image: "https://images.unsplash.com/photo-1519241047957-be3d40d3c197?w=800&auto=format&fit=crop&q=80", // Classic Delorean
+    thumbnail: "https://images.unsplash.com/photo-1519241047957-be3d40d3c197?w=400&auto=format&fit=crop&q=80", 
+    classification_id: 1 
+  },
+  { 
+    id: 2, 
+    make: "Chevrolet", 
+    model: "Bel Air", 
+    year: 1957, 
+    price: 95000, 
+    miles: 45000, 
+    color: "Turquoise & White", 
+    description: "Iconic American classic with chrome details and vintage styling.", 
+    image: "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=800&auto=format&fit=crop&q=80", // Classic Bel Air
+    thumbnail: "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400&auto=format&fit=crop&q=80", 
+    classification_id: 1 
+  },
+  { 
+    id: 3, 
+    make: "Ford", 
+    model: "Mustang", 
+    year: 1967, 
+    price: 75000, 
+    miles: 62000, 
+    color: "Ruby Red", 
+    description: "First generation Mustang with original V8 engine, fully restored.", 
+    image: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&auto=format&fit=crop&q=80", // Classic Mustang
+    thumbnail: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=400&auto=format&fit=crop&q=80", 
+    classification_id: 1 
+  },
+  { 
+    id: 19, 
+    make: "Porsche", 
+    model: "911 (930)", 
+    year: 1978, 
+    price: 185000, 
+    miles: 38500, 
+    color: "Guards Red", 
+    description: "Classic Porsche 911 Turbo with iconic whale tail spoiler.", 
+    image: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&auto=format&fit=crop&q=80", // Classic Porsche 911
+    thumbnail: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=400&auto=format&fit=crop&q=80", 
+    classification_id: 1 
+  },
+  
+  // ===== SUVs (ID 2) - ONLY SUV IMAGES =====
+  { 
+    id: 7, 
+    make: "Jeep", 
+    model: "Wrangler Rubicon", 
+    year: 2023, 
+    price: 52800, 
+    miles: 12500, 
+    color: "Sting Gray", 
+    description: "Off-road capable SUV with 4x4 system, rock-trac transfer case, and fox performance shocks.", 
+    image: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=800&auto=format&fit=crop&q=80", // Jeep Wrangler SUV
+    thumbnail: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=400&auto=format&fit=crop&q=80", 
+    classification_id: 2 
+  },
+  { 
+    id: 8, 
+    make: "Cadillac", 
+    model: "Escalade", 
+    year: 2023, 
+    price: 96800, 
+    miles: 8000, 
+    color: "Crystal White", 
+    description: "Full-size luxury SUV with premium leather interior and advanced safety features.", 
+    image: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=800&auto=format&fit=crop&q=80", // Cadillac SUV
+    thumbnail: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=400&auto=format&fit=crop&q=80", 
+    classification_id: 2 
+  },
+  { 
+    id: 9, 
+    make: "Toyota", 
+    model: "Highlander", 
+    year: 2023, 
+    price: 42500, 
+    miles: 10500, 
+    color: "Blueprint", 
+    description: "Midsize SUV with 3-row seating and excellent safety ratings.", 
+    image: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=800&auto=format&fit=crop&q=80", // Toyota SUV
+    thumbnail: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=400&auto=format&fit=crop&q=80", 
+    classification_id: 2 
+  },
+  { 
+    id: 17, 
+    make: "Ford", 
+    model: "Explorer", 
+    year: 2023, 
+    price: 45800, 
+    miles: 11500, 
+    color: "Agate Black", 
+    description: "Three-row SUV with powerful engine and modern technology.", 
+    image: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=800&auto=format&fit=crop&q=80", // Ford SUV
+    thumbnail: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=400&auto=format&fit=crop&q=80", 
+    classification_id: 2 
+  },
+  
+  // ===== TRUCKS (ID 3) - UPDATED: ACTUAL TRUCK IMAGES =====
+  { 
+    id: 10, 
+    make: "Ford", 
+    model: "F-150", 
+    year: 2023, 
+    price: 55800, 
+    miles: 18500, 
+    color: "Oxford White", 
+    description: "America's best-selling truck with 3.5L EcoBoost V6 engine.", 
+    image: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=800&auto=format&fit=crop&q=80", // Ford F-150 truck
+    thumbnail: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=400&auto=format&fit=crop&q=80", 
+    classification_id: 3 
+  },
+  { 
+    id: 11, 
+    make: "Chevrolet", 
+    model: "Silverado", 
+    year: 2023, 
+    price: 49800, 
+    miles: 16500, 
+    color: "Northsky Blue", 
+    description: "Powerful pickup with trailering package and advanced technology.", 
+    image: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=800&auto=format&fit=crop&q=80", // Chevy Silverado truck
+    thumbnail: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=400&auto=format&fit=crop&q=80", 
+    classification_id: 3 
+  },
+  { 
+    id: 12, 
+    make: "Ram", 
+    model: "1500", 
+    year: 2023, 
+    price: 62500, 
+    miles: 12500, 
+    color: "Granite Crystal", 
+    description: "Premium truck with air suspension and panoramic sunroof.", 
+    image: "https://images.unsplash.com/photo-1601362840469-51e4d8d58785?w=800&auto=format&fit=crop&q=80", // Ram 1500 truck
+    thumbnail: "https://images.unsplash.com/photo-1601362840469-51e4d8d58785?w=400&auto=format&fit=crop&q=80", 
+    classification_id: 3 
+  },
+  
+  
+  // ===== SEDANS (ID 4) - ONLY SEDAN IMAGES =====
+  { 
+    id: 4, 
+    make: "Toyota", 
+    model: "Camry XSE", 
+    year: 2023, 
+    price: 32800, 
+    miles: 5500, 
+    color: "Midnight Black", 
+    description: "Midsize sedan with 3.5L V6 engine and sport-tuned suspension.", 
+    image: "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=800&auto=format&fit=crop&q=80", // Toyota Camry sedan
+    thumbnail: "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=400&auto=format&fit=crop&q=80", 
+    classification_id: 4 
+  },
+  { 
+    id: 5, 
+    make: "Honda", 
+    model: "Accord Touring", 
+    year: 2023, 
+    price: 36500, 
+    miles: 7800, 
+    color: "Platinum White", 
+    description: "Comfortable sedan with hybrid powertrain and Honda Sensing safety suite.", 
+    image: "https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?w=800&auto=format&fit=crop&q=80", // Honda Accord sedan
+    thumbnail: "https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?w=400&auto=format&fit=crop&q=80", 
+    classification_id: 4 
+  },
+  { 
+    id: 6, 
+    make: "BMW", 
+    model: "5 Series", 
+    year: 2023, 
+    price: 62500, 
+    miles: 8500, 
+    color: "Mineral White", 
+    description: "Luxury sedan with twin-power turbo engine and live cockpit professional.", 
+    image: "https://images.unsplash.com/photo-1555212697-194d092e3b8f?w=800&auto=format&fit=crop&q=80", // BMW 5 Series sedan
+    thumbnail: "https://images.unsplash.com/photo-1555212697-194d092e3b8f?w=400&auto=format&fit=crop&q=80", 
+    classification_id: 4 
+  },
+ 
+  { 
+    id: 14, 
+    make: "Tesla", 
+    model: "Model 3", 
+    year: 2023, 
+    price: 48900, 
+    miles: 6500, 
+    color: "Pearl White", 
+    description: "Electric sedan with autopilot and premium connectivity.", 
+    image: "https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=800&auto=format&fit=crop&q=80", // Tesla Model 3 sedan
+    thumbnail: "https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=400&auto=format&fit=crop&q=80", 
+    classification_id: 4 
+  },
+  { 
+    id: 20, 
+    make: "Audi", 
+    model: "A6", 
+    year: 2023, 
+    price: 62500, 
+    miles: 7200, 
+    color: "Navarra Blue", 
+    description: "Premium sedan with quattro all-wheel drive and virtual cockpit.", 
+    image: "https://images.unsplash.com/photo-1553440569-bcc63803a83d?w=800&auto=format&fit=crop&q=80", // Audi A6 sedan
+    thumbnail: "https://images.unsplash.com/photo-1553440569-bcc63803a83d?w=400&auto=format&fit=crop&q=80", 
+    classification_id: 4 
+  }
 ];
 
-// Routes
+const classifications = [
+  { id: 1, name: "Classic Cars", description: "Vintage vehicles restored to their original glory" },
+  { id: 2, name: "SUVs", description: "Sport utility vehicles perfect for family and adventure" },
+  { id: 3, name: "Trucks", description: "Powerful vehicles for work and heavy-duty tasks" },
+  { id: 4, name: "Sedans", description: "Comfortable and efficient daily drivers" }
+];
+
+// ========== ROUTES ==========
+
+// Home route
 app.get("/", (req, res) => {
-  res.render("index", {
-    title: "CSE Motors - Home",
-    nav: mockNavData
-  });
-});
-
-// Management routes
-app.get("/inv", (req, res) => {
-  res.render("./inventory/management", {
-    title: "Vehicle Management - CSE Motors",
-    nav: mockNavData,
-    message: req.flash('message') || null
-  });
-});
-
-app.get("/inv/add-classification", (req, res) => {
-  res.render("./inventory/add-classification", {
-    title: "Add Classification - CSE Motors",
-    nav: mockNavData,
-    message: req.flash('message') || null,
-    errors: req.flash('errors') || null
-  });
-});
-
-app.get("/inv/add-inventory", (req, res) => {
-  const classificationList = `
-    <select name="classification_id" id="classificationList" required>
-      <option value="">Choose a Classification</option>
-      <option value="1">Classic</option>
-      <option value="2">Sports</option>
-      <option value="3">SUV</option>
-      <option value="4">Truck</option>
-      <option value="5">Used</option>
-    </select>
-  `;
-  
-  res.render("./inventory/add-inventory", {
-    title: "Add Inventory - CSE Motors",
-    nav: mockNavData,
-    message: req.flash('message') || null,
-    errors: req.flash('errors') || null,
-    classificationList: classificationList,
-    invData: req.flash('invData') || null
-  });
-});
-
-// Classification routes - UPDATED with different cars for each classification
-app.get("/inv/type/:classificationId", (req, res) => {
-  const classificationId = req.params.classificationId;
-  const classificationNames = {
-    "1": "Classic",
-    "2": "Sports", 
-    "3": "SUV",
-    "4": "Truck",
-    "5": "Used"
-  };
-  
-  const classificationName = classificationNames[classificationId] || "Vehicles";
-  
-  // Different vehicle data for each classification
-  const vehicleData = {
-    "1": [ // Classic Cars
-      {
-        id: 101,
-        name: "1965 Ford Mustang",
-        year: 1965,
-        price: "$45,000",
-        color: "Red",
-        description: "Beautifully restored classic Mustang",
-        image: "/images/vehicles/classic-mustang.jpg"
-      },
-      {
-        id: 102,
-        name: "1957 Chevrolet Bel Air",
-        year: 1957,
-        price: "$65,000",
-        color: "Turquoise",
-        description: "Iconic American classic in excellent condition",
-        image: "/images/vehicles/classic-belair.jpg"
-      },
-      {
-        id: 103,
-        name: "1969 Volkswagen Beetle",
-        year: 1969,
-        price: "$25,000",
-        color: "Yellow",
-        description: "Fully restored classic Beetle",
-        image: "/images/vehicles/classic-beetle.jpg"
-      }
-    ],
-    "2": [ // Sports Cars
-      {
-        id: 201,
-        name: "2023 Chevrolet Corvette",
-        year: 2023,
-        price: "$72,000",
-        color: "Red",
-        description: "Brand new Corvette with premium package",
-        image: "/images/vehicles/sports-corvette.jpg"
-      },
-      {
-        id: 202,
-        name: "2024 Porsche 911",
-        year: 2024,
-        price: "$115,000",
-        color: "White",
-        description: "Luxury sports car with all options",
-        image: "/images/vehicles/sports-porsche.jpg"
-      },
-      {
-        id: 203,
-        name: "2023 Ford Mustang GT",
-        year: 2023,
-        price: "$48,000",
-        color: "Blue",
-        description: "Powerful muscle car with premium sound",
-        image: "/images/vehicles/sports-mustang.jpg"
-      }
-    ],
-    "3": [ // SUVs
-      {
-        id: 301,
-        name: "2024 Ford Explorer",
-        year: 2024,
-        price: "$42,000",
-        color: "Black",
-        description: "Spacious family SUV with third row",
-        image: "/images/vehicles/suv-explorer.jpg"
-      },
-      {
-        id: 302,
-        name: "2023 Toyota Highlander",
-        year: 2023,
-        price: "$38,500",
-        color: "Silver",
-        description: "Reliable SUV with great fuel economy",
-        image: "/images/vehicles/suv-highlander.jpg"
-      },
-      {
-        id: 303,
-        name: "2024 Jeep Grand Cherokee",
-        year: 2024,
-        price: "$52,000",
-        color: "Green",
-        description: "Premium SUV with off-road capability",
-        image: "/images/vehicles/suv-jeep.jpg"
-      }
-    ],
-    "4": [ // Trucks
-      {
-        id: 401,
-        name: "2024 Ford F-150",
-        year: 2024,
-        price: "$45,000",
-        color: "White",
-        description: "America's best-selling truck",
-        image: "/images/vehicles/truck-f150.jpg"
-      },
-      {
-        id: 402,
-        name: "2023 Chevrolet Silverado",
-        year: 2023,
-        price: "$43,500",
-        color: "Black",
-        description: "Powerful work truck with towing package",
-        image: "/images/vehicles/truck-silverado.jpg"
-      },
-      {
-        id: 403,
-        name: "2024 Ram 1500",
-        year: 2024,
-        price: "$47,000",
-        color: "Red",
-        description: "Luxury truck with premium interior",
-        image: "/images/vehicles/truck-ram.jpg"
-      }
-    ],
-    "5": [ // Used Cars
-      {
-        id: 501,
-        name: "2019 Honda Civic",
-        year: 2019,
-        price: "$18,500",
-        color: "Gray",
-        description: "Well-maintained with low mileage",
-        image: "/images/vehicles/used-civic.jpg"
-      },
-      {
-        id: 502,
-        name: "2018 Toyota Camry",
-        year: 2018,
-        price: "$16,000",
-        color: "Blue",
-        description: "Single owner, excellent condition",
-        image: "/images/vehicles/used-camry.jpg"
-      },
-      {
-        id: 503,
-        name: "2020 Hyundai Elantra",
-        year: 2020,
-        price: "$14,500",
-        color: "White",
-        description: "Certified pre-owned with warranty",
-        image: "/images/vehicles/used-elantra.jpg"
-      }
-    ]
-  };
-  
-  const vehicles = vehicleData[classificationId] || [
-    {
-      id: 1,
-      name: `Sample ${classificationName} Car`,
-      year: 2023,
-      price: "$25,000",
-      color: "Red",
-      description: "Sample vehicle description",
-      image: "/images/vehicles/no-image.png"
-    }
+  // Get 6 featured vehicles (2 from each category for variety)
+  const featuredVehicles = [
+    ...vehicles.filter(v => v.classification_id === 1).slice(0, 2), // 2 Classic
+    ...vehicles.filter(v => v.classification_id === 2).slice(0, 2), // 2 SUVs
+    ...vehicles.filter(v => v.classification_id === 4).slice(0, 2)  // 2 Sedans
   ];
   
-  res.render("./inventory/classification", {
-    title: `${classificationName} - CSE Motors`,
-    nav: mockNavData,
-    classificationName: classificationName,
-    classificationId: classificationId,
-    vehicles: vehicles
+  res.render("index", {
+    title: "CSE Motors - Home",
+    classifications: classifications,
+    featuredVehicles: featuredVehicles,
+    vehicles: vehicles.slice(0, 6) // Show first 6 vehicles on home
   });
 });
 
-// Inventory detail route - UPDATED
-app.get("/inv/detail/:inventoryId", (req, res) => {
-  const inventoryId = parseInt(req.params.inventoryId);
+// Classification route
+app.get("/inv/type/:classificationId", (req, res) => {
+  const classificationId = parseInt(req.params.classificationId);
+  const classification = classifications.find(c => c.id === classificationId);
   
-  // Sample vehicle details
-  const vehicleDetails = {
-    101: {
-      name: "1965 Ford Mustang",
-      year: 1965,
-      price: "$45,000",
-      color: "Red",
-      mileage: "85,000 miles",
-      description: "Beautifully restored 1965 Ford Mustang. This classic American muscle car features a V8 engine, manual transmission, and has been completely restored to its original glory.",
-      features: ["V8 Engine", "Manual Transmission", "Power Steering", "AM/FM Radio", "Restored Interior"]
-    },
-    201: {
-      name: "2023 Chevrolet Corvette",
-      year: 2023,
-      price: "$72,000",
-      color: "Red",
-      mileage: "5,000 miles",
-      description: "Brand new 2023 Chevrolet Corvette Stingray. This premium sports car features a 6.2L V8 engine and all the latest technology.",
-      features: ["6.2L V8 Engine", "8-Speed Automatic", "Leather Interior", "Premium Sound"]
-    },
-    301: {
-      name: "2024 Ford Explorer",
-      year: 2024,
-      price: "$42,000",
-      color: "Black",
-      mileage: "2,000 miles",
-      description: "Spacious family SUV with third row seating. Perfect for family trips and daily commuting.",
-      features: ["Third Row Seating", "Premium Sound", "Navigation System", "Leather Seats"]
-    }
-  };
-  
-  const vehicle = vehicleDetails[inventoryId] || {
-    name: "Sample Vehicle",
-    year: 2023,
-    price: "$25,000",
-    color: "Red",
-    mileage: "15,000 miles",
-    description: "This is a sample vehicle description.",
-    features: ["Feature 1", "Feature 2", "Feature 3"]
-  };
-  
-  res.render("./inventory/detail", {
-    title: `${vehicle.name} - CSE Motors`,
-    nav: mockNavData,
-    vehicle: vehicle,
-    inventoryId: inventoryId
-  });
-});
-
-// POST routes for forms
-app.post("/inv/add-classification", (req, res) => {
-  const { classification_name } = req.body;
-  
-  if (!classification_name || classification_name.trim() === '') {
-    req.flash('error', 'Classification name is required');
-    return res.redirect("/inv/add-classification");
+  if (!classification) {
+    return res.status(404).render("error", {
+      title: "404 - Classification Not Found",
+      message: "The requested vehicle classification was not found.",
+      status: 404
+    });
   }
   
-  req.flash('success', 'Classification added successfully!');
-  res.redirect("/inv");
-});
-
-app.post("/inv/add-inventory", (req, res) => {
-  req.flash('success', 'Vehicle added successfully!');
-  res.redirect("/inv");
-});
-
-// 404 handler
-app.use((req, res) => {
-  res.status(404).render("errors/error", {
-    title: "404 - Page Not Found - CSE Motors",
-    nav: mockNavData,
-    message: "Sorry, the page you requested doesn't exist."
+  const filteredVehicles = vehicles.filter(v => v.classification_id === classificationId);
+  
+  res.render("classification", {
+    title: classification.name + " - CSE Motors",
+    vehicles: filteredVehicles,
+    classificationName: classification.name,
+    classificationDescription: classification.description,
+    classifications: classifications,
+    currentClassificationId: classificationId
   });
 });
 
-// Error handler
+// Vehicle detail route
+app.get("/inv/detail/:invId", (req, res) => {
+  const invId = parseInt(req.params.invId);
+  const vehicle = vehicles.find(v => v.id === invId);
+  
+  if (!vehicle) {
+    return res.status(404).render("error", {
+      title: "404 - Vehicle Not Found",
+      message: "The requested vehicle was not found.",
+      status: 404
+    });
+  }
+  
+  const classification = classifications.find(c => c.id === vehicle.classification_id);
+  
+  res.render("detail", {
+    title: vehicle.make + " " + vehicle.model + " - Details",
+    vehicle: vehicle,
+    classificationName: classification ? classification.name : "Vehicle",
+    classificationDescription: classification ? classification.description : "",
+    classifications: classifications
+  });
+});
+
+// 500 Error test route
+app.get("/inv/trigger-error", (req, res) => {
+  throw new Error("Intentional 500 Error for CSE340 Assignment 3 - Testing Error Handling Middleware");
+});
+
+// ========== ERROR HANDLING ==========
+
+// 404 Error handler
+app.use((req, res, next) => {
+  res.status(404).render("error", {
+    title: "404 - Page Not Found",
+    message: "The page you requested could not be found.",
+    status: 404
+  });
+});
+
+// General error handler
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).render("errors/error", {
-    title: "Server Error - CSE Motors",
-    nav: mockNavData,
-    message: "Something went wrong on our end. Please try again later."
+  console.error("Server Error:", err.message);
+  res.status(500).render("error", {
+    title: "500 - Server Error",
+    message: err.message || "An internal server error occurred.",
+    status: 500
   });
 });
 
-// Function to start server on available port
-function startServer(port = 4000) {
-  const server = app.listen(port, () => {
-    console.log(`✅ Server running on http://localhost:${port}`);
-    console.log(`📁 Serving from: ${__dirname}`);
+// ========== START SERVER ==========
+app.listen(port, () => {
+  console.log(`✅ Server running at http://localhost:${port}`);
+  console.log(`\n📊 VEHICLE CLASSIFICATION SUMMARY:`);
+  classifications.forEach(classification => {
+    const count = vehicles.filter(v => v.classification_id === classification.id).length;
+    console.log(`   ${classification.name}: ${count} vehicles`);
   });
-
-  server.on('error', (err) => {
-    if (err.code === 'EADDRINUSE') {
-      console.log(`Port ${port} is busy, trying port ${port + 1}...`);
-      startServer(port + 1);
-    } else {
-      console.error('Server error:', err);
-    }
-  });
-}
-
-// Start the server
-startServer(4000);
+  console.log(`\n🔗 DIRECT CLASSIFICATION LINKS:`);
+  console.log(`   Classic Cars (${vehicles.filter(v => v.classification_id === 1).length}): http://localhost:${port}/inv/type/1`);
+  console.log(`   SUVs (${vehicles.filter(v => v.classification_id === 2).length}): http://localhost:${port}/inv/type/2`);
+  console.log(`   Trucks (${vehicles.filter(v => v.classification_id === 3).length}): http://localhost:${port}/inv/type/3`);
+  console.log(`   Sedans (${vehicles.filter(v => v.classification_id === 4).length}): http://localhost:${port}/inv/type/4`);
+  console.log(`\n🚗 SAMPLE DETAIL PAGES:`);
+  console.log(`   Delorean: http://localhost:${port}/inv/detail/1`);
+  console.log(`   Toyota Camry: http://localhost:${port}/inv/detail/4`);
+  console.log(`   Ford F-150: http://localhost:${port}/inv/detail/10`);
+  console.log(`\n⚠️  500 Error Test: http://localhost:${port}/inv/trigger-error`);
+});

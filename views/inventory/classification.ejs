@@ -2,49 +2,56 @@
 <html lang="en">
 <head>
     <%- include('../partials/head', {title}) %>
+    <link rel="stylesheet" href="/css/classification.css">
 </head>
 <body>
-    <header>
-        <%- include('../partials/header', {nav}) %>
-    </header>
+    <%- include('../partials/header') %>
     
-    <main>
-        <div class="main-content">
-            <h1><%= classificationName %> Vehicles</h1>
+    <main class="container">
+        <div class="classification-container">
+            <h1 class="classification-title"><%= title %></h1>
             
-            <!-- Flash Messages -->
-            <% if (messages && messages.success) { %>
-                <div class="flash-message success">
-                    <%= messages.success %>
+            <% if (grid && grid.length > 0) { %>
+                <div class="vehicles-grid">
+                    <% grid.forEach(function(vehicle) { %>
+                        <div class="vehicle-card">
+                            <div class="vehicle-image">
+                                <img src="<%= vehicle.inv_image || '/images/placeholder.jpg' %>" 
+                                     alt="<%= vehicle.inv_make %> <%= vehicle.inv_model %>">
+                            </div>
+                            <div class="vehicle-info">
+                                <h2 class="vehicle-name">
+                                    <%= vehicle.inv_year %> <%= vehicle.inv_make %> <%= vehicle.inv_model %>
+                                </h2>
+                                <div class="vehicle-price">
+                                    $<%= new Intl.NumberFormat('en-US').format(vehicle.inv_price) %>
+                                </div>
+                                <p class="vehicle-description">
+                                    <%= vehicle.inv_description || 'No description available.' %>
+                                </p>
+                                <a href="/inv/detail/<%= vehicle.inv_id %>" class="details-link">
+                                    View Details
+                                </a>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            <% } else { %>
+                <div class="no-vehicles">
+                    <h3>No vehicles found in this classification</h3>
+                    <p>Please check back later or browse our other vehicle categories.</p>
+                    <a href="/" class="details-link">Return to Home</a>
                 </div>
             <% } %>
-            <% if (messages && messages.error) { %>
-                <div class="flash-message error">
-                    <%= messages.error %>
-                </div>
-            <% } %>
-
-            <div class="inventory-grid">
-                <% vehicles.forEach(function(vehicle, index) { %>
-                    <div class="inventory-item">
-                        <img src="<%= vehicle.image %>" alt="<%= vehicle.name %>" class="car-image" onerror="this.src='/images/vehicles/no-image.png'">
-                        <h3><%= vehicle.name %></h3>
-                        <p><strong>Year:</strong> <%= vehicle.year %></p>
-                        <p><strong>Price:</strong> <%= vehicle.price %></p>
-                        <p><strong>Color:</strong> <%= vehicle.color %></p>
-                        <a href="/inv/detail/<%= vehicle.id %>" class="own-button">View Details</a>
-                    </div>
-                <% }); %>
-            </div>
             
-            <div style="text-align: center; margin-top: 30px;">
-                <a href="/inv" class="own-button">Back to Management</a>
+            <div class="back-link" style="text-align: center; margin-top: 40px;">
+                <a href="/" class="details-link" style="background: #7f8c8d;">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </a>
             </div>
         </div>
     </main>
-
-    <footer>
-        <%- include('../partials/footer') %>
-    </footer>
+    
+    <%- include('../partials/footer') %>
 </body>
 </html>

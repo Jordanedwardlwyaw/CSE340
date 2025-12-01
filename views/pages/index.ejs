@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        /* Additional homepage styles */
+        .hero-section {
+            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), 
+                        url('https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=1200&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 100px 20px;
+            text-align: center;
+            margin-bottom: 60px;
+            border-radius: 0 0 30px 30px;
+        }
+        
+        .hero-section h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        .hero-section p {
+            font-size: 20px;
+            margin-bottom: 30px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+        
+        .btn-hero {
+            background: #e74c3c;
+            color: white;
+            padding: 18px 45px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-hero:hover {
+            background: #c0392b;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .classifications-section {
+            padding: 60px 20px;
+            background: #f8f9fa;
+            border-radius: 20px;
+            margin-bottom: 60px;
+        }
+        
+        .section-title {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 36px;
+            margin-bottom: 50px;
+            font-weight: 600;
+        }
+        
+        .classifications-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .classification-card {
+            background: white;
+            padding: 35px 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            text-decoration: none;
+            color: inherit;
+            border: 2px solid transparent;
+        }
+        
+        .classification-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            border-color: #3498db;
+        }
+        
+        .classification-icon {
+            font-size: 56px;
+            margin-bottom: 20px;
+            color: #3498db;
+        }
+        
+        .classification-card h3 {
+            color: #2c3e50;
+            font-size: 22px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .featured-vehicle {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            margin-bottom: 60px;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .featured-header {
+            background: linear-gradient(to right, #2c3e50, #3498db);
+            color: white;
+            padding: 25px 40px;
+        }
+        
+        .featured-header h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .featured-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+        
+        .featured-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+        }
+        
+        .featured-details {
+            padding: 40px;
+            background: #f8f9fa;
+        }
+        
+        .featured-price {
+            color: #27ae60;
+            font-size: 36px;
+            font-weight: 700;
+            margin: 20px 0;
+        }
+        
+        .featured-features {
+            list-style: none;
+            margin: 25px 0;
+        }
+        
+        .featured-features li {
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 16px;
+        }
+        
+        .featured-features li:before {
+            content: "✓";
+            color: #27ae60;
+            font-weight: bold;
+            margin-right: 12px;
+        }
+        
+        @media (max-width: 768px) {
+            .featured-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero-section h1 {
+                font-size: 36px;
+            }
+            
+            .classifications-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>CSE Motors</h1>
+                <p>Vehicle Inventory Management System</p>
+            </div>
+            <nav>
+                <%- nav %>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="container">
+                <h1>Discover Your Perfect Vehicle</h1>
+                <p>Browse our extensive collection of premium vehicles, from classic sports cars to modern SUVs. Find the perfect vehicle for your needs.</p>
+                <a href="/inv/type/1" class="btn-hero">Browse Inventory</a>
+            </div>
+        </section>
+        
+        <!-- Featured Vehicle (Delorean) -->
+        <% if (delorean) { %>
+        <section class="featured-vehicle">
+            <div class="featured-header">
+                <h2>🚀 Featured Vehicle: <%= delorean.inv_make %> <%= delorean.inv_model %></h2>
+                <p>The iconic time-traveling sports car</p>
+            </div>
+            <div class="featured-content">
+                <img src="<%= delorean.inv_image %>" alt="<%= delorean.inv_make %> <%= delorean.inv_model %>" class="featured-image">
+                <div class="featured-details">
+                    <h3><%= delorean.inv_year %> <%= delorean.inv_make %> <%= delorean.inv_model %></h3>
+                    <div class="featured-price">$<%= delorean.inv_price.toLocaleString() %></div>
+                    <ul class="featured-features">
+                        <li><%= delorean.inv_miles.toLocaleString() %> miles</li>
+                        <li>Color: <%= delorean.inv_color %></li>
+                        <li>Stainless steel body construction</li>
+                        <li>Gull-wing doors</li>
+                        <li>Time travel capable</li>
+                        <li>Mr. Fusion energy reactor</li>
+                    </ul>
+                    <a href="/inv/detail/<%= delorean.inv_id %>" class="btn-hero" style="padding: 15px 30px;">View Full Details</a>
+                </div>
+            </div>
+        </section>
+        <% } %>
+        
+        <!-- Classifications Section -->
+        <section class="classifications-section">
+            <div class="container">
+                <h2 class="section-title">Browse by Vehicle Type</h2>
+                <div class="classifications-grid">
+                    <% classifications.forEach(function(classification) { %>
+                    <a href="/inv/type/<%= classification.classification_id %>" class="classification-card">
+                        <% if (classification.classification_name === 'Sports Cars') { %>
+                            <div class="classification-icon">🏎️</div>
+                        <% } else if (classification.classification_name === 'SUVs') { %>
+                            <div class="classification-icon">🚙</div>
+                        <% } else if (classification.classification_name === 'Trucks') { %>
+                            <div class="classification-icon">🚚</div>
+                        <% } else if (classification.classification_name === 'Sedans') { %>
+                            <div class="classification-icon">🚗</div>
+                        <% } else if (classification.classification_name === 'Classic Cars') { %>
+                            <div class="classification-icon">🎩</div>
+                        <% } else if (classification.classification_name === 'Used Vehicles') { %>
+                            <div class="classification-icon">🛒</div>
+                        <% } else { %>
+                            <div class="classification-icon">🚘</div>
+                        <% } %>
+                        <h3><%= classification.classification_name %></h3>
+                        <p>Browse our selection of <%= classification.classification_name.toLowerCase() %></p>
+                    </a>
+                    <% }); %>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>CSE Motors</h3>
+                    <p>Vehicle Inventory Management System</p>
+                    <p>CSE340 Assignment 3</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <a href="/">Home</a>
+                    <a href="/inv/type/1">Sports Cars</a>
+                    <a href="/inv/type/2">SUVs</a>
+                    <a href="/inv/detail/1">Delorean Details</a>
+                </div>
+                <div class="footer-section">
+                    <h3>Assignment 3</h3>
+                    <p>Error Handling Test:</p>
+                    <!-- Task 3: Error link in footer -->
+                    <a href="/inv/trigger-error" class="error-test-link">Test 500 Error</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 CSE Motors. All rights reserved. | CSE340 Assignment 3 - Vehicle Inventory System</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
