@@ -1,13 +1,13 @@
 {
-  "name": "cse340",
+  "name": "cse340-assignment3",
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
-    "express": "^4.18.2",
-    "ejs": "^3.1.9",
-    "body-parser": "^1.20.2"
+    "express": "4.18.2",
+    "ejs": "3.1.9",
+    "body-parser": "1.20.2"
   }
 }
