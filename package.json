@@ -1,7 +1,7 @@
 {
-  "name": "cse340-mock",
+  "name": "cse340",
   "version": "1.0.0",
-  "description": "CSE340 Vehicle Inventory Management System (Mock Data Version)",
+  "description": "CSE340 Vehicle Inventory Management System",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
