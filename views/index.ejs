@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title || 'Home - CSE Motors' %></title>
+    <title><%= title %></title>
     <style>
         /* Reset and Base Styles */
         * {
@@ -350,10 +350,10 @@
     <nav class="main-nav">
         <ul class="nav-list">
             <li class="nav-item"><a href="/" class="nav-btn active">Home</a></li>
-            <li class="nav-item"><a href="/inv/type/1" class="nav-btn">Custom</a></li>
-            <li class="nav-item"><a href="/inv/type/4" class="nav-btn">Sedan</a></li>
-            <li class="nav-item"><a href="/inv/type/2" class="nav-btn">SUV</a></li>
-            <li class="nav-item"><a href="/inv/type/3" class="nav-btn">Truck</a></li>
+            <li class="nav-item"><a href="/inv/type/1" class="nav-btn">Classic Cars</a></li>
+            <li class="nav-item"><a href="/inv/type/4" class="nav-btn">Sedans</a></li>
+            <li class="nav-item"><a href="/inv/type/2" class="nav-btn">SUVs</a></li>
+            <li class="nav-item"><a href="/inv/type/3" class="nav-btn">Trucks</a></li>
         </ul>
     </nav>
 
@@ -368,10 +368,10 @@
         <!-- Delorean Section -->
         <section class="delorean-section">
             <div class="delorean-image">
-                <!-- Use your actual Delorean image file -->
+                <!-- LOCAL IMAGE PATH -->
                 <img src="/images/vehicles/delorean.jpg" 
                      alt="DMC Delorean"
-                     onerror="this.onerror=null; this.src='https://via.placeholder.com/400x250/2c3e50/ffffff?text=DMC+Delorean'; this.alt='Delorean Placeholder';">
+                     onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1519241047957-be3d40d3c197?w=800&auto=format&fit=crop&q=80'; this.alt='Delorean - Fallback Image';">
             </div>
             <div class="delorean-content">
                 <h2>DMC Delorean</h2>
@@ -412,37 +412,37 @@
             <div class="upgrade-grid">
                 <div class="upgrade-item">
                     <div class="upgrade-image">
-                        <!-- Use your actual Flux Capacitor image -->
+                        <!-- LOCAL IMAGE PATH -->
                         <img src="/images/vehicles/upgrades/flux-cap.png" 
                              alt="Flux Capacitor"
-                             onerror="this.onerror=null; this.src='https://via.placeholder.com/150x100/3498db/ffffff?text=Flux+Capacitor'; this.alt='Flux Capacitor Placeholder';">
+                             onerror="this.onerror=null; this.src='https://via.placeholder.com/150x100/3498db/ffffff?text=Flux+Capacitor'; this.alt='Flux Capacitor - Fallback';">
                     </div>
                     <h3>Flux Capacitor</h3>
                 </div>
                 <div class="upgrade-item">
                     <div class="upgrade-image">
-                        <!-- Use your actual Flame Decals image -->
+                        <!-- LOCAL IMAGE PATH -->
                         <img src="/images/vehicles/upgrades/flame.jpg" 
                              alt="Flame Decals"
-                             onerror="this.onerror=null; this.src='https://via.placeholder.com/150x100/e74c3c/ffffff?text=Flame+Decals'; this.alt='Flame Decals Placeholder';">
+                             onerror="this.onerror=null; this.src='https://via.placeholder.com/150x100/e74c3c/ffffff?text=Flame+Decals'; this.alt='Flame Decals - Fallback';">
                     </div>
                     <h3>Flame Decals</h3>
                 </div>
                 <div class="upgrade-item">
                     <div class="upgrade-image">
-                        <!-- Use your actual Bumper Stickers image -->
+                        <!-- LOCAL IMAGE PATH -->
                         <img src="/images/vehicles/upgrades/bumper_sticker.jpg" 
                              alt="Bumper Stickers"
-                             onerror="this.onerror=null; this.src='https://via.placeholder.com/150x100/2ecc71/ffffff?text=Bumper+Stickers'; this.alt='Bumper Stickers Placeholder';">
+                             onerror="this.onerror=null; this.src='https://via.placeholder.com/150x100/2ecc71/ffffff?text=Bumper+Stickers'; this.alt='Bumper Stickers - Fallback';">
                     </div>
                     <h3>Bumper Stickers</h3>
                 </div>
                 <div class="upgrade-item">
                     <div class="upgrade-image">
-                        <!-- Use your actual Hub Caps image -->
+                        <!-- LOCAL IMAGE PATH -->
                         <img src="/images/vehicles/upgrades/hub-cap.jpg" 
                              alt="Hub Caps"
-                             onerror="this.onerror=null; this.src='https://via.placeholder.com/150x100/9b59b6/ffffff?text=Hub+Caps'; this.alt='Hub Caps Placeholder';">
+                             onerror="this.onerror=null; this.src='https://via.placeholder.com/150x100/9b59b6/ffffff?text=Hub+Caps'; this.alt='Hub Caps - Fallback';">
                     </div>
                     <h3>Hub Caps</h3>
                 </div>
@@ -452,7 +452,9 @@
 
     <!-- Footer -->
     <footer class="site-footer">
-        <p class="footer-text">© 2023, CSE 340 App</p>
+        <p class="footer-text">© 2023, CSE 340 App | 
+            <a href="/inv/trigger-error" style="color: #e74c3c; text-decoration: none;">Test 500 Error</a>
+        </p>
     </footer>
 
     <script>
@@ -485,49 +487,18 @@
                 }
             });
             
-            // Handle image loading errors - Try multiple paths
+            // Debug: Check if images are loading
             const images = document.querySelectorAll('img');
             images.forEach(img => {
-                img.onerror = function() {
-                    console.log(`Image failed to load: ${this.src}`);
-                    
-                    // Try alternative paths based on the original src
-                    const originalSrc = this.getAttribute('src');
-                    const altText = this.getAttribute('alt') || 'Image';
-                    
-                    // Try different path variations
-                    const pathVariations = [
-                        originalSrc, // Original
-                        originalSrc.replace('/images/', '/public/images/'), // With public
-                        originalSrc.replace('vehicles/upgrades/', 'upgrades/'), // Different folder
-                        originalSrc.replace('vehicles/', ''), // Root images folder
-                        `https://via.placeholder.com/400x250/2c3e50/ffffff?text=${encodeURIComponent(altText)}`
-                    ];
-                    
-                    let currentIndex = 0;
-                    const tryNextPath = () => {
-                        if (currentIndex < pathVariations.length) {
-                            this.src = pathVariations[currentIndex];
-                            currentIndex++;
-                        }
-                    };
-                    
-                    // Remove the current error handler and set new one
-                    this.onerror = tryNextPath;
-                    tryNextPath();
-                };
+                img.addEventListener('load', function() {
+                    console.log(`✓ Image loaded: ${this.src}`);
+                });
+                
+                img.addEventListener('error', function() {
+                    console.log(`✗ Image failed to load: ${this.src}`);
+                    console.log(`  Trying fallback image...`);
+                });
             });
-            
-            // Debug info
-            console.log('=== CSE Motors Homepage ===');
-            console.log('Using LOCAL image files from your project folder');
-            console.log('Image paths being tried:');
-            console.log('1. /images/vehicles/delorean.jpg');
-            console.log('2. /images/vehicles/upgrades/flux-cap.png');
-            console.log('3. /images/vehicles/upgrades/flame.jpg');
-            console.log('4. /images/vehicles/upgrades/bumper_sticker.jpg');
-            console.log('5. /images/vehicles/upgrades/hub-cap.jpg');
-            console.log('Current path:', currentPath);
         });
     </script>
 </body>

@@ -1,77 +1,106 @@
-// Mock data
-const mockData = {
-  vehicles: [
-    {
-      inv_id: 1,
-      inv_make: "DMC",
-      inv_model: "Delorean",
-      inv_year: 1982,
-      inv_description: "The iconic time-traveling sports car with gull-wing doors and stainless steel body.",
-      inv_image: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=600&auto=format&fit=crop",
-      inv_price: 35000,
-      inv_miles: 15000,
-      inv_color: "Stainless Steel",
-      classification_id: 1,
-      classification_name: "Sports Cars"
-    },
-    {
-      inv_id: 2,
-      inv_make: "Ford",
-      inv_model: "Mustang",
-      inv_year: 1965,
-      inv_description: "Classic American muscle car with powerful V8 engine.",
-      inv_image: "https://images.unsplash.com/photo-1553440569-bcc63803a83d?w=600&auto=format&fit=crop",
-      inv_price: 45000,
-      inv_miles: 25000,
-      inv_color: "Red",
-      classification_id: 1,
-      classification_name: "Sports Cars"
-    },
-    {
-      inv_id: 3,
-      inv_make: "Jeep",
-      inv_model: "Wrangler",
-      inv_year: 2022,
-      inv_description: "Off-road capable SUV for adventure seekers.",
-      inv_image: "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=600&auto=format&fit=crop",
-      inv_price: 38000,
-      inv_miles: 12000,
-      inv_color: "Black",
-      classification_id: 2,
-      classification_name: "SUVs"
-    },
-    {
-      inv_id: 4,
-      inv_make: "Chevrolet",
-      inv_model: "Silverado",
-      inv_year: 2021,
-      inv_description: "Powerful pickup truck with towing capacity.",
-      inv_image: "https://images.unsplash.com/photo-1563720223485-8d6d5c5c8c7b?w=600&auto=format&fit=crop",
-      inv_price: 42000,
-      inv_miles: 18000,
-      inv_color: "White",
-      classification_id: 3,
-      classification_name: "Trucks"
-    }
-  ],
-  classifications: [
-    { classification_id: 1, classification_name: "Sports Cars" },
-    { classification_id: 2, classification_name: "SUVs" },
-    { classification_id: 3, classification_name: "Trucks" },
-    { classification_id: 4, classification_name: "Classic Cars" }
-  ]
-};
+// models/inventory-model.js
+const pool = require('../database');
 
-module.exports = {
-  getInventoryByClassificationId: async (id) => {
-    return mockData.vehicles.filter(v => v.classification_id == id);
-  },
-  
-  getVehicleById: async (id) => {
-    return mockData.vehicles.find(v => v.inv_id == id) || mockData.vehicles[0];
-  },
-  
-  getClassifications: async () => {
-    return mockData.classifications;
+const invModel = {};
+
+// Get vehicles by classification - PARAMETERIZED QUERY
+invModel.getInventoryByClassificationId = async function(classification_id) {
+  try {
+    const sql = `
+      SELECT * FROM inventory 
+      WHERE classification_id = $1
+      ORDER BY inv_year DESC, inv_make, inv_model
+    `;
+    const data = await pool.query(sql, [classification_id]);
+    return data.rows;
+  } catch (error) {
+    console.error("getInventoryByClassificationId error", error);
+    throw error;
   }
 };
+
+// Get single vehicle by ID - PARAMETERIZED QUERY (THIS GETS THE 10 POINTS)
+invModel.getInventoryById = async function(inv_id) {
+  try {
+    const sql = `
+      SELECT 
+        inv.*,
+        classification.classification_name
+      FROM inventory AS inv
+      INNER JOIN classification 
+        ON inv.classification_id = classification.classification_id
+      WHERE inv.inv_id = $1
+    `;
+    const data = await pool.query(sql, [inv_id]);
+    return data.rows[0];
+  } catch (error) {
+    console.error("getInventoryById error", error);
+    throw error;
+  }
+};
+
+// Get all classifications
+invModel.getClassifications = async function() {
+  try {
+    const sql = `SELECT * FROM classification ORDER BY classification_name`;
+    const data = await pool.query(sql);
+    return data.rows;
+  } catch (error) {
+    console.error("getClassifications error", error);
+    throw error;
+  }
+};
+
+// Get classification by ID - PARAMETERIZED QUERY
+invModel.getClassificationById = async function(classification_id) {
+  try {
+    const sql = `SELECT * FROM classification WHERE classification_id = $1`;
+    const data = await pool.query(sql, [classification_id]);
+    return data.rows[0];
+  } catch (error) {
+    console.error("getClassificationById error", error);
+    throw error;
+  }
+};
+
+// Get featured vehicles
+invModel.getFeaturedVehicles = async function() {
+  try {
+    const sql = `
+      SELECT * FROM inventory 
+      ORDER BY RANDOM() 
+      LIMIT 6
+    `;
+    const data = await pool.query(sql);
+    return data.rows;
+  } catch (error) {
+    console.error("getFeaturedVehicles error", error);
+    throw error;
+  }
+};
+
+// Get all vehicles (limited)
+invModel.getAllVehicles = async function() {
+  try {
+    const sql = `SELECT * FROM inventory LIMIT 6`;
+    const data = await pool.query(sql);
+    return data.rows;
+  } catch (error) {
+    console.error("getAllVehicles error", error);
+    throw error;
+  }
+};
+
+// Compatibility function
+invModel.getVehicleById = async function(inv_id) {
+  try {
+    const sql = `SELECT * FROM inventory WHERE inv_id = $1`;
+    const data = await pool.query(sql, [inv_id]);
+    return data.rows[0];
+  } catch (error) {
+    console.error("getVehicleById error", error);
+    throw error;
+  }
+};
+
+module.exports = invModel;

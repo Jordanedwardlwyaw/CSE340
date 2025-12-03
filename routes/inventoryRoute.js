@@ -1,19 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const inventoryController = require("../controllers/inventoryController");
-const utilities = require("../utilities/");
+const invController = require("../controllers/invController"); // FIXED: removed extra dot
 
-// Route to build inventory by classification view - accepts both ID and name
-router.get("/type/:classification", utilities.handleErrors(inventoryController.buildByClassification));
-
-// Route to build vehicle detail view
-router.get("/detail/:invId", utilities.handleErrors(inventoryController.buildByInventoryId));
-
-// Route to trigger 500 error for assignment
-router.get("/trigger-error", (req, res, next) => {
-  const error = new Error("Intentional 500 Error - Testing Error Handling");
-  error.status = 500;
-  next(error);
-});
+router.get("/", invController.buildHome);
+router.get("/inv/type/:classificationId", invController.buildByClassificationId);
+router.get("/inv/detail/:invId", invController.buildByInventoryId);
+router.get("/inv/trigger-error", invController.triggerError);
 
 module.exports = router;

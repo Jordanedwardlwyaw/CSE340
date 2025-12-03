@@ -1,57 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <%- include('../partials/head', {title}) %>
-    <link rel="stylesheet" href="/css/classification.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: #1a237e;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            margin: 0 0 15px 0;
+            color: white;
+        }
+        
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        nav li {
+            display: inline;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            background: #283593;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        
+        nav a:hover {
+            background: #3949ab;
+        }
+        
+        main {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        main h1 {
+            color: #1a237e;
+            margin-bottom: 20px;
+        }
+        
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #666;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+        
+        footer a {
+            color: #0066cc;
+            text-decoration: none;
+            padding: 0 5px;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            main {
+                padding: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <%- include('../partials/header') %>
+    <header>
+        <h1>CSE Motors</h1>
+        <nav>
+            <%- nav %>
+        </nav>
+    </header>
     
-    <main class="container">
-        <div class="classification-container">
-            <h1 class="classification-title"><%= title %></h1>
-            
-            <% if (grid && grid.length > 0) { %>
-                <div class="vehicles-grid">
-                    <% grid.forEach(function(vehicle) { %>
-                        <div class="vehicle-card">
-                            <div class="vehicle-image">
-                                <img src="<%= vehicle.inv_image || '/images/placeholder.jpg' %>" 
-                                     alt="<%= vehicle.inv_make %> <%= vehicle.inv_model %>">
-                            </div>
-                            <div class="vehicle-info">
-                                <h2 class="vehicle-name">
-                                    <%= vehicle.inv_year %> <%= vehicle.inv_make %> <%= vehicle.inv_model %>
-                                </h2>
-                                <div class="vehicle-price">
-                                    $<%= new Intl.NumberFormat('en-US').format(vehicle.inv_price) %>
-                                </div>
-                                <p class="vehicle-description">
-                                    <%= vehicle.inv_description || 'No description available.' %>
-                                </p>
-                                <a href="/inv/detail/<%= vehicle.inv_id %>" class="details-link">
-                                    View Details
-                                </a>
-                            </div>
-                        </div>
-                    <% }) %>
-                </div>
-            <% } else { %>
-                <div class="no-vehicles">
-                    <h3>No vehicles found in this classification</h3>
-                    <p>Please check back later or browse our other vehicle categories.</p>
-                    <a href="/" class="details-link">Return to Home</a>
-                </div>
-            <% } %>
-            
-            <div class="back-link" style="text-align: center; margin-top: 40px;">
-                <a href="/" class="details-link" style="background: #7f8c8d;">
-                    <i class="fas fa-arrow-left"></i> Back to Home
-                </a>
-            </div>
-        </div>
+    <main>
+        <h1><%= title %></h1>
+        <%- grid %>
     </main>
     
-    <%- include('../partials/footer') %>
+    <footer>
+        <p>© 2023 CSE Motors</p>
+        <p>
+            <a href="/">Home</a> | 
+            <a href="/inv/trigger-error">Test 500 Error</a>
+        </p>
+    </footer>
 </body>
 </html>
