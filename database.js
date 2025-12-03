@@ -2,17 +2,8 @@
 const { Pool } = require('pg');
 require('dotenv').config();
 
-// Render.com provides DATABASE_URL, not separate DB_* variables
-const connectionString = process.env.DATABASE_URL;
-
-if (!connectionString) {
-  console.error('❌ DATABASE_URL environment variable is not set!');
-  console.error('Please set DATABASE_URL in Render.com environment variables');
-  process.exit(1);
-}
-
 const pool = new Pool({
-  connectionString: connectionString,
+  connectionString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false
   }
@@ -23,7 +14,19 @@ pool.on('connect', () => {
 });
 
 pool.on('error', (err) => {
-  console.error('❌ Database connection error:', err.message);
+  console.error('❌ Database connection error:', err);
 });
+
+// Test connection function
+pool.testConnection = async () => {
+  try {
+    const result = await pool.query('SELECT NOW()');
+    console.log('✅ Database test query successful:', result.rows[0]);
+    return true;
+  } catch (error) {
+    console.error('❌ Database test query failed:', error.message);
+    return false;
+  }
+};
 
 module.exports = pool;
