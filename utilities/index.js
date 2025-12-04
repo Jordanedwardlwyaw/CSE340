@@ -96,23 +96,61 @@ utilities.buildDetailView = async function(vehicle) {
   }
 };
 
-utilities.getNav = async function() {
+// UPDATED FUNCTION - Now includes CSS classes and active state
+utilities.getNav = async function(currentClassificationId = null) {
   try {
     const classifications = await invModel.getClassifications();
-    let nav = '<ul>';
-    nav += '<li><a href="/" title="Home page">Home</a></li>';
+    let nav = '<ul class="nav-list">';
     
+    // Home link with active state
+    nav += `<li class="nav-item">
+              <a href="/" class="nav-btn ${currentClassificationId === null ? 'active' : ''}" 
+                 title="Home page">Home</a>
+            </li>`;
+    
+    // Classification links with active state
     classifications.forEach(classification => {
-      nav += `<li><a href="/inv/type/${classification.classification_id}" 
-              title="View our ${classification.classification_name} inventory">
-              ${classification.classification_name}</a></li>`;
+      const isActive = currentClassificationId == classification.classification_id ? 'active' : '';
+      nav += `<li class="nav-item">
+                <a href="/inv/type/${classification.classification_id}" 
+                   class="nav-btn ${isActive}"
+                   title="View our ${classification.classification_name} inventory">
+                   ${classification.classification_name}
+                </a>
+              </li>`;
     });
     
     nav += '</ul>';
     return nav;
   } catch (error) {
     console.error('Error building navigation:', error);
-    return '<ul><li><a href="/">Home</a></li></ul>';
+    return '<ul class="nav-list"><li class="nav-item"><a href="/" class="nav-btn">Home</a></li></ul>';
+  }
+};
+
+// NEW FUNCTION FOR ASSIGNMENT 4
+utilities.buildClassificationList = async function (classification_id = null) {
+  try {
+    let data = await invModel.getClassifications();
+    let classificationList = '<select name="classification_id" id="classificationList" required>';
+    classificationList += "<option value=''>Choose a Classification</option>";
+    
+    data.forEach((row) => {
+      classificationList += '<option value="' + row.classification_id + '"';
+      if (
+        classification_id != null &&
+        row.classification_id == classification_id
+      ) {
+        classificationList += " selected ";
+      }
+      classificationList += ">" + row.classification_name + "</option>";
+    });
+    
+    classificationList += "</select>";
+    return classificationList;
+  } catch (error) {
+    console.error("Utility Error: buildClassificationList", error);
+    return '<select name="classification_id" id="classificationList" required><option value="">Error loading classifications</option></select>';
   }
 };
 
