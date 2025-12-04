@@ -1,130 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %></title>
+    <%- include('../partials/head', {title: title}) %>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
-        
-        header { background: #2c3e50; color: white; padding: 20px; border-radius: 10px; margin-bottom: 30px; }
-        nav ul { list-style: none; display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap; }
-        nav a { color: #3498db; text-decoration: none; padding: 8px 12px; background: rgba(255,255,255,0.1); border-radius: 5px; }
-        
-        .management-container {
-            background: white;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        
-        .management-header {
-            text-align: center;
-            margin-bottom: 40px;
-            color: #2c3e50;
-        }
-        
-        .management-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
-        
-        .management-card {
-            background: #f8f9fa;
-            padding: 30px;
-            border-radius: 10px;
-            border: 2px solid #3498db;
-            text-align: center;
-        }
-        
-        .management-icon {
-            font-size: 48px;
-            margin-bottom: 20px;
-            color: #3498db;
-        }
-        
-        .btn {
-            display: inline-block;
-            padding: 12px 30px;
-            background: #3498db;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            margin-top: 15px;
-        }
-        
-        footer {
-            background: #2c3e50;
-            color: white;
-            padding: 30px;
-            text-align: center;
-            border-radius: 10px;
-            margin-top: 50px;
-        }
+        .management-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem; }
+        .link-card { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; padding: 2rem; text-align: center; transition: transform 0.3s ease; }
+        .link-card:hover { transform: translateY(-5px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .link-card h2 { color: #333; margin-bottom: 1rem; }
+        .link-card p { color: #666; margin-bottom: 1.5rem; }
+        .btn { display: inline-block; padding: 0.75rem 1.5rem; background: #007bff; color: white; text-decoration: none; border-radius: 4px; }
+        .btn:hover { background: #0056b3; }
+        .success-message { background: #d4edda; color: #155724; padding: 1rem; border-radius: 4px; margin-bottom: 1.5rem; }
+        .error-message { background-color: #f8d7da; color: #721c24; padding: 1rem; border-radius: 4px; margin-bottom: 1.5rem; }
+        .error-message ul { margin: 0; padding-left: 1.5rem; }
     </style>
 </head>
 <body>
-    <header>
-        <h1>CSE Motors</h1>
-        <nav>
-            <%- nav %>
-        </nav>
-    </header>
-    
-    <div class="management-container">
-        <div class="management-header">
-            <h1>📊 Inventory Management</h1>
-            <p>Manage vehicle inventory, classifications, and data</p>
-        </div>
+    <div class="container">
+        <%- include('../partials/header') %>
+        <%- include('../partials/nav') %>
         
-        <div class="management-grid">
-            <div class="management-card">
-                <div class="management-icon">🚗</div>
-                <h3>Vehicle Management</h3>
-                <p>Add, edit, or remove vehicles from inventory</p>
-                <a href="#" class="btn">Manage Vehicles</a>
-            </div>
+        <main>
+            <h1>Inventory Management</h1>
             
-            <div class="management-card">
-                <div class="management-icon">🏷️</div>
-                <h3>Classification Management</h3>
-                <p>Manage vehicle classifications (Sports, SUVs, etc.)</p>
-                <a href="#" class="btn">Manage Classifications</a>
-            </div>
+            <% if (successMessage) { %>
+                <div class="success-message"><%= successMessage %></div>
+            <% } %>
             
-            <div class="management-card">
-                <div class="management-icon">📈</div>
-                <h3>Inventory Reports</h3>
-                <p>View inventory statistics and reports</p>
-                <a href="#" class="btn">View Reports</a>
-            </div>
+            <% if (errors && errors.length > 0) { %>
+                <div class="error-message">
+                    <ul><% errors.forEach(error => { %><li><%= error.msg || error %></li><% }) %></ul>
+                </div>
+            <% } %>
             
-            <div class="management-card">
-                <div class="management-icon">⚙️</div>
-                <h3>System Settings</h3>
-                <p>Configure inventory system settings</p>
-                <a href="#" class="btn">Settings</a>
+            <div class="management-links">
+                <div class="link-card">
+                    <h2>Add New Classification</h2>
+                    <p>Create a new vehicle classification</p>
+                    <a href="/inv/add-classification" class="btn">Add Classification</a>
+                </div>
+                <div class="link-card">
+                    <h2>Add New Inventory</h2>
+                    <p>Add a new vehicle to inventory</p>
+                    <a href="/inv/add-inventory" class="btn">Add Vehicle</a>
+                </div>
             </div>
-        </div>
+        </main>
         
-        <div style="margin-top: 40px; padding: 25px; background: #e8f4fc; border-radius: 10px;">
-            <h3>CSE340 Assignment 3 - Inventory Management System</h3>
-            <p>This inventory management page demonstrates the backend capabilities for:</p>
-            <ul style="text-align: left; margin: 15px 0; padding-left: 20px;">
-                <li>Vehicle inventory tracking</li>
-                <li>Classification management</li>
-                <li>Database operations (CRUD)</li>
-                <li>User authentication (for future development)</li>
-                <li>Data validation and error handling</li>
-            </ul>
-        </div>
+        <%- include('../partials/footer') %>
     </div>
-    
-    <footer>
-        <p>&copy; 2025 CSE Motors - CSE340 Assignment 3</p>
-        <p><a href="/trigger-error" style="color: #e74c3c;">[Test 500 Error - Assignment 3 Requirement]</a></p>
-    </footer>
 </body>
 </html>

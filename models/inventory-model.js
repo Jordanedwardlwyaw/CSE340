@@ -1,21 +1,7 @@
-// Updated Mock data with comprehensive classification data
 const mockData = {
   vehicles: [
     // ===== CLASSIC CARS (ID 1) =====
-    {
-      inv_id: 1,
-      inv_make: "DMC",
-      inv_model: "Delorean",
-      inv_year: 1982,
-      inv_description: "The iconic time-traveling sports car with gull-wing doors. Made famous by Back to the Future movies.",
-      inv_image: "https://images.unsplash.com/photo-1519241047957-be3d40d3c197?w=800&auto=format&fit=crop&q=80",
-      inv_thumbnail: "https://images.unsplash.com/photo-1519241047957-be3d40d3c197?w=400&auto=format&fit=crop&q=80",
-      inv_price: 85000,
-      inv_miles: 12500,
-      inv_color: "Stainless Steel",
-      classification_id: 1,
-      classification_name: "Classic Cars"
-    },
+  
     {
       inv_id: 2,
       inv_make: "Chevrolet",
@@ -204,20 +190,7 @@ const mockData = {
       classification_id: 4,
       classification_name: "Sedans"
     },
-    {
-      inv_id: 6,
-      inv_make: "BMW",
-      inv_model: "5 Series",
-      inv_year: 2023,
-      inv_description: "Luxury sedan with twin-power turbo engine and live cockpit professional.",
-      inv_image: "https://images.unsplash.com/photo-1555212697-194d092e3b8f?w=800&auto=format&fit=crop&q=80",
-      inv_thumbnail: "https://images.unsplash.com/photo-1555212697-194d092e3b8f?w=400&auto=format&fit=crop&q=80",
-      inv_price: 62500,
-      inv_miles: 8500,
-      inv_color: "Mineral White",
-      classification_id: 4,
-      classification_name: "Sedans"
-    },
+    
     {
       inv_id: 13,
       inv_make: "Mercedes",
@@ -295,7 +268,6 @@ module.exports = {
     return mockData.vehicles.find(v => v.inv_id == id) || mockData.vehicles[0];
   },
 
-  // ADDED THIS FUNCTION - THIS IS WHAT WAS MISSING
   getInventoryById: async (id) => {
     return mockData.vehicles.find(v => v.inv_id == id) || mockData.vehicles[0];
   },
@@ -326,5 +298,70 @@ module.exports = {
   
   getAllVehicles: async () => {
     return mockData.vehicles.slice(0, 6);
+  },
+
+  // NEW FUNCTIONS FOR ASSIGNMENT 4
+  addClassification: async (classification_name) => {
+    try {
+      // Generate new ID
+      const newId = mockData.classifications.length > 0 
+        ? Math.max(...mockData.classifications.map(c => c.classification_id)) + 1 
+        : 1;
+      
+      // Create new classification
+      const newClassification = {
+        classification_id: newId,
+        classification_name: classification_name,
+        classification_description: `${classification_name} vehicles`
+      };
+      
+      // Add to mock data
+      mockData.classifications.push(newClassification);
+      
+      console.log(`✅ Added new classification: ${classification_name} (ID: ${newId})`);
+      return newClassification;
+    } catch (error) {
+      console.error("Mock Model Error: addClassification", error);
+      throw error;
+    }
+  },
+  
+  addInventoryItem: async (inventoryData) => {
+    try {
+      // Generate new ID
+      const newId = mockData.vehicles.length > 0
+        ? Math.max(...mockData.vehicles.map(v => v.inv_id)) + 1
+        : 21;
+      
+      // Find classification name
+      const classification = mockData.classifications.find(
+        c => c.classification_id == inventoryData.classification_id
+      );
+      
+      // Create new vehicle
+      const newVehicle = {
+        inv_id: newId,
+        inv_make: inventoryData.inv_make,
+        inv_model: inventoryData.inv_model,
+        inv_year: parseInt(inventoryData.inv_year),
+        inv_description: inventoryData.inv_description,
+        inv_image: inventoryData.inv_image || "/images/vehicles/no-image.png",
+        inv_thumbnail: inventoryData.inv_thumbnail || "/images/vehicles/no-image-tn.png",
+        inv_price: parseFloat(inventoryData.inv_price),
+        inv_miles: parseInt(inventoryData.inv_miles),
+        inv_color: inventoryData.inv_color,
+        classification_id: parseInt(inventoryData.classification_id),
+        classification_name: classification ? classification.classification_name : "Unknown"
+      };
+      
+      // Add to mock data
+      mockData.vehicles.push(newVehicle);
+      
+      console.log(`✅ Added new vehicle: ${newVehicle.inv_make} ${newVehicle.inv_model} (ID: ${newId})`);
+      return newVehicle;
+    } catch (error) {
+      console.error("Mock Model Error: addInventoryItem", error);
+      throw error;
+    }
   }
 };

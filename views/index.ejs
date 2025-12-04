@@ -346,15 +346,9 @@
         <h1 class="site-title">CSE Motors</h1>
     </header>
 
-    <!-- Navigation -->
+    <!-- Navigation - NOW DYNAMIC -->
     <nav class="main-nav">
-        <ul class="nav-list">
-            <li class="nav-item"><a href="/" class="nav-btn active">Home</a></li>
-            <li class="nav-item"><a href="/inv/type/1" class="nav-btn">Classic Cars</a></li>
-            <li class="nav-item"><a href="/inv/type/4" class="nav-btn">Sedans</a></li>
-            <li class="nav-item"><a href="/inv/type/2" class="nav-btn">SUVs</a></li>
-            <li class="nav-item"><a href="/inv/type/3" class="nav-btn">Trucks</a></li>
-        </ul>
+        <%- nav %>
     </nav>
 
     <!-- Main Content -->
@@ -368,10 +362,8 @@
         <!-- Delorean Section -->
         <section class="delorean-section">
             <div class="delorean-image">
-                <!-- LOCAL IMAGE PATH -->
-                <img src="/images/vehicles/delorean.jpg" 
-                     alt="DMC Delorean"
-                     onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1519241047957-be3d40d3c197?w=800&auto=format&fit=crop&q=80'; this.alt='Delorean - Fallback Image';">
+                <!-- LOCAL IMAGE PATH ONLY -->
+                <img src="/images/vehicles/delorean.jpg" alt="DMC Delorean">
             </div>
             <div class="delorean-content">
                 <h2>DMC Delorean</h2>
@@ -412,37 +404,29 @@
             <div class="upgrade-grid">
                 <div class="upgrade-item">
                     <div class="upgrade-image">
-                        <!-- LOCAL IMAGE PATH -->
-                        <img src="/images/vehicles/upgrades/flux-cap.png" 
-                             alt="Flux Capacitor"
-                             onerror="this.onerror=null; this.src='https://via.placeholder.com/150x100/3498db/ffffff?text=Flux+Capacitor'; this.alt='Flux Capacitor - Fallback';">
+                        <!-- LOCAL IMAGE PATH ONLY -->
+                        <img src="/images/vehicles/upgrades/flux-cap.png" alt="Flux Capacitor">
                     </div>
                     <h3>Flux Capacitor</h3>
                 </div>
                 <div class="upgrade-item">
                     <div class="upgrade-image">
-                        <!-- LOCAL IMAGE PATH -->
-                        <img src="/images/vehicles/upgrades/flame.jpg" 
-                             alt="Flame Decals"
-                             onerror="this.onerror=null; this.src='https://via.placeholder.com/150x100/e74c3c/ffffff?text=Flame+Decals'; this.alt='Flame Decals - Fallback';">
+                        <!-- LOCAL IMAGE PATH ONLY -->
+                        <img src="/images/vehicles/upgrades/flame.jpg" alt="Flame Decals">
                     </div>
                     <h3>Flame Decals</h3>
                 </div>
                 <div class="upgrade-item">
                     <div class="upgrade-image">
-                        <!-- LOCAL IMAGE PATH -->
-                        <img src="/images/vehicles/upgrades/bumper_sticker.jpg" 
-                             alt="Bumper Stickers"
-                             onerror="this.onerror=null; this.src='https://via.placeholder.com/150x100/2ecc71/ffffff?text=Bumper+Stickers'; this.alt='Bumper Stickers - Fallback';">
+                        <!-- LOCAL IMAGE PATH ONLY -->
+                        <img src="/images/vehicles/upgrades/bumper_sticker.jpg" alt="Bumper Stickers">
                     </div>
                     <h3>Bumper Stickers</h3>
                 </div>
                 <div class="upgrade-item">
                     <div class="upgrade-image">
-                        <!-- LOCAL IMAGE PATH -->
-                        <img src="/images/vehicles/upgrades/hub-cap.jpg" 
-                             alt="Hub Caps"
-                             onerror="this.onerror=null; this.src='https://via.placeholder.com/150x100/9b59b6/ffffff?text=Hub+Caps'; this.alt='Hub Caps - Fallback';">
+                        <!-- LOCAL IMAGE PATH ONLY -->
+                        <img src="/images/vehicles/upgrades/hub-cap.jpg" alt="Hub Caps">
                     </div>
                     <h3>Hub Caps</h3>
                 </div>
@@ -458,36 +442,8 @@
     </footer>
 
     <script>
-        // Navigation active state
+        // Image loading debug only
         document.addEventListener('DOMContentLoaded', function() {
-            const currentPath = window.location.pathname;
-            const navButtons = document.querySelectorAll('.nav-btn');
-            
-            // Remove active class from all buttons
-            navButtons.forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            // Add active class based on current URL
-            navButtons.forEach(btn => {
-                const btnHref = btn.getAttribute('href');
-                
-                // Exact match for home
-                if (btnHref === '/' && currentPath === '/') {
-                    btn.classList.add('active');
-                }
-                
-                // Match for classification pages
-                if (currentPath.startsWith('/inv/type/')) {
-                    const currentId = currentPath.split('/').pop();
-                    const btnId = btnHref.split('/').pop();
-                    if (currentId === btnId) {
-                        btn.classList.add('active');
-                    }
-                }
-            });
-            
-            // Debug: Check if images are loading
             const images = document.querySelectorAll('img');
             images.forEach(img => {
                 img.addEventListener('load', function() {
@@ -496,7 +452,7 @@
                 
                 img.addEventListener('error', function() {
                     console.log(`✗ Image failed to load: ${this.src}`);
-                    console.log(`  Trying fallback image...`);
+                    console.log(`  Check if file exists at: public${this.src}`);
                 });
             });
         });
