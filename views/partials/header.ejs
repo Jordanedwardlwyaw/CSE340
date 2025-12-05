@@ -1,4 +1,3 @@
-
 <header>
     <div class="container">
         <div class="logo">
@@ -12,6 +11,15 @@
                 <li><a href="/inv/type/2">SUVs</a></li>
                 <li><a href="/inv/type/3">Trucks</a></li>
                 <li><a href="/inv/detail/1">Delorean Details</a></li>
+                
+                <% if (res.locals.loggedin) { %>
+                    <%# When LOGGED IN: show Welcome link and Logout %>
+                    <li><a href="/account/management">Welcome <%= res.locals.accountData.account_firstname %></a></li>
+                    <li><a href="/account/logout">Logout</a></li>
+                <% } else { %>
+                    <%# When NOT logged in: show My Account (login link) %>
+                    <li><a href="/account/login">My Account</a></li>
+                <% } %>
             </ul>
         </nav>
     </div>
