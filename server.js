@@ -18,24 +18,29 @@ app.use(cookieParser());
 
 // Session configuration
 app.use(session({
-  secret: process.env.SESSION_SECRET || "cse340-secret-key",
+  secret: process.env.SESSION_SECRET || "cse340-secret",
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: false }
+  cookie: { secure: process.env.NODE_ENV === "production" }
 }));
 
-// Flash messages middleware
+// Import utilities
+const utilities = require("./utilities");
+
+// JWT middleware (REQUIRED for Task 2 & 8)
+app.use(utilities.checkJWTToken);
+
+// Flash messages
 app.use((req, res, next) => {
   res.locals.messages = req.session.messages || [];
   delete req.session.messages;
   next();
 });
 
-// Import utilities and controllers
-const utilities = require("./utilities");
+// Import controllers
 const invController = require("./controllers/invController");
 
-// Simple error handler (keep your existing one)
+// Simple error handler
 const handleErrors = (fn) => async (req, res, next) => {
   try {
     await fn(req, res, next);
@@ -45,21 +50,13 @@ const handleErrors = (fn) => async (req, res, next) => {
   }
 };
 
-// Use JWT middleware if available
-if (utilities.checkJWTToken) {
-  app.use(utilities.checkJWTToken);
-} else {
-  // Fallback if checkJWTToken not defined
-  app.use((req, res, next) => {
-    res.locals.loggedin = 0;
-    res.locals.accountData = null;
-    next();
-  });
-}
-
-// Home route
+// Home route - with login-aware navigation
 app.get("/", handleErrors(async (req, res) => {
-  const nav = await utilities.getNav();
+  const nav = await utilities.getNav(
+    null, 
+    res.locals.loggedin || 0, 
+    res.locals.accountData || null
+  );
   res.render("index", {
     title: "Home",
     nav,
@@ -68,130 +65,17 @@ app.get("/", handleErrors(async (req, res) => {
 }));
 
 // Inventory routes
-app.get("/inv", handleErrors(invController.buildManagement));
-app.get("/inv/type/:classificationId", handleErrors(invController.buildByClassificationId));
-app.get("/inv/detail/:invId", handleErrors(invController.buildByInvId));
-
-// Assignment 4 inventory management routes
-app.get("/inv/add-classification", handleErrors(invController.buildAddClassification));
-app.get("/inv/add-inventory", handleErrors(invController.buildAddInventory));
-app.post("/inv/add-classification", handleErrors(invController.addClassification));
-app.post("/inv/add-inventory", handleErrors(invController.addInventory));
+app.use("/inv", require("./routes/inventoryRoute"));
 
 // Account routes
-app.get("/account/login", handleErrors(async (req, res) => {
-  const nav = await utilities.getNav();
-  res.render("account/login", {
-    title: "Login",
-    nav,
-    errors: null,
-    account_email: "",
-  });
-}));
+app.use("/account", require("./routes/accountRoute"));
 
-app.get("/account/register", handleErrors(async (req, res) => {
-  const nav = await utilities.getNav();
-  res.render("account/register", {
-    title: "Register",
-    nav,
-    errors: null,
-    account_firstname: "",
-    account_lastname: "",
-    account_email: "",
-  });
-}));
-
-// Account management route
-app.get("/account", handleErrors(async (req, res) => {
-  const nav = await utilities.getNav();
-  
-  if (!res.locals.accountData) {
-    req.session.messages = ["Please log in to view account management."];
-    return res.redirect("/account/login");
-  }
-  
-  res.render("account/management", {
-    title: "Account Management",
-    nav,
-    errors: null,
-    accountData: res.locals.accountData,
-  });
-}));
-
-// Account update routes
-app.get("/account/update/:accountId", handleErrors(async (req, res) => {
-  const nav = await utilities.getNav();
-  const accountId = req.params.accountId;
-  
-  if (!res.locals.accountData || res.locals.accountData.account_id != accountId) {
-    req.session.messages = ["Please log in to update your account."];
-    return res.redirect("/account/login");
-  }
-  
-  // In a real app, you'd fetch account data from database
-  res.render("account/update", {
-    title: "Update Account",
-    nav,
-    errors: null,
-    accountData: res.locals.accountData,
-  });
-}));
-
-// Logout route
-app.get("/account/logout", handleErrors(async (req, res) => {
-  res.clearCookie("jwt");
-  req.session.messages = ["You have been logged out."];
-  res.redirect("/");
-}));
-
-// POST routes for account actions (simplified for now)
-app.post("/account/login", handleErrors(async (req, res) => {
-  // This would normally authenticate with database
-  req.session.messages = ["Login functionality coming soon."];
-  res.redirect("/account/login");
-}));
-
-app.post("/account/register", handleErrors(async (req, res) => {
-  // This would normally register in database
-  req.session.messages = ["Registration functionality coming soon."];
-  res.redirect("/account/login");
-}));
-
-// Apply authorization middleware to inventory management routes
-// Check if utilities.checkAuthorization exists
-const checkAuth = utilities.checkAuthorization || ((req, res, next) => {
-  if (!res.locals.accountData) {
-    return res.redirect("/account/login");
-  }
-  next();
-});
-
-// Protect inventory management routes
-const inventoryManagementRoutes = [
-  "/inv/management",
-  "/inv/add-classification", 
-  "/inv/add-inventory",
-  "/inv/edit/:invId",
-  "/inv/delete/:invId"
-];
-
-// Apply authorization to inventory management routes
-inventoryManagementRoutes.forEach(route => {
-  app.all(route, (req, res, next) => {
-    if (!res.locals.accountData) {
-      req.session.messages = ["Please log in to access inventory management."];
-      return res.redirect("/account/login");
-    }
-    
-    const accountType = res.locals.accountData.account_type;
-    if (accountType !== "Employee" && accountType !== "Admin") {
-      req.session.messages = ["You must be an employee or administrator to access this page."];
-      return res.redirect("/account/login");
-    }
-    
-    next();
-  });
-});
+// Apply authorization middleware to inventory management routes (REQUIRED for Task 5)
+app.use("/inv/management", utilities.checkAuthorization);
+app.use("/inv/add-classification", utilities.checkAuthorization);
+app.use("/inv/add-inventory", utilities.checkAuthorization);
+app.use("/inv/edit/:invId", utilities.checkAuthorization);
+app.use("/inv/delete/:invId", utilities.checkAuthorization);
 
 // 404 Error Handler
 app.use(handleErrors(async (req, res) => {
@@ -222,6 +106,4 @@ app.listen(port, () => {
   console.log(`🏠 Home: http://localhost:${port}/`);
   console.log(`👤 Login: http://localhost:${port}/account/login`);
   console.log(`📦 Inventory: http://localhost:${port}/inv`);
-  console.log(`👤 Register: http://localhost:${port}/account/register`);
-  console.log(`⚙️ Account Management: http://localhost:${port}/account`);
 });

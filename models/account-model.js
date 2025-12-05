@@ -4,12 +4,17 @@ const accountModel = {};
 
 /* *****************************
  * Register new account
- * USING PARAMETERIZED QUERIES (REQUIRED for prepared statements)
+ * USING PARAMETERIZED QUERIES
  * **************************** */
 accountModel.registerAccount = async function (account_firstname, account_lastname, account_email, account_password) {
   try {
     const sql = "INSERT INTO account (account_firstname, account_lastname, account_email, account_password, account_type) VALUES ($1, $2, $3, $4, 'Client') RETURNING *";
-    const result = await pool.query(sql, [account_firstname, account_lastname, account_email, account_password]);
+    const result = await pool.query(sql, [
+      account_firstname,
+      account_lastname,
+      account_email,
+      account_password
+    ]);
     return result.rows[0];
   } catch (error) {
     console.error("registerAccount error:", error);
@@ -34,7 +39,7 @@ accountModel.getAccountByEmail = async function (account_email) {
 
 /* *****************************
  * Get account by ID
- * USING PARAMETERIZED QUERIES (REQUIRED for update functionality)
+ * USING PARAMETERIZED QUERIES
  * **************************** */
 accountModel.getAccountById = async function (account_id) {
   try {
@@ -49,12 +54,17 @@ accountModel.getAccountById = async function (account_id) {
 
 /* *****************************
  * Update account information
- * USING PARAMETERIZED QUERIES (REQUIRED for prepared statements)
+ * USING PARAMETERIZED QUERIES
  * **************************** */
 accountModel.updateAccount = async function (account_id, account_firstname, account_lastname, account_email) {
   try {
     const sql = "UPDATE account SET account_firstname = $1, account_lastname = $2, account_email = $3 WHERE account_id = $4 RETURNING *";
-    const result = await pool.query(sql, [account_firstname, account_lastname, account_email, account_id]);
+    const result = await pool.query(sql, [
+      account_firstname,
+      account_lastname,
+      account_email,
+      account_id
+    ]);
     return result.rowCount > 0;
   } catch (error) {
     console.error("updateAccount error:", error);
@@ -64,7 +74,7 @@ accountModel.updateAccount = async function (account_id, account_firstname, acco
 
 /* *****************************
  * Update password
- * USING PARAMETERIZED QUERIES (REQUIRED for prepared statements)
+ * USING PARAMETERIZED QUERIES
  * **************************** */
 accountModel.updatePassword = async function (account_id, account_password) {
   try {

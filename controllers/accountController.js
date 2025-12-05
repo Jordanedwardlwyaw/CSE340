@@ -31,7 +31,7 @@ accountController.accountLogin = async function (req, res, next) {
     const { account_email, account_password } = req.body;
     const nav = await utilities.getNav();
     
-    // CLIENT-SIDE VALIDATION: Check if fields are empty
+    // SERVER-SIDE VALIDATION
     if (!account_email || !account_password) {
       return res.render("account/login", {
         title: "Login",
@@ -41,7 +41,6 @@ accountController.accountLogin = async function (req, res, next) {
       });
     }
     
-    // SERVER-SIDE VALIDATION: Check if account exists
     const accountData = await accountModel.getAccountByEmail(account_email);
     
     if (!accountData) {
@@ -53,7 +52,6 @@ accountController.accountLogin = async function (req, res, next) {
       });
     }
     
-    // SERVER-SIDE VALIDATION: Check password
     const passwordMatch = await bcrypt.compare(account_password, accountData.account_password);
     
     if (!passwordMatch) {
@@ -65,16 +63,15 @@ accountController.accountLogin = async function (req, res, next) {
       });
     }
     
-    // Create JWT token (REQUIRED for JWT functionality)
+    // CREATE JWT TOKEN
     delete accountData.account_password;
     const accessToken = jwt.sign(accountData, process.env.ACCESS_TOKEN_SECRET, { expiresIn: 3600 });
     
-    // Set cookie
-    if (process.env.NODE_ENV === "development") {
-      res.cookie("jwt", accessToken, { httpOnly: true, maxAge: 3600 * 1000 });
-    } else {
-      res.cookie("jwt", accessToken, { httpOnly: true, secure: true, maxAge: 3600 * 1000 });
-    }
+    res.cookie("jwt", accessToken, { 
+      httpOnly: true, 
+      maxAge: 3600 * 1000,
+      secure: process.env.NODE_ENV === "production"
+    });
     
     return res.redirect("/account");
   } catch (error) {
@@ -109,32 +106,33 @@ accountController.registerAccount = async function (req, res, next) {
     const { account_firstname, account_lastname, account_email, account_password } = req.body;
     const nav = await utilities.getNav();
     
-    // CLIENT-SIDE VALIDATION: Check if fields are empty
-    if (!account_firstname || !account_lastname || !account_email || !account_password) {
+    // SERVER-SIDE VALIDATION
+    const errors = [];
+    
+    if (!account_firstname) errors.push({ msg: "First name is required." });
+    if (!account_lastname) errors.push({ msg: "Last name is required." });
+    if (!account_email) errors.push({ msg: "Email is required." });
+    if (!account_password) errors.push({ msg: "Password is required." });
+    
+    if (account_password && !utilities.validatePassword(account_password)) {
+      errors.push({ msg: "Password must be at least 12 characters with uppercase, lowercase, number, and special character." });
+    }
+    
+    if (account_email && !utilities.validateEmail(account_email)) {
+      errors.push({ msg: "Please enter a valid email address." });
+    }
+    
+    if (errors.length > 0) {
       return res.render("account/register", {
         title: "Register",
         nav,
-        errors: [{ msg: "Please fill in all fields." }],
+        errors,
         account_firstname,
         account_lastname,
         account_email,
       });
     }
     
-    // SERVER-SIDE VALIDATION: Password requirements
-    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$/;
-    if (!passwordRegex.test(account_password)) {
-      return res.render("account/register", {
-        title: "Register",
-        nav,
-        errors: [{ msg: "Password must be at least 12 characters with uppercase, lowercase, number, and special character." }],
-        account_firstname,
-        account_lastname,
-        account_email,
-      });
-    }
-    
-    // SERVER-SIDE VALIDATION: Check if email exists
     const existingAccount = await accountModel.getAccountByEmail(account_email);
     
     if (existingAccount) {
@@ -148,10 +146,8 @@ accountController.registerAccount = async function (req, res, next) {
       });
     }
     
-    // Hash password
     const hashedPassword = await bcrypt.hash(account_password, 10);
     
-    // Register account
     const regResult = await accountModel.registerAccount(
       account_firstname,
       account_lastname,
@@ -172,7 +168,7 @@ accountController.registerAccount = async function (req, res, next) {
 
 /* ****************************************
  * Deliver account management view
- * WITH DIFFERENT GREETINGS BASED ON ACCOUNT TYPE (REQUIRED)
+ * WITH DIFFERENT GREETINGS BASED ON ACCOUNT TYPE
  * *************************************** */
 accountController.buildManagement = async function (req, res, next) {
   try {
@@ -190,6 +186,8 @@ accountController.buildManagement = async function (req, res, next) {
       nav,
       errors: null,
       accountData: accountData,
+      // Pass account type for conditional rendering
+      accountType: accountData.account_type
     });
   } catch (error) {
     next(error);
@@ -235,18 +233,27 @@ accountController.updateAccount = async function (req, res, next) {
     const { account_id, account_firstname, account_lastname, account_email } = req.body;
     const nav = await utilities.getNav();
     
-    // SERVER-SIDE VALIDATION: Check if fields are empty
-    if (!account_firstname || !account_lastname || !account_email) {
+    // SERVER-SIDE VALIDATION
+    const errors = [];
+    
+    if (!account_firstname) errors.push({ msg: "First name is required." });
+    if (!account_lastname) errors.push({ msg: "Last name is required." });
+    if (!account_email) errors.push({ msg: "Email is required." });
+    
+    if (account_email && !utilities.validateEmail(account_email)) {
+      errors.push({ msg: "Please enter a valid email address." });
+    }
+    
+    if (errors.length > 0) {
       const accountData = await accountModel.getAccountById(account_id);
       return res.render("account/update", {
         title: "Update Account",
         nav,
-        errors: [{ msg: "Please fill in all fields." }],
+        errors,
         accountData: { ...accountData, account_firstname, account_lastname, account_email },
       });
     }
     
-    // SERVER-SIDE VALIDATION: Check if email is being changed and exists
     const existingAccount = await accountModel.getAccountByEmail(account_email);
     if (existingAccount && existingAccount.account_id != account_id) {
       const accountData = await accountModel.getAccountById(account_id);
@@ -258,7 +265,6 @@ accountController.updateAccount = async function (req, res, next) {
       });
     }
     
-    // Update account
     const updateResult = await accountModel.updateAccount(
       account_id,
       account_firstname,
@@ -267,18 +273,16 @@ accountController.updateAccount = async function (req, res, next) {
     );
     
     if (updateResult) {
-      // Get updated account data
       const updatedAccount = await accountModel.getAccountById(account_id);
-      
-      // Update JWT token
       delete updatedAccount.account_password;
+      
       const accessToken = jwt.sign(updatedAccount, process.env.ACCESS_TOKEN_SECRET, { expiresIn: 3600 });
       
-      if (process.env.NODE_ENV === "development") {
-        res.cookie("jwt", accessToken, { httpOnly: true, maxAge: 3600 * 1000 });
-      } else {
-        res.cookie("jwt", accessToken, { httpOnly: true, secure: true, maxAge: 3600 * 1000 });
-      }
+      res.cookie("jwt", accessToken, { 
+        httpOnly: true, 
+        maxAge: 3600 * 1000,
+        secure: process.env.NODE_ENV === "production"
+      });
       
       req.session.messages = ["Account updated successfully."];
       return res.redirect("/account");
@@ -298,22 +302,27 @@ accountController.updatePassword = async function (req, res, next) {
     const { account_id, account_password } = req.body;
     const nav = await utilities.getNav();
     
-    // SERVER-SIDE VALIDATION: Password requirements
-    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$/;
-    if (!passwordRegex.test(account_password)) {
+    // SERVER-SIDE VALIDATION
+    const errors = [];
+    
+    if (!account_password) {
+      errors.push({ msg: "Password is required." });
+    } else if (!utilities.validatePassword(account_password)) {
+      errors.push({ msg: "Password must be at least 12 characters with uppercase, lowercase, number, and special character." });
+    }
+    
+    if (errors.length > 0) {
       const accountData = await accountModel.getAccountById(account_id);
       return res.render("account/update", {
         title: "Update Account",
         nav,
-        errors: [{ msg: "Password must be at least 12 characters with uppercase, lowercase, number, and special character." }],
+        errors,
         accountData,
       });
     }
     
-    // Hash new password
     const hashedPassword = await bcrypt.hash(account_password, 10);
     
-    // Update password
     const updateResult = await accountModel.updatePassword(account_id, hashedPassword);
     
     if (updateResult) {
@@ -328,18 +337,11 @@ accountController.updatePassword = async function (req, res, next) {
 };
 
 /* ****************************************
- * Process logout (REQUIRED for logout functionality)
+ * Process logout
  * *************************************** */
 accountController.logout = async function (req, res, next) {
   try {
-    // Clear JWT cookie
     res.clearCookie("jwt");
-    
-    // Clear session data
-    if (req.session) {
-      req.session.destroy();
-    }
-    
     req.session.messages = ["You have been logged out."];
     res.redirect("/");
   } catch (error) {
