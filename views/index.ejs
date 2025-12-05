@@ -78,6 +78,52 @@
             background-color: #e74c3c;
         }
         
+        /* Account Navigation - ADDED THIS SECTION */
+        .account-nav {
+            background: #2c3e50;
+            padding: 10px 0;
+            text-align: center;
+            border-top: 1px solid #3a506b;
+        }
+        
+        .account-links {
+            display: inline-flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .account-link {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            background: #3498db;
+            transition: background-color 0.3s;
+            font-size: 14px;
+            display: inline-block;
+        }
+        
+        .account-link:hover {
+            background: #2980b9;
+        }
+        
+        .account-link.welcome {
+            background: #2ecc71;
+        }
+        
+        .account-link.welcome:hover {
+            background: #27ae60;
+        }
+        
+        .account-link.logout {
+            background: #e74c3c;
+        }
+        
+        .account-link.logout:hover {
+            background: #c0392b;
+        }
+        
         /* Main Content */
         main {
             padding: 20px;
@@ -301,6 +347,17 @@
             .upgrade-grid {
                 grid-template-columns: 1fr;
             }
+            
+            .account-links {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+            
+            .account-link {
+                width: 80%;
+                text-align: center;
+            }
         }
         
         @media (min-width: 769px) {
@@ -350,6 +407,26 @@
     <nav class="main-nav">
         <%- nav %>
     </nav>
+
+    <!-- Account Navigation - ADDED THIS SECTION -->
+    <div class="account-nav">
+        <div class="account-links">
+            <% if (locals.loggedin && locals.accountData) { %>
+                <!-- Logged in: Show Welcome and Logout links -->
+                <a href="/account" class="account-link welcome">
+                    Welcome <%= locals.accountData.account_firstname %>
+                </a>
+                <a href="/account/logout" class="account-link logout">
+                    Logout
+                </a>
+            <% } else { %>
+                <!-- Not logged in: Show My Account link -->
+                <a href="/account/login" class="account-link">
+                    My Account
+                </a>
+            <% } %>
+        </div>
+    </div>
 
     <!-- Main Content -->
     <main>
