@@ -1,0 +1,40 @@
+<% if (messages && messages.length > 0) { %>
+    <div class="message-container">
+        <% messages.forEach(message => { %>
+            <div class="message <%= message.type || 'notice' %>">
+                <%= message.text || message %>
+            </div>
+        <% }); %>
+    </div>
+<% } %>
+
+<style>
+    .message-container {
+        margin: 1rem 0;
+    }
+    
+    .message {
+        padding: 1rem;
+        margin: 0.5rem 0;
+        border-radius: 4px;
+        border: 1px solid transparent;
+    }
+    
+    .message.notice {
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+        color: #155724;
+    }
+    
+    .message.error {
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+        color: #721c24;
+    }
+    
+    .message.warning {
+        background-color: #fff3cd;
+        border-color: #ffeaa7;
+        color: #856404;
+    }
+</style>

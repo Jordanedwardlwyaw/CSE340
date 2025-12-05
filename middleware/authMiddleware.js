@@ -1,22 +1,46 @@
-// Static files
-app.use(express.static(path.join(__dirname, "public")));
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
-// ADD THIS MIDDLEWARE - Make nav available to all views
-app.use((req, res, next) => {
-  res.locals.nav = [
-    { classification_name: "Classic", classification_id: 1 },
-    { classification_name: "Sports", classification_id: 2 },
-    { classification_name: "SUV", classification_id: 3 },
-    { classification_name: "Truck", classification_id: 4 },
-    { classification_name: "Used", classification_id: 5 }
-  ];
+/* ***************************
+ * Middleware to check JWT token
+ *************************** */
+const checkJWTToken = (req, res, next) => {
+  if (req.cookies.jwt) {
+    jwt.verify(
+      req.cookies.jwt,
+      process.env.ACCESS_TOKEN_SECRET,
+      function (err, accountData) {
+        if (err) {
+          req.flash("notice", "Please log in.");
+          res.clearCookie("jwt");
+          return res.redirect("/account/login");
+        }
+        res.locals.accountData = accountData;
+        res.locals.loggedin = 1;
+        next();
+      }
+    );
+  } else {
+    next();
+  }
+};
+
+/* ***************************
+ * Middleware to check authorization for inventory management
+ *************************** */
+const checkAuthorization = (req, res, next) => {
+  if (!res.locals.accountData) {
+    req.flash("notice", "Please log in to access this page.");
+    return res.redirect("/account/login");
+  }
+  
+  const accountType = res.locals.accountData.account_type;
+  if (accountType !== "Employee" && accountType !== "Admin") {
+    req.flash("notice", "You must be an employee or administrator to access this page.");
+    return res.redirect("/account/login");
+  }
+  
   next();
-});
+};
 
-// Routes
-app.get("/", (req, res) => {
-  res.render("index", {
-    title: "CSE Motors - Home"
-    // Remove nav from here since it's now in res.locals
-  });
-});
+module.exports = { checkJWTToken, checkAuthorization };

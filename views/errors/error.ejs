@@ -3,122 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %> - CSE Motors</title>
+    <title><%= title %></title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 800px;
+            margin: 0;
+            padding: 40px;
+            background-color: #f5f5f5;
+        }
+        .error-container {
+            max-width: 600px;
             margin: 0 auto;
-            padding: 20px;
-            background: #f8f9fa;
-        }
-        
-        header {
-            background: #333;
-            color: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 30px;
-        }
-        
-        h1 {
-            color: #dc3545;
-            margin-bottom: 20px;
-        }
-        
-        .error-code {
-            font-size: 4rem;
-            font-weight: bold;
-            color: #6c757d;
-            margin: 20px 0;
-        }
-        
-        .error-message {
             background: white;
-            padding: 30px;
+            padding: 40px;
             border-radius: 8px;
-            border-left: 4px solid #dc3545;
-            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
         }
-        
-        .error-actions {
+        h1 {
+            color: #e74c3c;
+            font-size: 48px;
+            margin: 0;
+        }
+        h2 {
+            color: #2c3e50;
+            margin-top: 20px;
+        }
+        p {
+            color: #7f8c8d;
+            line-height: 1.6;
+        }
+        .nav-links {
             margin-top: 30px;
         }
-        
-        .error-actions a {
+        .btn {
             display: inline-block;
-            background: #007bff;
+            background: #3498db;
             color: white;
             padding: 10px 20px;
             text-decoration: none;
             border-radius: 4px;
-            margin-right: 10px;
+            margin: 0 10px;
         }
-        
-        .error-actions a:hover {
-            background: #0056b3;
-        }
-        
-        nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        
-        nav li {
-            display: inline;
-        }
-        
-        nav a {
-            color: white;
-            text-decoration: none;
-            padding: 8px 15px;
-            background: #444;
-            border-radius: 4px;
-            display: inline-block;
-        }
-        
-        nav a:hover {
-            background: #666;
-        }
-        
-        footer {
-            margin-top: 40px;
-            text-align: center;
-            color: #666;
-            padding-top: 20px;
-            border-top: 1px solid #ddd;
+        .btn:hover {
+            background: #2980b9;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>CSE Motors</h1>
-        <nav>
-            <%- nav %>
-        </nav>
-    </header>
-    
-    <main>
-        <div class="error-code"><%= status || 500 %></div>
-        <h1><%= title %></h1>
+    <div class="error-container">
+        <h1><%= status %></h1>
+        <h2><%= title %></h2>
+        <p><strong>Error Message:</strong> <%= message %></p>
+        <p>We apologize for the inconvenience. Please try again or contact support if the problem persists.</p>
         
-        <div class="error-message">
-            <p><strong>Error Message:</strong> <%= message %></p>
-            <p>We apologize for the inconvenience. Please try again or contact support if the problem persists.</p>
+        <div class="nav-links">
+            <a href="/" class="btn">Go to Homepage</a>
+            <a href="javascript:history.back()" class="btn">Go Back</a>
         </div>
-        
-        <div class="error-actions">
-            <a href="/">Go to Homepage</a>
-            <a href="javascript:history.back()">Go Back</a>
-        </div>
-    </main>
-    
-    <footer>
-        <p>&copy; 2023 CSE Motors | <a href="/inv/trigger-error">Test Error Handling</a></p>
-    </footer>
+    </div>
 </body>
 </html>

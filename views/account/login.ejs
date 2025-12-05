@@ -1,31 +1,221 @@
-<section class="frame">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> - CSE Motors</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: #1a237e;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            margin: 0 0 15px 0;
+            color: white;
+        }
+        
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        nav li {
+            display: inline;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            background: #283593;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        
+        nav a:hover {
+            background: #3949ab;
+        }
+        
+        .frame {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-top: 20px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .notice {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .notice ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .notice li {
+            margin: 5px 0;
+        }
+        
+        .form-container {
+            margin-top: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        input[type="submit"] {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        input[type="submit"]:hover {
+            background: #2980b9;
+        }
+        
+        #registration {
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        #registration a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        
+        #registration a:hover {
+            text-decoration: underline;
+        }
+        
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #666;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+        
+        footer a {
+            color: #0066cc;
+            text-decoration: none;
+            padding: 0 5px;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .frame {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>CSE Motors</h1>
+        <nav>
+            <%- nav %>
+        </nav>
+    </header>
+    
+    <div class="frame">
+        <h1><%= title %></h1>
 
-    <h1><%= title %></h1>
-
-    <%- messages() %>
-
-    <% if (errors) { %>
-        <ul class="notice">
-        <% errors.array().forEach(error => { %>
-            <li><%= error.msg %></li>
-        <%  }) %>
-        </ul>
+        <!-- Messages display -->
+        <% if (messages && messages.length > 0) { %>
+            <div class="notice">
+                <% messages.forEach(message => { %>
+                    <p><%= message %></p>
+                <% }) %>
+            </div>
         <% } %>
 
-    <form action="/account/login" method="post" class="form-container" id="loginForm">
+        <!-- Error display -->
+        <% if (errors && errors.length > 0) { %>
+            <div class="notice">
+                <ul>
+                    <% errors.forEach(error => { %>
+                        <li><%= error.msg || error %></li>
+                    <% }) %>
+                </ul>
+            </div>
+        <% } %>
 
-        <label for="account_email">Email</label><br>
-        <input type="email" id="account_email" name="account_email" required value="<%= locals.account_email %>"><br>
+        <form action="/account/login" method="post" class="form-container" id="loginForm">
+            <label for="account_email">Email</label>
+            <input type="email" id="account_email" name="account_email" required value="<%= locals.account_email || '' %>">
 
-        <label for="account_password">Password</label><br>
-        <input type="password" id="account_password" name="account_password" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$" required><br>
+            <label for="account_password">Password</label>
+            <input type="password" id="account_password" name="account_password" required>
 
-        <input type="submit" value="login">
+            <input type="submit" value="Login">
 
-        <p id="registration">
-            No account? <a href="/account/register">Sign-up</a>
+            <p id="registration">
+                No account? <a href="/account/register">Sign-up</a>
+            </p>
+        </form>
+    </div>
+    
+    <footer>
+        <p>© 2023 CSE Motors</p>
+        <p>
+            <a href="/">Home</a> | 
+            <a href="/account/register">Register</a>
         </p>
-
-    </form>
-
-</section>
+    </footer>
+</body>
+</html>
