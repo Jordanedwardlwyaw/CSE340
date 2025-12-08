@@ -255,6 +255,24 @@ invCont.addInventory = async function (req, res, next) {
   } catch (error) {
     next(error);
   }
+};// Add this function to your invController if it doesn't exist
+invCont.buildInventoryManagement = async function (req, res, next) {
+  try {
+    // Use the existing buildManagement function
+    return await invCont.buildManagement(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Also add this if buildVehicleDetail doesn't exist
+invCont.buildVehicleDetail = async function (req, res, next) {
+  try {
+    // Use the existing buildByInventoryId function
+    return await invCont.buildByInventoryId(req, res, next);
+  } catch (error) {
+    next(error);
+  }
 };
 
 module.exports = invCont;

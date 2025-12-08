@@ -1,16 +1,16 @@
-<header>
-  <nav>
-    <ul>
-      <li><a href="/" title="Home page">Home</a></li>
-      <li><a href="/inv" title="View our inventory">Inventory</a></li>
-      <% if (locals.accountData && locals.accountData.account_id) { %>
-        <!-- Logged in: Show Welcome, Hide My Account, Show Logout -->
-        <li><a href="/account" title="Manage your account">Welcome <%= locals.accountData.account_firstname %></a></li>
-        <li><a href="/account/logout" title="Logout">Logout</a></li>
-      <% } else { %>
-        <!-- Not logged in: Show My Account, Hide Welcome/Logout -->
-        <li><a href="/account/login" title="Login or register">My Account</a></li>
-      <% } %>
-    </ul>
-  </nav>
-</header>
+<nav>
+  <!-- Other navigation links... -->
+  
+  <div class="account-links">
+    <% if (locals.loggedin) { %>
+      <!-- Show when logged in -->
+      <a href="/account/" class="welcome-link">
+        Welcome <%= locals.account_firstname || locals.accountData?.account_firstname %>
+      </a>
+      <a href="/account/logout">Logout</a>
+    <% } else { %>
+      <!-- Show when NOT logged in -->
+      <a href="/account/login">My Account</a>
+    <% } %>
+  </div>
+</nav>

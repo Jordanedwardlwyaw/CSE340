@@ -1,7 +1,6 @@
 const mockData = {
   vehicles: [
     // ===== CLASSIC CARS (ID 1) =====
-  
     {
       inv_id: 2,
       inv_make: "Chevrolet",
@@ -190,7 +189,6 @@ const mockData = {
       classification_id: 4,
       classification_name: "Sedans"
     },
-    
     {
       inv_id: 13,
       inv_make: "Mercedes",
@@ -259,109 +257,133 @@ const mockData = {
   ]
 };
 
-module.exports = {
-  getInventoryByClassificationId: async (id) => {
-    return mockData.vehicles.filter(v => v.classification_id == id);
-  },
-  
-  getVehicleById: async (id) => {
-    return mockData.vehicles.find(v => v.inv_id == id) || mockData.vehicles[0];
-  },
+// Initialize model object
+const invModel = {};
 
-  getInventoryById: async (id) => {
-    return mockData.vehicles.find(v => v.inv_id == id) || mockData.vehicles[0];
-  },
-  
-  getClassifications: async () => {
+// Add debug logging to getClassifications
+invModel.getClassifications = async () => {
+  try {
+    console.log("📂 invModel.getClassifications() called");
+    console.log(`   Returning ${mockData.classifications.length} classifications`);
+    
+    // Log each classification being returned
+    mockData.classifications.forEach((c, i) => {
+      console.log(`   ${i+1}. ${c.classification_name} (ID: ${c.classification_id})`);
+    });
+    
     return mockData.classifications;
-  },
-  
-  getClassificationById: async (id) => {
-    return mockData.classifications.find(c => c.classification_id == id);
-  },
-  
-  getFeaturedVehicles: async () => {
-    const classicCars = mockData.vehicles
-      .filter(v => v.classification_id === 1)
-      .slice(0, 2);
-    
-    const suvs = mockData.vehicles
-      .filter(v => v.classification_id === 2)
-      .slice(0, 2);
-    
-    const sedans = mockData.vehicles
-      .filter(v => v.classification_id === 4)
-      .slice(0, 2);
-    
-    return [...classicCars, ...suvs, ...sedans];
-  },
-  
-  getAllVehicles: async () => {
-    return mockData.vehicles.slice(0, 6);
-  },
-
-  // NEW FUNCTIONS FOR ASSIGNMENT 4
-  addClassification: async (classification_name) => {
-    try {
-      // Generate new ID
-      const newId = mockData.classifications.length > 0 
-        ? Math.max(...mockData.classifications.map(c => c.classification_id)) + 1 
-        : 1;
-      
-      // Create new classification
-      const newClassification = {
-        classification_id: newId,
-        classification_name: classification_name,
-        classification_description: `${classification_name} vehicles`
-      };
-      
-      // Add to mock data
-      mockData.classifications.push(newClassification);
-      
-      console.log(`✅ Added new classification: ${classification_name} (ID: ${newId})`);
-      return newClassification;
-    } catch (error) {
-      console.error("Mock Model Error: addClassification", error);
-      throw error;
-    }
-  },
-  
-  addInventoryItem: async (inventoryData) => {
-    try {
-      // Generate new ID
-      const newId = mockData.vehicles.length > 0
-        ? Math.max(...mockData.vehicles.map(v => v.inv_id)) + 1
-        : 21;
-      
-      // Find classification name
-      const classification = mockData.classifications.find(
-        c => c.classification_id == inventoryData.classification_id
-      );
-      
-      // Create new vehicle
-      const newVehicle = {
-        inv_id: newId,
-        inv_make: inventoryData.inv_make,
-        inv_model: inventoryData.inv_model,
-        inv_year: parseInt(inventoryData.inv_year),
-        inv_description: inventoryData.inv_description,
-        inv_image: inventoryData.inv_image || "/images/vehicles/no-image.png",
-        inv_thumbnail: inventoryData.inv_thumbnail || "/images/vehicles/no-image-tn.png",
-        inv_price: parseFloat(inventoryData.inv_price),
-        inv_miles: parseInt(inventoryData.inv_miles),
-        inv_color: inventoryData.inv_color,
-        classification_id: parseInt(inventoryData.classification_id),
-        classification_name: classification ? classification.classification_name : "Unknown"
-      };
-      
-      // Add to mock data
-      mockData.vehicles.push(newVehicle);
-      
-      console.log(`✅ Added new vehicle: ${newVehicle.inv_make} ${newVehicle.inv_model} (ID: ${newId})`);
-      return newVehicle;
-    } catch (error) {
-      console.error("Mock Model Error: addInventoryItem", error);
-      throw error;
-    }
+  } catch (error) {
+    console.error("❌ Error in getClassifications:", error);
+    return [];
   }
 };
+
+// Other functions remain the same
+invModel.getInventoryByClassificationId = async (id) => {
+  console.log(`📂 Getting vehicles for classification ID: ${id}`);
+  const result = mockData.vehicles.filter(v => v.classification_id == id);
+  console.log(`   Found ${result.length} vehicles`);
+  return result;
+};
+
+invModel.getVehicleById = async (id) => {
+  console.log(`📂 Getting vehicle by ID: ${id}`);
+  const vehicle = mockData.vehicles.find(v => v.inv_id == id) || mockData.vehicles[0];
+  console.log(`   Found: ${vehicle.inv_make} ${vehicle.inv_model}`);
+  return vehicle;
+};
+
+invModel.getInventoryById = async (id) => {
+  return mockData.vehicles.find(v => v.inv_id == id) || mockData.vehicles[0];
+};
+
+invModel.getClassificationById = async (id) => {
+  return mockData.classifications.find(c => c.classification_id == id);
+};
+
+invModel.getFeaturedVehicles = async () => {
+  const classicCars = mockData.vehicles
+    .filter(v => v.classification_id === 1)
+    .slice(0, 2);
+  
+  const suvs = mockData.vehicles
+    .filter(v => v.classification_id === 2)
+    .slice(0, 2);
+  
+  const sedans = mockData.vehicles
+    .filter(v => v.classification_id === 4)
+    .slice(0, 2);
+  
+  return [...classicCars, ...suvs, ...sedans];
+};
+
+invModel.getAllVehicles = async () => {
+  return mockData.vehicles.slice(0, 6);
+};
+
+// NEW FUNCTIONS FOR ASSIGNMENT 4
+invModel.addClassification = async (classification_name) => {
+  try {
+    // Generate new ID
+    const newId = mockData.classifications.length > 0 
+      ? Math.max(...mockData.classifications.map(c => c.classification_id)) + 1 
+      : 1;
+    
+    // Create new classification
+    const newClassification = {
+      classification_id: newId,
+      classification_name: classification_name,
+      classification_description: `${classification_name} vehicles`
+    };
+    
+    // Add to mock data
+    mockData.classifications.push(newClassification);
+    
+    console.log(`✅ Added new classification: ${classification_name} (ID: ${newId})`);
+    return newClassification;
+  } catch (error) {
+    console.error("Mock Model Error: addClassification", error);
+    throw error;
+  }
+};
+
+invModel.addInventoryItem = async (inventoryData) => {
+  try {
+    // Generate new ID
+    const newId = mockData.vehicles.length > 0
+      ? Math.max(...mockData.vehicles.map(v => v.inv_id)) + 1
+      : 21;
+    
+    // Find classification name
+    const classification = mockData.classifications.find(
+      c => c.classification_id == inventoryData.classification_id
+    );
+    
+    // Create new vehicle
+    const newVehicle = {
+      inv_id: newId,
+      inv_make: inventoryData.inv_make,
+      inv_model: inventoryData.inv_model,
+      inv_year: parseInt(inventoryData.inv_year),
+      inv_description: inventoryData.inv_description,
+      inv_image: inventoryData.inv_image || "/images/vehicles/no-image.png",
+      inv_thumbnail: inventoryData.inv_thumbnail || "/images/vehicles/no-image-tn.png",
+      inv_price: parseFloat(inventoryData.inv_price),
+      inv_miles: parseInt(inventoryData.inv_miles),
+      inv_color: inventoryData.inv_color,
+      classification_id: parseInt(inventoryData.classification_id),
+      classification_name: classification ? classification.classification_name : "Unknown"
+    };
+    
+    // Add to mock data
+    mockData.vehicles.push(newVehicle);
+    
+    console.log(`✅ Added new vehicle: ${newVehicle.inv_make} ${newVehicle.inv_model} (ID: ${newId})`);
+    return newVehicle;
+  } catch (error) {
+    console.error("Mock Model Error: addInventoryItem", error);
+    throw error;
+  }
+};
+
+module.exports = invModel;

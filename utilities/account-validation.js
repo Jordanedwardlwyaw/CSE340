@@ -1,6 +1,8 @@
 const utilities = require("./");
 const { body, validationResult } = require("express-validator");
 const accountModel = require("../models/account-model");
+
+// Initialize validate object
 const validate = {};
 
 /* *****************************
@@ -56,9 +58,8 @@ validate.updatePasswordRules = () => {
  * Check update data and return errors or continue
  * **************************** */
 validate.checkUpdateData = async (req, res, next) => {
-  const { account_id, account_email } = req.body;
-  let errors = [];
-  errors = validationResult(req);
+  const { account_id } = req.body;
+  let errors = validationResult(req);
   
   if (!errors.isEmpty()) {
     const nav = await utilities.getNav();
@@ -81,8 +82,7 @@ validate.checkUpdateData = async (req, res, next) => {
  * **************************** */
 validate.checkUpdatePassword = async (req, res, next) => {
   const { account_id } = req.body;
-  let errors = [];
-  errors = validationResult(req);
+  let errors = validationResult(req);
   
   if (!errors.isEmpty()) {
     const nav = await utilities.getNav();

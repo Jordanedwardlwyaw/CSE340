@@ -189,6 +189,30 @@
                 width: 100px;
             }
         }
+        
+        /* Error message styles */
+        .error-message {
+            background-color: #ffebee;
+            color: #c62828;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #c62828;
+            margin: 20px 0;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #1a237e;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+        
+        .btn:hover {
+            background-color: #283593;
+        }
     </style>
 </head>
 <body>
@@ -201,7 +225,26 @@
     
     <main>
         <h1><%= title %></h1>
+        
+        <% if (messages && messages.length > 0) { %>
+            <div class="error-message">
+                <% messages.forEach(message => { %>
+                    <p><%= message %></p>
+                <% }); %>
+            </div>
+        <% } %>
+        
+        <% if (errors && errors.length > 0) { %>
+            <div class="error-message">
+                <% errors.forEach(error => { %>
+                    <p><%= error %></p>
+                <% }); %>
+            </div>
+        <% } %>
+        
         <%- detailHTML %>
+        
+        <p><a href="javascript:history.back()" class="btn">Back to Inventory</a></p>
     </main>
     
     <footer>

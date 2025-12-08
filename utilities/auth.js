@@ -1,66 +1,77 @@
+// utilities/auth.js - NEW FILE
 const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
-// Authorization middleware for Employee/Admin only
-const requireAuth = (req, res, next) => {
-  // Check if ACCESS_TOKEN_SECRET is set
-  if (!process.env.ACCESS_TOKEN_SECRET) {
-    console.error('❌ ACCESS_TOKEN_SECRET environment variable is missing');
-    return res.status(500).render("errors/error", {
-      title: "Server Configuration Error - CSE Motors",
-      message: "Server configuration error. Please try again later."
-    });
-  }
-
-  const token = req.cookies.jwt;
-  
-  if (!token) {
-    req.flash('error', 'Please log in to access this page.');
-    return res.redirect('/account/login');
-  }
-
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decodedToken) => {
-    if (err) {
-      console.error('JWT verification error:', err);
-      req.flash('error', 'Invalid or expired session. Please log in again.');
-      return res.redirect('/account/login');
-    }
-
-    // Check if user is Employee or Admin
-    if (decodedToken.account_type === 'Employee' || decodedToken.account_type === 'Admin') {
-      res.locals.loggedin = 1;
-      res.locals.accountData = decodedToken;
-      next();
-    } else {
-      req.flash('error', 'You do not have permission to access this area. Employee or Admin accounts only.');
-      return res.redirect('/account/login');
-    }
-  });
-};
-
-// Optional: Add a less restrictive auth for general users
-const requireAnyAuth = (req, res, next) => {
-  // Check if ACCESS_TOKEN_SECRET is set
-  if (!process.env.ACCESS_TOKEN_SECRET) {
-    res.locals.loggedin = 0;
-    return next();
-  }
-
+/* ****************************************
+ * JWT Authentication Middleware
+ * REQUIRED for Tasks 5, 8
+ **************************************** */
+function checkJWTToken(req, res, next) {
+  console.log("🔐 Checking JWT token...");
   const token = req.cookies.jwt;
   
   if (token) {
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decodedToken) => {
-      if (!err && decodedToken) {
-        res.locals.loggedin = 1;
-        res.locals.accountData = decodedToken;
-      } else {
-        res.locals.loggedin = 0;
-      }
-      next();
-    });
+    try {
+      const decoded = jwt.verify(
+        token,
+        process.env.ACCESS_TOKEN_SECRET || "cse340-secret-key"
+      );
+      
+      // Set user data in res.locals
+      res.locals.loggedin = 1;
+      res.locals.accountData = {
+        account_id: decoded.account_id,
+        account_firstname: decoded.account_firstname,
+        account_lastname: decoded.account_lastname,
+        account_email: decoded.account_email,
+        account_type: decoded.account_type
+      };
+      
+      console.log(`✅ User authenticated: ${decoded.account_firstname}`);
+      
+    } catch (error) {
+      console.error("❌ JWT verification failed:", error.message);
+      res.clearCookie("jwt");
+      res.locals.loggedin = 0;
+      res.locals.accountData = null;
+    }
   } else {
     res.locals.loggedin = 0;
-    next();
+    res.locals.accountData = null;
   }
-};
+  next();
+}
 
-module.exports = { requireAuth, requireAnyAuth };
+/* ****************************************
+ * Authorization Middleware (Employee/Admin only)
+ * REQUIRED for Task 2, 5
+ **************************************** */
+function authorizeRoles(...allowedRoles) {
+  return (req, res, next) => {
+    console.log(`🔐 Checking authorization for roles: ${allowedRoles.join(", ")}`);
+    
+    if (!res.locals.loggedin) {
+      console.log("❌ Not logged in - redirecting to login");
+      if (req.session) {
+        req.session.messages = ["Please log in to access this page."];
+      }
+      return res.redirect("/account/login");
+    }
+    
+    if (!allowedRoles.includes(res.locals.accountData?.account_type)) {
+      console.log(`❌ User type ${res.locals.accountData?.account_type} not allowed`);
+      if (req.session) {
+        req.session.messages = ["You are not authorized to access this page."];
+      }
+      return res.redirect("/account/login");
+    }
+    
+    console.log("✅ Authorization passed");
+    next();
+  };
+}
+
+module.exports = {
+  checkJWTToken,
+  authorizeRoles
+};

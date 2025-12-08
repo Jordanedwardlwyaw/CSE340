@@ -1,178 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %> - CSE Motors</title>
+    <%- include('../partials/head', {title}) %>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
+        .update-forms {
+            display: grid;
+            gap: 2rem;
+            margin-top: 2rem;
         }
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        h1 {
-            color: #2c3e50;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 10px;
-        }
-        h2 {
-            color: #3498db;
-            margin-top: 30px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #eee;
-        }
+        
         .form-section {
             background: #f8f9fa;
-            padding: 20px;
-            border-radius: 5px;
-            margin: 20px 0;
-            border-left: 4px solid #3498db;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
         }
+        
+        .form-section h2 {
+            margin-top: 0;
+            color: #343a40;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 0.5rem;
+        }
+        
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 1rem;
         }
+        
         label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 0.5rem;
             font-weight: 600;
-            color: #2c3e50;
         }
+        
         input[type="text"],
         input[type="email"],
         input[type="password"] {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
+            padding: 0.5rem;
+            border: 1px solid #ced4da;
             border-radius: 4px;
-            font-size: 16px;
+            font-size: 1rem;
         }
-        .password-info {
-            font-size: 0.9rem;
-            color: #666;
-            margin-top: 5px;
-            margin-bottom: 15px;
-        }
+        
         .btn {
-            background: #3498db;
+            background: #007bff;
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 0.75rem 1.5rem;
             border-radius: 4px;
-            font-size: 16px;
             cursor: pointer;
-            transition: background 0.3s;
-        }
-        .btn:hover {
-            background: #2980b9;
-        }
-        .btn-update {
-            background: #2ecc71;
-        }
-        .btn-update:hover {
-            background: #27ae60;
-        }
-        .btn-password {
-            background: #9b59b6;
-        }
-        .btn-password:hover {
-            background: #8e44ad;
-        }
-        .error {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 15px;
-            border: 1px solid #f5c6cb;
-        }
-        .error ul {
-            margin: 0;
-            padding-left: 20px;
-        }
-        .back-link {
-            display: inline-block;
-            margin-top: 20px;
-            color: #3498db;
+            font-size: 1rem;
             text-decoration: none;
+            display: inline-block;
         }
-        .back-link:hover {
-            text-decoration: underline;
+        
+        .btn:hover {
+            background: #0056b3;
+        }
+        
+        .password-info {
+            background: #e9f7fe;
+            border-left: 4px solid #17a2b8;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1><%= title %></h1>
+    <%- include('../partials/header', {nav}) %>
+    
+    <main class="account-update">
+        <h1>Update Account Information</h1>
         
-        <!-- Error display -->
-        <% if (errors && errors.length > 0) { %>
-            <div class="error">
-                <ul>
-                    <% errors.forEach(error => { %>
-                        <li><%= error.msg || error %></li>
-                    <% }) %>
-                </ul>
+        <% if (messages && messages.length > 0) { %>
+            <div class="flash-messages">
+                <% messages.forEach(msg => { %>
+                    <div class="flash-message"><%= msg %></div>
+                <% }) %>
             </div>
         <% } %>
         
-        <% if (accountData) { %>
-            <!-- ACCOUNT UPDATE FORM (REQUIRED) -->
+        <% if (errors && errors.length > 0) { %>
+            <div class="error-messages">
+                <% errors.forEach(error => { %>
+                    <div class="error-message"><%= error %></div>
+                <% }) %>
+            </div>
+        <% } %>
+        
+        <div class="update-forms">
+            <!-- Account Update Form -->
             <div class="form-section">
                 <h2>Account Update</h2>
-                <form action="/account/update" method="post">
+                <form method="post" action="/account/update">
                     <input type="hidden" name="account_id" value="<%= accountData.account_id %>">
                     
                     <div class="form-group">
-                        <label for="account_firstname">First Name</label>
-                        <input type="text" id="account_firstname" name="account_firstname" required 
-                               value="<%= accountData.account_firstname %>">
+                        <label for="account_firstname">First Name:</label>
+                        <input type="text" id="account_firstname" name="account_firstname" 
+                               value="<%= accountData.account_firstname %>" required>
                     </div>
                     
                     <div class="form-group">
-                        <label for="account_lastname">Last Name</label>
-                        <input type="text" id="account_lastname" name="account_lastname" required 
-                               value="<%= accountData.account_lastname %>">
+                        <label for="account_lastname">Last Name:</label>
+                        <input type="text" id="account_lastname" name="account_lastname" 
+                               value="<%= accountData.account_lastname %>" required>
                     </div>
                     
                     <div class="form-group">
-                        <label for="account_email">Email</label>
-                        <input type="email" id="account_email" name="account_email" required 
-                               value="<%= accountData.account_email %>">
+                        <label for="account_email">Email Address:</label>
+                        <input type="email" id="account_email" name="account_email" 
+                               value="<%= accountData.account_email %>" required>
                     </div>
                     
-                    <button type="submit" class="btn btn-update">Update Account</button>
+                    <button type="submit" class="btn">Update Account</button>
                 </form>
             </div>
             
-            <!-- CHANGE PASSWORD FORM (REQUIRED) -->
+            <!-- Password Change Form -->
             <div class="form-section">
                 <h2>Change Password</h2>
-                <form action="/account/update-password" method="post">
+                
+                <div class="password-info">
+                    <p><strong>Password Requirements:</strong></p>
+                    <ul>
+                        <li>At least 12 characters long</li>
+                        <li>Contains at least 1 uppercase letter</li>
+                        <li>Contains at least 1 lowercase letter</li>
+                        <li>Contains at least 1 number</li>
+                        <li>Contains at least 1 special character</li>
+                    </ul>
+                </div>
+                
+                <form method="post" action="/account/update-password">
                     <input type="hidden" name="account_id" value="<%= accountData.account_id %>">
                     
                     <div class="form-group">
-                        <label for="account_password">New Password</label>
-                        <input type="password" id="account_password" name="account_password" required>
-                        <p class="password-info">
-                            Password must be at least 12 characters with uppercase, lowercase, number, and special character.
-                        </p>
+                        <label for="account_password">New Password:</label>
+                        <input type="password" id="account_password" name="account_password" 
+                               required minlength="12">
                     </div>
                     
-                    <button type="submit" class="btn btn-password">Change Password</button>
+                    <button type="submit" class="btn">Change Password</button>
                 </form>
             </div>
-        <% } else { %>
-            <p>Please <a href="/account/login">log in</a> to update your account.</p>
-        <% } %>
+        </div>
         
-        <a href="/account" class="back-link">← Back to Account Management</a>
-    </div>
+        <div style="margin-top: 2rem;">
+            <a href="/account" class="btn">Back to Account Management</a>
+        </div>
+    </main>
+    
+    <%- include('../partials/footer') %>
 </body>
 </html>

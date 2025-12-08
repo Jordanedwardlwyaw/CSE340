@@ -1,26 +1,42 @@
+<!-- views/partials/header.ejs -->
 <header>
-    <div class="container">
-        <div class="logo">
-            <h1>CSE Motors</h1>
-            <p>CSE340 Assignment 3</p>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/inv/type/1">Sports Cars</a></li>
-                <li><a href="/inv/type/2">SUVs</a></li>
-                <li><a href="/inv/type/3">Trucks</a></li>
-                <li><a href="/inv/detail/1">Delorean Details</a></li>
-                
-                <% if (res.locals.loggedin) { %>
-                    <%# When LOGGED IN: show Welcome link and Logout %>
-                    <li><a href="/account/management">Welcome <%= res.locals.accountData.account_firstname %></a></li>
-                    <li><a href="/account/logout">Logout</a></li>
-                <% } else { %>
-                    <%# When NOT logged in: show My Account (login link) %>
-                    <li><a href="/account/login">My Account</a></li>
-                <% } %>
-            </ul>
-        </nav>
+    <div class="logo">
+        <a href="/">
+            <img src="/public/images/site/icon.png" alt="CSE Motors Logo">
+        </a>
     </div>
+    
+    <nav>
+        <ul class="nav-list">
+            <!-- Home link -->
+            <li class="nav-item">
+                <a href="/" class="nav-link" title="Home page">Home</a>
+            </li>
+            
+            <!-- Inventory classification links would go here -->
+            <!-- Example: <li><a href="/inv/type/1">Classic Cars</a></li> -->
+            
+            <!-- Account links with authentication check -->
+            <% if (typeof loggedin !== 'undefined' && loggedin && accountData) { %>
+                <!-- Logged in: Show Welcome and Logout -->
+                <li class="nav-item">
+                    <a href="/account" class="nav-link account-link" title="Manage your account">
+                        Welcome <%= accountData.account_firstname %>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/account/logout" class="nav-link logout-link" title="Logout">
+                        Logout
+                    </a>
+                </li>
+            <% } else { %>
+                <!-- Not logged in: Show My Account -->
+                <li class="nav-item">
+                    <a href="/account/login" class="nav-link account-link" title="Login or register">
+                        My Account
+                    </a>
+                </li>
+            <% } %>
+        </ul>
+    </nav>
 </header>
