@@ -92,6 +92,11 @@ app.use(async (req, res, next) => {
     next(error);
   }
 });
+// Add this with your other route imports
+const reviewRoute = require("./routes/reviewRoute");
+
+// Add this with your other route middleware (around line 65, after accountRoute)
+app.use("/review", reviewRoute);
 
 // 500 Error Handler
 app.use((err, req, res, next) => {

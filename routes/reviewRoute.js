@@ -24,6 +24,18 @@ router.post("/delete",
   utilities.handleErrors(reviewController.deleteReview)
 );
 
+router.post("/vote",
+  utilities.requireLogin,
+  reviewValidate.voteRules(),
+  reviewValidate.checkVoteData,
+  utilities.handleErrors(reviewController.voteHelpful)
+);
+
+// API endpoints for AJAX
+router.get("/api/:invId/reviews",
+  utilities.handleErrors(reviewController.getReviews)
+);
+
 router.get("/edit/:review_id",
   utilities.requireLogin,
   utilities.handleErrors(reviewController.renderEditReview)
