@@ -1,35 +1,115 @@
 const { body, validationResult } = require("express-validator");
-const utilities = require("../utilities")
-const { getClassifications } = require("../models/inventory-model");
+const utilities = require("../utilities");
+const invModel = require("../models/inventory-model");
+
+/**
+ * Validation rules for new classification
+ */
+const classificationRules = () => [
+  body("classification_name")
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage("Please provide a classification name.")
+    .isLength({ max: 30 })
+    .withMessage("Classification name must be less than 30 characters.")
+    .matches(/^[A-Za-z0-9]+$/)
+    .withMessage("Classification name must contain only letters and numbers, no spaces or special characters.")
+    .custom(async (classification_name) => {
+      const classifications = await invModel.getClassifications();
+      const exists = classifications.find(
+        c => c.classification_name.toLowerCase() === classification_name.toLowerCase()
+      );
+      if (exists) {
+        throw new Error("Classification already exists. Please use a different name.");
+      }
+    }),
+];
+
+/**
+ * Middleware to check data for new classification
+ */
+const checkClassificationData = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const nav = await utilities.getNav();
+    
+    res.render("inventory/add-classification", {
+      title: "Add New Classification",
+      nav,
+      errors: errors.array(),
+      classification_name: req.body.classification_name,
+    });
+    return;
+  }
+  next();
+};
+
 /**
  * Validation rules for new inventory
  */
-const newInventoryRules = () => [
+const inventoryRules = () => [
   body("inv_make")
     .trim()
-    .isLength({ min: 3 })
-    .withMessage("Make must be at least 3 characters."),
+    .notEmpty()
+    .withMessage("Make is required.")
+    .isLength({ max: 50 })
+    .withMessage("Make must be less than 50 characters."),
+  
   body("inv_model")
     .trim()
-    .isLength({ min: 3 })
-    .withMessage("Model must be at least 3 characters."),
+    .notEmpty()
+    .withMessage("Model is required.")
+    .isLength({ max: 50 })
+    .withMessage("Model must be less than 50 characters."),
+  
   body("inv_year")
-    .isInt({ min: 1900, max: new Date().getFullYear() })
-    .withMessage("Invalid year."),
+    .trim()
+    .notEmpty()
+    .withMessage("Year is required.")
+    .isInt({ min: 1900, max: new Date().getFullYear() + 1 })
+    .withMessage(`Year must be between 1900 and ${new Date().getFullYear() + 1}.`),
+  
   body("inv_description")
     .trim()
-    .isLength({ min: 10 })
-    .withMessage("Description must be at least 10 characters."),
+    .notEmpty()
+    .withMessage("Description is required."),
+  
+  body("inv_image")
+    .trim()
+    .notEmpty()
+    .withMessage("Image path is required."),
+  
+  body("inv_thumbnail")
+    .trim()
+    .notEmpty()
+    .withMessage("Thumbnail path is required."),
+  
   body("inv_price")
+    .trim()
+    .notEmpty()
+    .withMessage("Price is required.")
     .isFloat({ min: 0 })
     .withMessage("Price must be a positive number."),
+  
   body("inv_miles")
+    .trim()
+    .notEmpty()
+    .withMessage("Mileage is required.")
     .isInt({ min: 0 })
-    .withMessage("Miles must be a non-negative integer."),
+    .withMessage("Mileage must be a non-negative integer."),
+  
   body("inv_color")
     .trim()
-    .isLength({ min: 3 })
-    .withMessage("Color must be at least 3 characters."),
+    .notEmpty()
+    .withMessage("Color is required.")
+    .isLength({ max: 30 })
+    .withMessage("Color must be less than 30 characters."),
+  
+  body("classification_id")
+    .notEmpty()
+    .withMessage("Please select a classification.")
+    .isInt()
+    .withMessage("Please select a valid classification."),
 ];
 
 /**
@@ -38,42 +118,33 @@ const newInventoryRules = () => [
 const checkInventoryData = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    const classifications = await getClassifications();
-    return res.render("inventory/add-inventory", {
+    const nav = await utilities.getNav();
+    const classificationList = await utilities.buildClassificationList(req.body.classification_id);
+    
+    res.render("inventory/add-inventory", {
       title: "Add New Inventory",
-      classifications: classifications.rows,
+      nav,
+      classificationList,
       errors: errors.array(),
-      ...req.body,
+      inv_make: req.body.inv_make || '',
+      inv_model: req.body.inv_model || '',
+      inv_year: req.body.inv_year || '',
+      inv_description: req.body.inv_description || '',
+      inv_image: req.body.inv_image || '/images/vehicles/no-image.png',
+      inv_thumbnail: req.body.inv_thumbnail || '/images/vehicles/no-image-tn.png',
+      inv_price: req.body.inv_price || '',
+      inv_miles: req.body.inv_miles || '',
+      inv_color: req.body.inv_color || '',
+      classification_id: req.body.classification_id || '',
     });
+    return;
   }
   next();
 };
 
-/**
- * Middleware to check data for updating inventory
- */
-const checkUpdateData = async (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      try {
-        const classifications = await getClassifications();
-        let nav = await utilities.getNav()
-        return res.render("./inventory/edit-inventory", {
-          title: `Edit ${req.body.inv_make} ${req.body.inv_model}`,
-          nav,
-          classifications: classifications.rows,
-          errors: errors.array(),
-          inv_id: req.body.inv_id,
-          ...req.body,
-        });
-      } catch (err) {
-        console.error("Error in checkUpdateData:", err);
-        req.flash("notice", "An error occurred while fetching classifications.");
-        res.redirect(`/inv/edit/${req.body.inv_id}`);
-      }
-    } else {
-      next();
-    }
-  };
-
-module.exports = { newInventoryRules, checkInventoryData, checkUpdateData };
+module.exports = { 
+  classificationRules, 
+  checkClassificationData,
+  inventoryRules, 
+  checkInventoryData 
+};

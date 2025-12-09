@@ -1,4 +1,3 @@
-// utilities/index.js
 const invModel = require("../models/inventory-model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
@@ -253,21 +252,8 @@ utilities.buildInventoryNav = async function() {
   `;
 };
 
-/* ****************************************
- * Simple flash message function
- **************************************** */
-utilities.flashMessages = (req, res, next) => {
-  res.locals.messages = req.session?.messages || [];
-  res.locals.errors = req.session?.errors || [];
-  if (req.session) {
-    delete req.session.messages;
-    delete req.session.errors;
-  }
-  next();
-};
-
 // ====================================================
-// VALIDATION FUNCTIONS
+// VALIDATION FUNCTIONS (for future use)
 // ====================================================
 
 /* ****************************************
@@ -296,8 +282,7 @@ utilities.validateEmail = function(email) {
 };
 
 // ====================================================
-// JWT AUTHENTICATION FUNCTIONS
-// REQUIRED FOR ASSIGNMENT 5
+// JWT AUTHENTICATION FUNCTIONS (for Assignment 5)
 // ====================================================
 
 /* ****************************************
@@ -371,7 +356,7 @@ utilities.requireLogin = function(req, res, next) {
 
 /* ****************************************
  * Require Employee or Admin Middleware
- * REQUIRED for Task 2
+ * REQUIRED for Assignment 5
  **************************************** */
 utilities.requireEmployeeOrAdmin = function(req, res, next) {
   if (res.locals.loggedin && 
@@ -387,13 +372,11 @@ utilities.requireEmployeeOrAdmin = function(req, res, next) {
 };
 
 // ====================================================
-// NAVIGATION WITH AUTHENTICATION
-// REQUIRED FOR TASK 1
+// NAVIGATION WITH AUTHENTICATION (for Assignment 5)
 // ====================================================
 
 /* ****************************************
  * Navigation with Login Awareness
- * FIXED VERSION - handles res.locals properly
  **************************************** */
 utilities.getNavWithAuth = async function(currentClassificationId = null, loggedin = 0, accountData = null) {
   try {

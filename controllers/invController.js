@@ -74,9 +74,7 @@ invCont.triggerError = async function (req, res, next) {
   }
 };
 
-// NEW FUNCTIONS FOR ASSIGNMENT 4
-
-// Deliver management view - FIXED: Added successMessage parameter
+// Deliver management view
 invCont.buildManagement = async function (req, res, next) {
   try {
     const nav = await utilities.getNav();
@@ -84,7 +82,6 @@ invCont.buildManagement = async function (req, res, next) {
       title: "Inventory Management",
       nav,
       errors: null,
-      successMessage: null, // ADDED THIS LINE
     });
   } catch (error) {
     next(error);
@@ -99,7 +96,7 @@ invCont.buildAddClassification = async function (req, res, next) {
       title: "Add New Classification",
       nav,
       errors: null,
-      classification_name: null,
+      classification_name: '',
     });
   } catch (error) {
     next(error);
@@ -110,32 +107,6 @@ invCont.buildAddClassification = async function (req, res, next) {
 invCont.addClassification = async function (req, res, next) {
   try {
     const { classification_name } = req.body;
-    const nav = await utilities.getNav();
-    
-    // Simple validation
-    if (!classification_name || !/^[a-zA-Z0-9]+$/.test(classification_name)) {
-      return res.render("./inventory/add-classification", {
-        title: "Add New Classification",
-        nav,
-        errors: [{ msg: "Classification name cannot contain spaces or special characters." }],
-        classification_name,
-      });
-    }
-    
-    // Check if classification already exists
-    const classifications = await invModel.getClassifications();
-    const exists = classifications.find(
-      c => c.classification_name.toLowerCase() === classification_name.toLowerCase()
-    );
-    
-    if (exists) {
-      return res.render("./inventory/add-classification", {
-        title: "Add New Classification",
-        nav,
-        errors: [{ msg: "Classification already exists." }],
-        classification_name,
-      });
-    }
     
     // Add classification to database
     const result = await invModel.addClassification(classification_name);
@@ -144,15 +115,14 @@ invCont.addClassification = async function (req, res, next) {
       // Rebuild nav to include new classification
       const newNav = await utilities.getNav();
       
-      // Success - render management view - FIXED: Added successMessage
-      res.render("./inventory/management", {
-        title: "Inventory Management",
-        nav: newNav,
-        errors: null,
-        successMessage: `Classification "${classification_name}" was added successfully.`,
-      });
+      // Set success message
+      req.flash("notice", `Classification "${classification_name}" was added successfully.`);
+      
+      // Success - redirect to management view
+      res.redirect("/inv/management");
     } else {
-      throw new Error("Classification insertion failed.");
+      req.flash("notice", "Sorry, the classification addition failed.");
+      res.redirect("/inv/add-classification");
     }
   } catch (error) {
     next(error);
@@ -170,15 +140,16 @@ invCont.buildAddInventory = async function (req, res, next) {
       nav,
       classificationList,
       errors: null,
-      inv_make: null,
-      inv_model: null,
-      inv_year: null,
-      inv_description: null,
-      inv_price: null,
-      inv_miles: null,
-      inv_color: null,
-      inv_image: "/images/vehicles/no-image.png",
-      inv_thumbnail: "/images/vehicles/no-image-tn.png",
+      inv_make: '',
+      inv_model: '',
+      inv_year: '',
+      inv_description: '',
+      inv_price: '',
+      inv_miles: '',
+      inv_color: '',
+      inv_image: '/images/vehicles/no-image.png',
+      inv_thumbnail: '/images/vehicles/no-image-tn.png',
+      classification_id: '',
     });
   } catch (error) {
     next(error);
@@ -188,10 +159,6 @@ invCont.buildAddInventory = async function (req, res, next) {
 // Process add inventory form
 invCont.addInventory = async function (req, res, next) {
   try {
-    const nav = await utilities.getNav();
-    const classificationList = await utilities.buildClassificationList(req.body.classification_id);
-    
-    // Extract form data
     const {
       classification_id,
       inv_make,
@@ -205,70 +172,35 @@ invCont.addInventory = async function (req, res, next) {
       inv_thumbnail
     } = req.body;
     
-    // Simple validation
-    const errors = [];
-    
-    if (!classification_id) errors.push({ msg: "Classification is required." });
-    if (!inv_make) errors.push({ msg: "Make is required." });
-    if (!inv_model) errors.push({ msg: "Model is required." });
-    if (!inv_year || inv_year < 1900 || inv_year > new Date().getFullYear() + 1) {
-      errors.push({ msg: "Valid year is required." });
-    }
-    if (!inv_description) errors.push({ msg: "Description is required." });
-    if (!inv_price || inv_price <= 0) errors.push({ msg: "Valid price is required." });
-    if (!inv_miles || inv_miles < 0) errors.push({ msg: "Valid mileage is required." });
-    if (!inv_color) errors.push({ msg: "Color is required." });
-    
-    if (errors.length > 0) {
-      return res.render("./inventory/add-inventory", {
-        title: "Add New Vehicle",
-        nav,
-        classificationList,
-        errors,
-        classification_id,
-        inv_make,
-        inv_model,
-        inv_year,
-        inv_description,
-        inv_price,
-        inv_miles,
-        inv_color,
-        inv_image: inv_image || "/images/vehicles/no-image.png",
-        inv_thumbnail: inv_thumbnail || "/images/vehicles/no-image-tn.png",
-      });
-    }
-    
     // Add inventory to database
     const result = await invModel.addInventoryItem(req.body);
     
     if (result) {
-      // Success - render management view - FIXED: Added successMessage
-      res.render("./inventory/management", {
-        title: "Inventory Management",
-        nav,
-        errors: null,
-        successMessage: `Vehicle "${inv_make} ${inv_model}" was added successfully.`,
-      });
+      // Set success message
+      req.flash("notice", `Vehicle "${inv_make} ${inv_model}" was added successfully.`);
+      
+      // Success - redirect to management view
+      res.redirect("/inv/management");
     } else {
-      throw new Error("Inventory insertion failed.");
+      req.flash("notice", "Sorry, the inventory addition failed.");
+      res.redirect("/inv/add-inventory");
     }
   } catch (error) {
     next(error);
   }
-};// Add this function to your invController if it doesn't exist
+};
+
+// Alias functions for compatibility
 invCont.buildInventoryManagement = async function (req, res, next) {
   try {
-    // Use the existing buildManagement function
     return await invCont.buildManagement(req, res, next);
   } catch (error) {
     next(error);
   }
 };
 
-// Also add this if buildVehicleDetail doesn't exist
 invCont.buildVehicleDetail = async function (req, res, next) {
   try {
-    // Use the existing buildByInventoryId function
     return await invCont.buildByInventoryId(req, res, next);
   } catch (error) {
     next(error);

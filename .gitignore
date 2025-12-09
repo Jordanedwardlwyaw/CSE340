@@ -135,3 +135,9 @@ dist
 # PNPM
 /pnpm-lock.yaml
 CSE 340 Fall 2024 Block One.session.sql
+node_modules/
+.env
+*.log
+*.sql
+*.mp4
+*.mov
