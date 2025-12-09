@@ -104,7 +104,7 @@ app.use((err, req, res, next) => {
   const nav = '<ul><li><a href="/">Home</a></li></ul>';
   res.status(err.status || 500).render("errors/error", {
     title: "500 - Server Error",
-    message: process.env.NODE_ENV === "development" ? err.message : "An internal server error occurred.",
+    message: process.env.NODE_ENV == "development"  ? err.message : "An internal server error occurred.",
     status: 500,
     nav: nav
   });
