@@ -20,6 +20,17 @@ const reviewValidate = {
       .withMessage("Invalid vehicle ID."),
   ],
 
+  // Validation rules for votes (NEW)
+  voteRules: () => [
+    body("review_id")
+      .isInt()
+      .withMessage("Review ID must be an integer."),
+    
+    body("vote_type")
+      .isIn(['up', 'down']) // Assuming up/down voting system
+      .withMessage("Vote must be either 'up' or 'down'.")
+  ],
+
   // Check review data middleware
   checkReviewData: async (req, res, next) => {
     const errors = validationResult(req);
@@ -28,6 +39,20 @@ const reviewValidate = {
       req.flash("notice", "Please correct the errors below.");
       req.session.errors = errors.array();
       return res.redirect(`/inv/detail/${req.body.inv_id}`);
+    }
+    
+    next();
+  },
+
+  // Check vote data middleware (OPTIONAL - add if needed)
+  checkVoteData: async (req, res, next) => {
+    const errors = validationResult(req);
+    
+    if (!errors.isEmpty()) {
+      req.flash("notice", "Invalid vote data.");
+      req.session.errors = errors.array();
+      // Adjust redirect based on your app's structure
+      return res.redirect('back');
     }
     
     next();

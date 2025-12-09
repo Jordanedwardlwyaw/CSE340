@@ -56,6 +56,7 @@ app.use((req, res, next) => {
 // Import routes
 const inventoryRoute = require("./routes/inventoryRoute");
 const accountRoute = require("./routes/accountRoute"); // Use regular account route for Assignment 4
+const reviewRoute = require("./routes/reviewRoute"); // Add this line
 
 // Home route - UPDATED for Assignment 4 (without auth)
 app.get("/", async (req, res, next) => {
@@ -77,6 +78,7 @@ app.get("/", async (req, res, next) => {
 // Use routes
 app.use("/inv", inventoryRoute);
 app.use("/account", accountRoute);
+app.use("/review", reviewRoute); // Add this line
 
 // 404 Error Handler - UPDATED for Assignment 4
 app.use(async (req, res, next) => {
@@ -92,19 +94,14 @@ app.use(async (req, res, next) => {
     next(error);
   }
 });
-// Add this with your other route imports
-const reviewRoute = require("./routes/reviewRoute");
 
-// Add this with your other route middleware (around line 65, after accountRoute)
-app.use("/review", reviewRoute);
-
-// 500 Error Handler
+// 500 Error Handler - FIXED
 app.use((err, req, res, next) => {
   console.error("Server Error:", err);
   const nav = '<ul><li><a href="/">Home</a></li></ul>';
   res.status(err.status || 500).render("errors/error", {
     title: "500 - Server Error",
-    message: process.env.NODE_ENV == "development"  ? err.message : "An internal server error occurred.",
+    message: process.env.NODE_ENV == "development" ? err.message : "An internal server error occurred.",
     status: 500,
     nav: nav
   });
