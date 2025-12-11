@@ -1,39 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <%- include('../partials/head', {title: title}) %>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> - CSE Motors</title>
+    <link rel="stylesheet" href="/css/styles.css">
     <style>
-        .error { color: red; margin-top: 0.25rem; }
-        .form-group { margin-bottom: 1.5rem; }
-        label { display: block; margin-bottom: 0.5rem; font-weight: 600; }
-        input { 
-            width: 100%; 
-            padding: 0.75rem;
-            border: 1px solid #ced4da;
+        .form-container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .form-container h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
             border-radius: 4px;
+            font-size: 1rem;
         }
-        .form-text { font-size: 0.875rem; color: #6c757d; }
-        .form-buttons { display: flex; gap: 1rem; margin-top: 2rem; }
-        .btn { 
-            padding: 0.75rem 1.5rem; 
-            border: none; 
-            border-radius: 4px; 
-            cursor: pointer; 
+        
+        .btn {
+            padding: 12px 24px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
         }
-        .btn-primary { background: #007bff; color: white; }
-        .btn-secondary { background: #6c757d; color: white; }
+        
+        .btn:hover {
+            background: #2980b9;
+        }
+        
+        .note {
+            background: #fff3cd;
+            color: #856404;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .back-link a {
+            color: #3498db;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <%- include('../partials/header') %>
-        <%- include('../partials/nav') %>
-        
-        <main>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1><a href="/">CSE Motors</a></h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/inv/">← Back to Management</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="form-container">
             <h1>Add New Classification</h1>
             
+            <% if (messages && messages.length > 0) { %>
+                <div class="messages">
+                    <% messages.forEach(message => { %>
+                        <p><%= message %></p>
+                    <% }) %>
+                </div>
+            <% } %>
+            
             <% if (errors && errors.length > 0) { %>
-                <div class="error-message">
+                <div class="errors">
                     <ul>
                         <% errors.forEach(error => { %>
                             <li><%= error.msg || error %></li>
@@ -41,32 +111,50 @@
                     </ul>
                 </div>
             <% } %>
-            
-            <form action="/inv/add-classification" method="post" class="classification-form">
+
+            <form action="/inv/add-classification" method="post" onsubmit="return validateClassification()">
                 <div class="form-group">
-                    <label for="classification_name">Classification Name*</label>
-                    <input 
-                        type="text" 
-                        id="classification_name" 
-                        name="classification_name" 
-                        required
-                        pattern="^[a-zA-Z0-9]+$"
-                        title="No spaces or special characters allowed"
-                        <% if (classification_name) { %>
-                            value="<%= classification_name %>"
-                        <% } %>
-                    >
-                    <small class="form-text">No spaces or special characters allowed</small>
+                    <label for="classification_name">Classification Name:</label>
+                    <input type="text" 
+                           id="classification_name" 
+                           name="classification_name" 
+                           value="<%= classification_name || '' %>"
+                           required
+                           pattern="^[a-zA-Z0-9]+$"
+                           title="No spaces or special characters allowed">
+                    <div class="note">Note: Classification name cannot contain spaces or special characters (only letters and numbers).</div>
                 </div>
                 
-                <div class="form-buttons">
-                    <button type="submit" class="btn btn-primary">Add Classification</button>
-                    <a href="/inv/" class="btn btn-secondary">Cancel</a>
-                </div>
+                <button type="submit" class="btn">Add Classification</button>
             </form>
-        </main>
-        
-        <%- include('../partials/footer') %>
-    </div>
+            
+            <div class="back-link">
+                <a href="/inv/">← Back to Inventory Management</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 CSE Motors - CSE340 Assignment 4</p>
+            <p><a href="/inv/">Inventory Management</a></p>
+        </div>
+    </footer>
+
+    <script>
+        function validateClassification() {
+            const input = document.getElementById('classification_name');
+            const value = input.value.trim();
+            
+            // Check for spaces or special characters
+            if (/[\s\W_]/.test(value)) {
+                alert('Classification name cannot contain spaces or special characters. Only letters and numbers are allowed.');
+                input.focus();
+                return false;
+            }
+            
+            return true;
+        }
+    </script>
 </body>
 </html>

@@ -10,7 +10,7 @@ router.get("/type/:classificationId", utilities.handleErrors(invController.build
 router.get("/detail/:invId", utilities.handleErrors(invController.buildByInventoryId));
 
 // Management routes
-router.get("/management", utilities.handleErrors(invController.buildManagement));
+// router.get("/management", utilities.handleErrors(invController.buildManagement)); // REMOVED - Assignment 4 says use /inv/
 
 // Add classification routes
 router.get("/add-classification", utilities.handleErrors(invController.buildAddClassification));

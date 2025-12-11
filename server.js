@@ -5,8 +5,7 @@ const cookieParser = require("cookie-parser");
 const session = require("express-session");
 require("dotenv").config();
 
-// Database connection test (optional - can be removed if causing issues)
-console.log("🔧 Starting application server...");
+console.log("🚀 Starting CSE340 Assignment 4 - Inventory Management System");
 
 const app = express();
 const port = process.env.PORT || 5500;
@@ -19,22 +18,22 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(cookieParser());
 
-// Session configuration
+// Session configuration for flash messages
 app.use(session({
-  secret: process.env.SESSION_SECRET || "cse340-secret-key-12345",
-  resave: true,
+  secret: process.env.SESSION_SECRET || "cse340-assignment4-secret-key",
+  resave: false,
   saveUninitialized: true,
   cookie: { 
     secure: process.env.NODE_ENV === "production",
     httpOnly: true,
-    maxAge: 1000 * 60 * 60
+    maxAge: 1000 * 60 * 60 // 1 hour
   }
 }));
 
 // Import utilities
 const utilities = require("./utilities");
 
-// Flash messages middleware
+// Flash messages middleware - REQUIRED for Assignment 4
 app.use((req, res, next) => {
   res.locals.messages = req.session.messages || [];
   res.locals.errors = req.session.errors || [];
@@ -43,27 +42,22 @@ app.use((req, res, next) => {
   next();
 });
 
-// COMMENT OUT JWT middleware for Assignment 4 (Assignment 5 feature)
-// app.use(auth.checkJWTToken);
-
-// Make account data available to all views (for Assignment 5)
+// Make account data available (for consistency, though Assignment 4 doesn't require login)
 app.use((req, res, next) => {
-  res.locals.loggedin = res.locals.loggedin || 0; // Default to not logged in
+  res.locals.loggedin = res.locals.loggedin || 0;
   res.locals.accountData = res.locals.accountData || null;
   next();
 });
 
-// Import routes
-const inventoryRoute = require("./routes/inventoryRoute");
-const accountRoute = require("./routes/accountRoute"); // Use regular account route for Assignment 4
-const reviewRoute = require("./routes/reviewRoute"); // Add this line
+// Import routes - CRITICAL for Assignment 4
+const inventoryRoute = require("./routes/inventoryRoute"); // For Tasks 1, 2, 3
+const accountRoute = require("./routes/accountRoute"); // For registration/login
+const reviewRoute = require("./routes/reviewRoute"); // Additional feature
 
-// Home route - UPDATED for Assignment 4 (without auth)
+// Home route
 app.get("/", async (req, res, next) => {
   try {
-    // For Assignment 4, use regular getNav (not getNavWithAuth)
     const nav = await utilities.getNav();
-    
     res.render("index", {
       title: "Home - CSE Motors",
       nav,
@@ -76,11 +70,11 @@ app.get("/", async (req, res, next) => {
 });
 
 // Use routes
-app.use("/inv", inventoryRoute);
+app.use("/inv", inventoryRoute); // This handles /inv/ (management view), /inv/add-classification, /inv/add-inventory
 app.use("/account", accountRoute);
-app.use("/review", reviewRoute); // Add this line
+app.use("/review", reviewRoute);
 
-// 404 Error Handler - UPDATED for Assignment 4
+// 404 Error Handler
 app.use(async (req, res, next) => {
   try {
     const nav = await utilities.getNav();
@@ -95,7 +89,7 @@ app.use(async (req, res, next) => {
   }
 });
 
-// 500 Error Handler - FIXED
+// 500 Error Handler
 app.use((err, req, res, next) => {
   console.error("Server Error:", err);
   const nav = '<ul><li><a href="/">Home</a></li></ul>';
@@ -109,9 +103,10 @@ app.use((err, req, res, next) => {
 
 app.listen(port, () => {
   console.log(`✅ Server running at http://localhost:${port}`);
-  console.log(`🏠 Home: http://localhost:${port}/`);
-  console.log(`👤 Login: http://localhost:${port}/account/login`);
-  console.log(`👤 Register: http://localhost:${port}/account/register`);
-  console.log(`📦 Inventory: http://localhost:${port}/inv`);
-  console.log(`📊 Inventory Management: http://localhost:${port}/inv/management`);
+  console.log(`📋 Assignment 4 Features:`);
+  console.log(`   • Management View: http://localhost:${port}/inv/`);
+  console.log(`   • Add Classification: http://localhost:${port}/inv/add-classification`);
+  console.log(`   • Add Inventory: http://localhost:${port}/inv/add-inventory`);
+  console.log(`   • Login: http://localhost:${port}/account/login`);
+  console.log(`   • Register: http://localhost:${port}/account/register`);
 });

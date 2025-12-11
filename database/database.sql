@@ -3,6 +3,7 @@
 -- Drop tables if they exist (optional - be careful!)
 DROP TABLE IF EXISTS inventory CASCADE;
 DROP TABLE IF EXISTS classification CASCADE;
+DROP TABLE IF EXISTS account CASCADE; -- ADD THIS LINE
 
 -- Create classification table
 CREATE TABLE classification (
@@ -23,6 +24,16 @@ CREATE TABLE inventory (
   inv_miles INTEGER NOT NULL,
   inv_color VARCHAR(50) NOT NULL,
   classification_id INTEGER REFERENCES classification(classification_id)
+);
+
+-- CREATE ACCOUNT TABLE (MISSING FROM YOUR FILE) - ADD THIS
+CREATE TABLE account (
+  account_id SERIAL PRIMARY KEY,
+  account_firstname VARCHAR(50) NOT NULL,
+  account_lastname VARCHAR(50) NOT NULL,
+  account_email VARCHAR(100) UNIQUE NOT NULL,
+  account_password VARCHAR(255) NOT NULL,
+  account_type VARCHAR(20) DEFAULT 'Client'
 );
 
 -- Insert classifications
@@ -64,7 +75,16 @@ INSERT INTO inventory (
   ('Toyota', 'Camry XSE', 2023, 'Midsize sedan with 3.5L V6 engine and sport-tuned suspension.', 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=800&auto=format&fit=crop&q=80', 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=400&auto=format&fit=crop&q=80', 32800, 5500, 'Midnight Black', 4),
   ('Honda', 'Accord Touring', 2023, 'Comfortable sedan with hybrid powertrain and Honda Sensing safety suite.', 'https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?w=800&auto=format&fit=crop&q=80', 'https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?w=400&auto=format&fit=crop&q=80', 36500, 7800, 'Platinum White', 4);
 
+-- INSERT A DEFAULT TEST ACCOUNT FOR INSTRUCTOR - ADD THIS
+INSERT INTO account (account_firstname, account_lastname, account_email, account_password, account_type) 
+VALUES 
+  ('Test', 'Instructor', 'instructor@test.com', '$2a$10$9y8LcA6eW7qKpJZQ1R2X3uVwFgHjKlMnOpQrStUvWxYzAbCdEfGhIj', 'Employee'), -- Password: InstructorPass123!@#
+  ('Test', 'Student', 'student@test.com', '$2a$10$LkPqR5uVwXyZaBcDeFgHiJkLmNoPqRsTuVwXyZaBcDeFgHiJkLmNo', 'Client') -- Password: StudentPass123!@#
+ON CONFLICT (account_email) DO NOTHING;
+
 -- Verify data
 SELECT 'Classifications' as table_name, COUNT(*) as count FROM classification
 UNION ALL
-SELECT 'Inventory', COUNT(*) FROM inventory;
+SELECT 'Inventory', COUNT(*) FROM inventory
+UNION ALL
+SELECT 'Accounts', COUNT(*) FROM account; -- ADD THIS LINE

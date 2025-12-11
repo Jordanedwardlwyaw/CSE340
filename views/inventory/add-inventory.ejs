@@ -1,105 +1,277 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <%- include('../partials/head', {title: title}) %>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> - CSE Motors</title>
+    <link rel="stylesheet" href="/css/styles.css">
     <style>
-        .error { color: red; }
-        .form-group { margin-bottom: 1rem; }
-        label { display: block; margin-bottom: 0.5rem; font-weight: 600; }
-        input, select, textarea { width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px; }
-        .form-text { font-size: 0.875rem; color: #666; }
-        .form-buttons { display: flex; gap: 1rem; margin-top: 2rem; }
-        .btn { padding: 0.75rem 1.5rem; border: none; border-radius: 4px; cursor: pointer; }
-        .btn-primary { background: #007bff; color: white; }
-        .btn-secondary { background: #6c757d; color: white; }
-        .error-message { background-color: #f8d7da; color: #721c24; padding: 1rem; border-radius: 4px; margin-bottom: 1.5rem; }
-        .error-message ul { margin: 0; padding-left: 1.5rem; }
+        .form-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .form-container h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        .btn:hover {
+            background: #219653;
+        }
+        
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .back-link a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        
+        .form-note {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <%- include('../partials/header') %>
-        <%- include('../partials/nav') %>
-        
-        <main>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1><a href="/">CSE Motors</a></h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/inv/">← Back to Management</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="form-container">
             <h1>Add New Vehicle</h1>
             
-            <% if (errors && errors.length > 0) { %>
-                <div class="error-message">
-                    <ul><% errors.forEach(error => { %><li><%= error.msg || error %></li><% }) %></ul>
+            <% if (messages && messages.length > 0) { %>
+                <div class="messages">
+                    <% messages.forEach(message => { %>
+                        <p><%= message %></p>
+                    <% }) %>
                 </div>
             <% } %>
             
-            <form action="/inv/add-inventory" method="post" class="inventory-form">
-                <div class="form-group">
-                    <label for="classification_id">Classification*</label>
-                    <%- classificationList || '' %>
+            <% if (errors && errors.length > 0) { %>
+                <div class="errors">
+                    <ul>
+                        <% errors.forEach(error => { %>
+                            <li><%= error.msg || error %></li>
+                        <% }) %>
+                    </ul>
+                </div>
+            <% } %>
+
+            <form action="/inv/add-inventory" method="post" onsubmit="return validateInventory()">
+                <div class="form-grid">
+                    <!-- Left Column -->
+                    <div>
+                        <div class="form-group">
+                            <label for="inv_make">Make:</label>
+                            <input type="text" 
+                                   id="inv_make" 
+                                   name="inv_make" 
+                                   value="<%= inv_make || '' %>"
+                                   required
+                                   minlength="2">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="inv_model">Model:</label>
+                            <input type="text" 
+                                   id="inv_model" 
+                                   name="inv_model" 
+                                   value="<%= inv_model || '' %>"
+                                   required
+                                   minlength="2">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="inv_year">Year:</label>
+                            <input type="number" 
+                                   id="inv_year" 
+                                   name="inv_year" 
+                                   value="<%= inv_year || '' %>"
+                                   required
+                                   min="1900"
+                                   max="2025"
+                                   step="1">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="classification_id">Classification:</label>
+                            <%- classificationList %>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="inv_price">Price:</label>
+                            <input type="number" 
+                                   id="inv_price" 
+                                   name="inv_price" 
+                                   value="<%= inv_price || '' %>"
+                                   required
+                                   min="0"
+                                   step="0.01">
+                            <div class="form-note">Enter price in dollars (e.g., 25000.00)</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Column -->
+                    <div>
+                        <div class="form-group">
+                            <label for="inv_miles">Miles:</label>
+                            <input type="number" 
+                                   id="inv_miles" 
+                                   name="inv_miles" 
+                                   value="<%= inv_miles || '' %>"
+                                   required
+                                   min="0"
+                                   step="1">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="inv_color">Color:</label>
+                            <input type="text" 
+                                   id="inv_color" 
+                                   name="inv_color" 
+                                   value="<%= inv_color || '' %>"
+                                   required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="inv_description">Description:</label>
+                            <textarea id="inv_description" 
+                                      name="inv_description"
+                                      required><%= inv_description || '' %></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="inv_image">Image Path:</label>
+                            <input type="text" 
+                                   id="inv_image" 
+                                   name="inv_image" 
+                                   value="<%= inv_image || '/images/vehicles/no-image.png' %>"
+                                   required>
+                            <div class="form-note">Default: /images/vehicles/no-image.png</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="inv_thumbnail">Thumbnail Path:</label>
+                            <input type="text" 
+                                   id="inv_thumbnail" 
+                                   name="inv_thumbnail" 
+                                   value="<%= inv_thumbnail || '/images/vehicles/no-image-tn.png' %>"
+                                   required>
+                            <div class="form-note">Default: /images/vehicles/no-image-tn.png</div>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="form-group">
-                    <label for="inv_make">Make*</label>
-                    <input type="text" id="inv_make" name="inv_make" required
-                           <% if (inv_make) { %>value="<%= inv_make %>"<% } %>>
-                </div>
-                
-                <div class="form-group">
-                    <label for="inv_model">Model*</label>
-                    <input type="text" id="inv_model" name="inv_model" required
-                           <% if (inv_model) { %>value="<%= inv_model %>"<% } %>>
-                </div>
-                
-                <div class="form-group">
-                    <label for="inv_year">Year*</label>
-                    <input type="number" id="inv_year" name="inv_year" required min="1900"
-                           max="<%= new Date().getFullYear() + 1 %>"
-                           <% if (inv_year) { %>value="<%= inv_year %>"<% } %>>
-                </div>
-                
-                <div class="form-group">
-                    <label for="inv_description">Description*</label>
-                    <textarea id="inv_description" name="inv_description" rows="4" required><%= inv_description || '' %></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label for="inv_image">Image Path</label>
-                    <input type="text" id="inv_image" name="inv_image"
-                           <% if (inv_image) { %>value="<%= inv_image %>"<% } else { %>value="/images/vehicles/no-image.png"<% } %>>
-                    <small class="form-text">Path to vehicle image</small>
-                </div>
-                
-                <div class="form-group">
-                    <label for="inv_thumbnail">Thumbnail Path</label>
-                    <input type="text" id="inv_thumbnail" name="inv_thumbnail"
-                           <% if (inv_thumbnail) { %>value="<%= inv_thumbnail %>"<% } else { %>value="/images/vehicles/no-image-tn.png"<% } %>>
-                    <small class="form-text">Path to vehicle thumbnail</small>
-                </div>
-                
-                <div class="form-group">
-                    <label for="inv_price">Price*</label>
-                    <input type="number" id="inv_price" name="inv_price" step="0.01" required min="0"
-                           <% if (inv_price) { %>value="<%= inv_price %>"<% } %>>
-                </div>
-                
-                <div class="form-group">
-                    <label for="inv_miles">Miles*</label>
-                    <input type="number" id="inv_miles" name="inv_miles" required min="0"
-                           <% if (inv_miles) { %>value="<%= inv_miles %>"<% } %>>
-                </div>
-                
-                <div class="form-group">
-                    <label for="inv_color">Color*</label>
-                    <input type="text" id="inv_color" name="inv_color" required
-                           <% if (inv_color) { %>value="<%= inv_color %>"<% } %>>
-                </div>
-                
-                <div class="form-buttons">
-                    <button type="submit" class="btn btn-primary">Add Vehicle</button>
-                    <a href="/inv/" class="btn btn-secondary">Cancel</a>
-                </div>
+                <button type="submit" class="btn">Add Vehicle</button>
             </form>
-        </main>
-        
-        <%- include('../partials/footer') %>
-    </div>
+            
+            <div class="back-link">
+                <a href="/inv/">← Back to Inventory Management</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 CSE Motors - CSE340 Assignment 4</p>
+            <p><a href="/inv/">Inventory Management</a></p>
+        </div>
+    </footer>
+
+    <script>
+        function validateInventory() {
+            const year = document.getElementById('inv_year');
+            const price = document.getElementById('inv_price');
+            const miles = document.getElementById('inv_miles');
+            
+            // Validate year
+            if (year.value < 1900 || year.value > 2025) {
+                alert('Please enter a valid year between 1900 and 2025');
+                year.focus();
+                return false;
+            }
+            
+            // Validate price
+            if (price.value <= 0) {
+                alert('Price must be greater than 0');
+                price.focus();
+                return false;
+            }
+            
+            // Validate miles
+            if (miles.value < 0) {
+                alert('Miles cannot be negative');
+                miles.focus();
+                return false;
+            }
+            
+            return true;
+        }
+    </script>
 </body>
 </html>

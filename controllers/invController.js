@@ -134,13 +134,14 @@ invCont.addClassification = async function (req, res, next) {
     const result = await invModel.addClassification(classification_name);
     
     if (result) {
-      // Set success message
-      req.flash("notice", `Classification "${classification_name}" was added successfully.`);
+      // Set success message - CHANGED from req.flash to req.session.messages
+      req.session.messages = [`Classification "${classification_name}" was added successfully.`];
       
-      // Success - redirect to management view
-      res.redirect("/inv/management");
+      // Success - redirect to management view at /inv/
+      res.redirect("/inv/"); // CHANGED FROM /inv/management
     } else {
-      req.flash("notice", "Sorry, the classification addition failed.");
+      // CHANGED from req.flash to req.session.messages
+      req.session.messages = ["Sorry, the classification addition failed."];
       res.redirect("/inv/add-classification");
     }
   } catch (error) {
@@ -195,13 +196,14 @@ invCont.addInventory = async function (req, res, next) {
     const result = await invModel.addInventoryItem(req.body);
     
     if (result) {
-      // Set success message
-      req.flash("notice", `Vehicle "${inv_make} ${inv_model}" was added successfully.`);
+      // Set success message - CHANGED from req.flash to req.session.messages
+      req.session.messages = [`Vehicle "${inv_make} ${inv_model}" was added successfully.`];
       
-      // Success - redirect to management view
-      res.redirect("/inv/management");
+      // Success - redirect to management view at /inv/
+      res.redirect("/inv/"); // CHANGED FROM /inv/management
     } else {
-      req.flash("notice", "Sorry, the inventory addition failed.");
+      // CHANGED from req.flash to req.session.messages
+      req.session.messages = ["Sorry, the inventory addition failed."];
       res.redirect("/inv/add-inventory");
     }
   } catch (error) {
