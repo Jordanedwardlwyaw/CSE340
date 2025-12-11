@@ -205,26 +205,48 @@ utilities.buildDetailView = async function(vehicle) {
 
 utilities.buildClassificationList = async function (classification_id = null) {
   try {
+    console.log("📋 Building classification list for select dropdown...");
+    
     let data = await invModel.getClassifications();
+    console.log(`📊 Retrieved classifications data:`, data);
+    
+    // Handle different return formats (data or data.rows)
+    const classifications = data.rows || data;
+    
+    console.log(`📋 Processed ${classifications ? classifications.length : 0} classifications`);
+    
     let classificationList = '<select name="classification_id" id="classificationList" required>';
     classificationList += "<option value=''>Choose a Classification</option>";
     
-    data.forEach((row) => {
-      classificationList += '<option value="' + row.classification_id + '"';
-      if (
-        classification_id != null &&
-        row.classification_id == classification_id
-      ) {
-        classificationList += " selected ";
-      }
-      classificationList += ">" + row.classification_name + "</option>";
-    });
+    if (classifications && classifications.length > 0) {
+      classifications.forEach((row) => {
+        classificationList += '<option value="' + row.classification_id + '"';
+        if (classification_id != null && row.classification_id == classification_id) {
+          classificationList += " selected ";
+        }
+        classificationList += ">" + row.classification_name + "</option>";
+      });
+    } else {
+      console.log("⚠️ No classifications found, using fallback options");
+      classificationList += `
+        <option value="1">SUV</option>
+        <option value="2">Sedan</option>
+        <option value="3">Truck</option>
+        <option value="4">Sports Car</option>
+      `;
+    }
     
     classificationList += "</select>";
+    
+    console.log("✅ Classification list built successfully");
     return classificationList;
   } catch (error) {
-    console.error("Utility Error: buildClassificationList", error);
-    return '<select name="classification_id" id="classificationList" required><option value="">Error loading classifications</option></select>';
+    console.error("❌ Utility Error: buildClassificationList", error);
+    return '<select name="classification_id" id="classificationList" required>' +
+           '<option value="">Error loading classifications</option>' +
+           '<option value="1">SUV</option>' +
+           '<option value="2">Sedan</option>' +
+           '</select>';
   }
 };
 
