@@ -1,44 +1,42 @@
 const express = require("express");
 const router = express.Router();
 const reviewController = require("../controllers/reviewController");
-const utilities = require("../utilities");
 const reviewValidate = require("../utilities/review-validation");
 
-// All review routes require login
-router.post("/add",
-  utilities.requireLogin,
+// Add review
+router.post("/add", 
   reviewValidate.reviewRules(),
   reviewValidate.checkReviewData,
-  utilities.handleErrors(reviewController.addReview)
+  reviewController.addReview
 );
 
+// Update review
 router.post("/update",
-  utilities.requireLogin,
   reviewValidate.reviewRules(),
   reviewValidate.checkReviewData,
-  utilities.handleErrors(reviewController.updateReview)
+  reviewController.updateReview
 );
 
+// Delete review
 router.post("/delete",
-  utilities.requireLogin,
-  utilities.handleErrors(reviewController.deleteReview)
+  reviewController.deleteReview
 );
 
+// Vote on review - FIXED THIS ROUTE
 router.post("/vote",
-  utilities.requireLogin,
-  reviewValidate.voteRules(),
-  reviewValidate.checkVoteData,
-  utilities.handleErrors(reviewController.voteHelpful)
+  reviewValidate.voteRules(),     // Returns validation rules
+  reviewValidate.checkVoteData,   // Middleware that checks validation
+  reviewController.voteHelpful    // Controller function
 );
 
-// API endpoints for AJAX
-router.get("/api/:invId/reviews",
-  utilities.handleErrors(reviewController.getReviews)
+// Get reviews (AJAX endpoint)
+router.get("/:invId", 
+  reviewController.getReviews
 );
 
+// Edit review page
 router.get("/edit/:review_id",
-  utilities.requireLogin,
-  utilities.handleErrors(reviewController.renderEditReview)
+  reviewController.renderEditReview
 );
 
 module.exports = router;
